@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In · SAKALA Summer 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#000; --parchment:#E3D5B8; --prussian:#003153;
+  --sodium-orange:#FF6A1F; --voice-green:#1AAB4D; --bone:#F4EFE2;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
+body {
+  font-family:'Lora',Georgia,serif;
+  background:var(--black);
+  color:var(--bone);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:100vh; padding:24px;
+}
+.logo {
+  font-family:'Anton',sans-serif;
+  font-size:18px; letter-spacing:6px;
+  color:var(--sodium-orange); margin-bottom:40px; text-align:center;
+}
+.logo span { display:block; font-size:10px; letter-spacing:3px; color:rgba(244,239,226,0.4); margin-top:4px; font-family:'Courier Prime',monospace; }
+.card {
+  width:100%; max-width:420px;
+  border:2px solid #1a1a1a; padding:40px 36px;
+  background:#080808;
+}
+h1 { font-family:'Anton',sans-serif; font-size:28px; text-transform:uppercase; margin-bottom:8px; color:var(--bone); }
+.sub { font-size:14px; color:rgba(244,239,226,0.55); margin-bottom:32px; line-height:1.6; }
+label {
+  display:block; font-family:'Courier Prime',monospace;
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--sodium-orange); margin-bottom:8px;
+}
+input[type="email"] {
+  width:100%; background:#0d0d0d; border:2px solid #2a2a2a;
+  color:var(--bone); font-family:'Lora',serif; font-size:16px;
+  padding:14px 16px; outline:none; border-radius:0;
+  transition:border-color 0.15s; margin-bottom:16px;
+}
+input:focus { border-color:var(--voice-green); }
+.btn {
+  display:block; width:100%; background:var(--voice-green);
+  color:var(--black); font-family:'Anton',sans-serif;
+  font-size:18px; letter-spacing:1px; text-transform:uppercase;
+  padding:18px; border:none; cursor:pointer; border-radius:0;
+  transition:background 0.15s;
+}
+.btn:hover { background:var(--sodium-orange); }
+.btn:disabled { background:#333; color:#666; cursor:not-allowed; }
+.msg {
+  margin-top:20px; padding:14px 16px;
+  font-family:'Courier Prime',monospace; font-size:12px;
+  line-height:1.6; border-radius:0; display:none;
+}
+.msg.success { background:rgba(26,171,77,0.1); border:1px solid var(--voice-green); color:var(--voice-green); }
+.msg.error   { background:rgba(220,20,60,0.1); border:1px solid #DC143C; color:#ff6b81; }
+.back { margin-top:24px; text-align:center; font-family:'Courier Prime',monospace; font-size:11px; }
+.back a { color:var(--sodium-orange); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<div class="logo">{ BARSS }<span>SAKALA Summer 2026 · Sponsor Portal</span></div>
+
+<div class="card">
+  <h1>Sign In</h1>
+  <p class="sub">Enter the email address you used to apply. We'll send you a secure sign-in link -- no password needed.</p>
+
+  <form id="loginForm">
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+    <button type="submit" class="btn" id="submitBtn">Send Sign-In Link</button>
+  </form>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<div class="back"><a href="/sakala-summer-2026/">Back to campaign</a></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+<script>
+// If already logged in, go straight to dashboard
+getSession().then(session => {
+  if (session) window.location.href = 'dashboard.html';
+});
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email  = document.getElementById('email').value.trim();
+  const btn    = document.getElementById('submitBtn');
+  const msg    = document.getElementById('msg');
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  msg.style.display = 'none';
+
+  const { error } = await db.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: DASHBOARD_URL }
+  });
+
+  if (error) {
+    msg.className = 'msg error';
+    msg.textContent = error.message || 'Something went wrong. Try again or email wbertil@barssforhaiti.com.';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send Sign-In Link';
+  } else {
+    msg.className = 'msg success';
+    msg.textContent = 'Link sent. Check your email -- click the link to sign in. You can close this tab.';
+    msg.style.display = 'block';
+    btn.textContent = 'Link Sent';
+  }
+});
+</script>
+</body>
+</html>

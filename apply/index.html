@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sponsor a youth at SAKALA's Grand Bassin cooperative farm in northern Haiti. $360 covers one young person's full summer -- stipend, tools, and cooperative membership.">
+<title>SAKALA Summer 2026 · Grand Bassin · Sponsor a Youth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --parchment: #E3D5B8;
+  --parchment-light: #EFE4CB;
+  --du-bois-red: #DC143C;
+  --prussian: #003153;
+  --bottle-green: #006A4E;
+  --sodium-orange: #FF6A1F;
+  --voice-green: #1AAB4D;
+  --bone: #F4EFE2;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lora', Georgia, serif;
+  background: var(--parchment);
+  color: var(--black);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--black);
+  color: var(--bone);
+  padding: 64px 24px 56px;
+  text-align: center;
+}
+.hero-kicker {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--sodium-orange);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(56px, 14vw, 110px);
+  line-height: 0.88;
+  text-transform: uppercase;
+  color: var(--bone);
+  margin-bottom: 28px;
+}
+.hero h1 em { color: var(--voice-green); font-style: normal; display: block; }
+.hero-sub {
+  font-family: 'Lora', serif;
+  font-size: clamp(16px, 2.5vw, 19px);
+  color: var(--parchment);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  line-height: 1.55;
+}
+.hero-sub strong { color: var(--voice-green); font-weight: 600; }
+.cta-btn {
+  display: inline-block;
+  background: var(--voice-green);
+  color: var(--black);
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 20px 44px;
+  text-decoration: none;
+  border: 3px solid var(--voice-green);
+  transition: background 0.15s, border-color 0.15s;
+  cursor: pointer;
+}
+.cta-btn:hover { background: var(--sodium-orange); border-color: var(--sodium-orange); }
+
+/* ── PHOTOS ── */
+.photo-hero {
+  width: 100%;
+  height: clamp(280px, 45vw, 520px);
+  object-fit: cover;
+  display: block;
+}
+.photo-caption {
+  background: var(--black);
+  color: rgba(244,239,226,0.55);
+  font-family: 'Courier Prime', monospace;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 9px 20px;
+}
+.photo-inline {
+  width: 100%;
+  height: clamp(220px, 38vw, 400px);
+  object-fit: cover;
+  display: block;
+  margin: 36px 0 6px;
+}
+.photo-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 36px 0;
+}
+.photo-pair img {
+  width: 100%;
+  height: clamp(200px, 30vw, 340px);
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 560px) { .photo-pair { grid-template-columns: 1fr; } }
+
+/* ── TRACKER ── */
+.tracker {
+  background: var(--prussian);
+  color: var(--bone);
+  padding: 48px 24px;
+  text-align: center;
+}
+.tracker-kicker {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--sodium-orange);
+  margin-bottom: 14px;
+}
+.tracker-headline {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(32px, 7vw, 56px);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  line-height: 1;
+}
+.tracker-headline .green { color: var(--voice-green); }
+.tracker-headline .orange { color: var(--sodium-orange); }
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 380px;
+  margin: 0 auto 24px;
+}
+.slot {
+  aspect-ratio: 1;
+  border: 2px solid rgba(244,239,226,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto Slab', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: rgba(244,239,226,0.25);
+}
+.slot.filled {
+  background: var(--voice-green);
+  border-color: var(--voice-green);
+  color: var(--black);
+  font-size: 22px;
+}
+.tracker-sub {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10.5px;
+  color: rgba(244,239,226,0.55);
+  line-height: 1.7;
+}
+
+/* ── SECTIONS ── */
+.section { padding: 64px 24px; }
+.section.light { background: var(--parchment-light); }
+.section.dark { background: var(--black); color: var(--bone); }
+.section.dark p { color: var(--parchment); }
+
+h2 {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(30px, 5vw, 46px);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+h2 .red { color: var(--du-bois-red); }
+h2 .green { color: var(--voice-green); }
+h2 .orange { color: var(--sodium-orange); }
+.section.dark h2 { color: var(--bone); }
+h3 {
+  font-family: 'Roboto Slab', serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--prussian);
+}
+p { margin-bottom: 16px; max-width: 740px; }
+p:last-child { margin-bottom: 0; }
+strong { color: var(--du-bois-red); }
+.section.dark strong { color: var(--voice-green); }
+
+/* ── BREAKDOWN ── */
+.breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 10px;
+  margin: 28px 0;
+}
+.b-item {
+  background: var(--prussian);
+  color: var(--bone);
+  padding: 20px 16px;
+  border-left: 5px solid var(--sodium-orange);
+}
+.b-item.total { background: var(--du-bois-red); border-left-color: var(--black); }
+.b-item .amt {
+  font-family: 'Roboto Slab', serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--sodium-orange);
+  line-height: 1;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.b-item.total .amt { color: var(--bone); font-size: 38px; }
+.b-item .lbl {
+  font-family: 'Anton', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+/* ── WORK CARDS ── */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 28px 0;
+}
+.work-card {
+  border: 2px solid var(--black);
+  padding: 20px 18px;
+  background: var(--bone);
+}
+.work-card .crop-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--prussian);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--black);
+}
+.work-card p { font-size: 13.5px; line-height: 1.55; color: var(--black); max-width: none; }
+
+/* ── PULL QUOTE ── */
+.pull {
+  border-left: 6px solid var(--sodium-orange);
+  margin: 32px 0;
+  padding: 18px 24px;
+  background: var(--bone);
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 740px;
+}
+.section.dark .pull { background: #111; color: var(--parchment); }
+
+/* ── STORIES ── */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 32px 0;
+}
+.story-card {
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  overflow: hidden;
+}
+.story-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  object-position: center top;
+}
+.story-body { padding: 20px 18px 22px; }
+.story-quote {
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--parchment);
+  margin-bottom: 14px;
+  border-left: 3px solid var(--voice-green);
+  padding-left: 14px;
+}
+.story-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--sodium-orange);
+  margin-bottom: 4px;
+}
+.story-desc {
+  font-size: 12.5px;
+  color: rgba(244,239,226,0.5);
+  line-height: 1.5;
+  margin: 0;
+  max-width: none;
+}
+
+/* ── PARTNERSHIP / ABOUT ── */
+.partnership-intro {
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+.partner-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 3px solid var(--black);
+  margin: 0 0 4px;
+}
+@media (max-width: 640px) { .partner-split { grid-template-columns: 1fr; } }
+.partner-col {
+  padding: 32px 28px;
+}
+.partner-col.sakala {
+  background: var(--bottle-green);
+  border-right: 3px solid var(--black);
+}
+@media (max-width: 640px) { .partner-col.sakala { border-right: none; border-bottom: 3px solid var(--black); } }
+.partner-col.barss { background: var(--prussian); }
+.partner-col-kicker {
+  font-family: 'Courier Prime', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(244,239,226,0.55);
+  margin-bottom: 8px;
+}
+.partner-col h3 {
+  font-family: 'Anton', sans-serif;
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--bone);
+  margin-bottom: 20px;
+  line-height: 1;
+}
+.partner-list { list-style: none; padding: 0; }
+.partner-list li {
+  font-size: 13.5px;
+  line-height: 1.55;
+  padding: 9px 0 9px 18px;
+  border-bottom: 1px solid rgba(244,239,226,0.12);
+  color: var(--parchment);
+  position: relative;
+}
+.partner-list li::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: var(--sodium-orange);
+  font-family: 'Courier Prime', monospace;
+  font-weight: 700;
+}
+.partner-list li:last-child { border-bottom: none; }
+
+.together-band {
+  background: var(--black);
+  border: 3px solid var(--sodium-orange);
+  border-top: none;
+  padding: 28px 32px;
+  margin-bottom: 36px;
+}
+.together-band h3 {
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--sodium-orange);
+  margin-bottom: 16px;
+}
+.together-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+@media (max-width: 540px) { .together-list { grid-template-columns: 1fr; } }
+.together-list li {
+  font-size: 13.5px;
+  color: var(--parchment);
+  line-height: 1.55;
+  padding: 8px 20px 8px 0;
+  border-bottom: 1px solid rgba(255,106,31,0.15);
+  padding-left: 16px;
+  position: relative;
+}
+.together-list li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  color: var(--voice-green);
+  font-family: 'Courier Prime', monospace;
+  font-weight: 700;
+}
+
+/* ── STATS BAND ── */
+.stats-band {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  border: 2px solid var(--black);
+  margin: 28px 0;
+  background: var(--prussian);
+}
+.stat {
+  padding: 20px 14px;
+  text-align: center;
+  border-right: 2px solid rgba(244,239,226,0.15);
+}
+.stat:last-child { border-right: none; }
+.stat .val {
+  font-family: 'Roboto Slab', serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--sodium-orange);
+  line-height: 1;
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.stat .key {
+  font-family: 'Anton', sans-serif;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  color: var(--parchment);
+}
+
+/* ── CREDIBILITY TAGS ── */
+.cred-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+.cred-tag {
+  border: 1.5px solid var(--black);
+  font-family: 'Courier Prime', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  color: var(--black);
+  background: var(--bone);
+}
+
+/* ── FORM ── */
+.form-wrap {
+  background: var(--black);
+  padding: 72px 24px 80px;
+  color: var(--bone);
+}
+.form-wrap h2 { color: var(--bone); margin-bottom: 12px; }
+.form-intro {
+  font-size: 17px;
+  color: var(--parchment);
+  max-width: 600px;
+  margin-bottom: 36px;
+  line-height: 1.55;
+}
+form { max-width: 600px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+.field { margin-bottom: 18px; }
+label {
+  display: block;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--sodium-orange);
+  margin-bottom: 8px;
+}
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  background: #0d0d0d;
+  border: 2px solid #2a2a2a;
+  color: var(--bone);
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+input:focus, textarea:focus { border-color: var(--voice-green); }
+textarea { resize: vertical; min-height: 110px; }
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  background: var(--voice-green);
+  color: var(--black);
+  font-family: 'Anton', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 22px;
+  border: 3px solid var(--voice-green);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.15s, border-color 0.15s;
+  border-radius: 0;
+}
+.submit-btn:hover { background: var(--sodium-orange); border-color: var(--sodium-orange); }
+.form-note {
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  color: rgba(244,239,226,0.45);
+  margin-top: 14px;
+  line-height: 1.7;
+}
+.form-note a { color: var(--sodium-orange); text-decoration: none; }
+
+/* ── FOOTER ── */
+footer {
+  background: #060606;
+  border-top: 4px solid var(--sodium-orange);
+  padding: 40px 24px;
+  text-align: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: 10px;
+  color: rgba(244,239,226,0.4);
+  letter-spacing: 0.5px;
+  line-height: 1.9;
+}
+footer a { color: var(--sodium-orange); text-decoration: none; }
+.barss-mark {
+  font-family: 'Anton', sans-serif;
+  font-size: 22px;
+  color: var(--sodium-orange);
+  letter-spacing: 6px;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero-kicker">SAKALA Haiti x BARSS LLC &nbsp;·&nbsp; Grand Bassin + Cite Soleil &nbsp;&middot;&nbsp; Kasav Box Pilot</div>
+  <h1>Summer<em>2026</em></h1>
+  <p class="hero-sub">School ends in June. The moringa is ready to harvest. <strong>15 youth are at the site.</strong> The window closes in August. One diaspora sponsor. One youth. One summer. $360.</p>
+  <a href="#sponsor" class="cta-btn">Sponsor a Youth</a>
+</header>
+
+<!-- HERO PHOTO -->
+<img src="img/group-sakala-shirts.jpg" alt="SAKALA youth working at the Jaden Tap Tap cooperative garden" class="photo-hero">
+<div class="photo-caption">SAKALA youth at work &nbsp;·&nbsp; Shirts read: "Si plante ke kontan, nou rekolte lavi" -- If we plant with joy, we harvest life &nbsp;·&nbsp; Jaden Tap Tap network, Nord Department, Haiti</div>
+
+<!-- ═══ TRACKER ═══ -->
+<div class="tracker">
+  <div class="tracker-kicker">Live Campaign Status</div>
+  <div class="tracker-headline" id="tracker-headline">
+    <span class="orange" id="remaining-count">15</span> <span class="green">slots remaining</span>
+  </div>
+  <div class="slots-grid" id="slots-grid"></div>
+  <div class="tracker-sub">
+    Each slot = one youth &nbsp;·&nbsp; one full summer &nbsp;·&nbsp; one cooperative membership<br>
+    Counter updated as sponsors confirm
+  </div>
+</div>
+
+<!-- ═══ WHY NOW ═══ -->
+<section class="section">
+  <div class="container">
+    <h2>Why <span class="red">Now</span></h2>
+    <p>The school calendar and the harvest calendar align once a year. That window is June through August. In northern Haiti, youth who would otherwise be idle -- or pulled into gang structures -- are available for structured cooperative work at exactly the moment the Grand Bassin site needs more hands.</p>
+    <p>This is not a new program. SAKALA has operated cooperative agricultural sites in Haiti for over 20 years. Through the Jaden Tap Tap network, the Job Power initiative, and a church-connected community management system built across Haiti's Nord Department, the infrastructure is real and proven. <strong>Summer 2026 is the first season where the Grand Bassin franchise upgrade and full enrollment capacity exist at the same time.</strong></p>
+    <div class="pull">"Before, I felt like a burden. Now I help my family and continue my education. Job Power changed how I see my future." -- Nadia, 16, Job Power participant</div>
+    <p>The moringa is in the ground. The castor plots are producing. The processing shed is built. What's missing is the stipend to bring 15 youth through the door.</p>
+
+    <img src="img/nursery-two-youth-wall.jpg" alt="Two youth working at SAKALA's nursery operation, Jaden Tap Tap graffiti visible on wall behind them" class="photo-inline">
+    <div class="photo-caption">Nursery seed bag preparation &nbsp;·&nbsp; Nord Department &nbsp;·&nbsp; "JADEN TAP TAP" -- SAKALA's community garden network &nbsp;·&nbsp; August 2025</div>
+  </div>
+</section>
+
+<!-- ═══ WHAT $360 DOES ═══ -->
+<section class="section light">
+  <div class="container">
+    <h2>What <span class="red">$360</span> Does</h2>
+    <p>One sponsor. One youth. One full summer at Grand Bassin. Every dollar is accounted for.</p>
+    <div class="breakdown">
+      <div class="b-item">
+        <div class="amt">$180</div>
+        <div class="lbl">Youth stipend -- $60/month, 3 months</div>
+      </div>
+      <div class="b-item">
+        <div class="amt">$90</div>
+        <div class="lbl">Equipment + supplies -- tools, seed, protective gear</div>
+      </div>
+      <div class="b-item">
+        <div class="amt">$90</div>
+        <div class="lbl">Site supervision + coordination, shared cost</div>
+      </div>
+      <div class="b-item total">
+        <div class="amt">$360</div>
+        <div class="lbl">Total -- all-in, cooperative model</div>
+      </div>
+    </div>
+    <p>The Grand Bassin site projects <strong>$20,855 in Year 1 gross revenue</strong> from moringa powder, castor oil, hot peppers, cassava, peanuts, and Harvest Box subscriptions. The summer cohort pays for itself in produce value within the season. Your $360 enters a working cooperative, not a charity account.</p>
+    <p>SAKALA's track record: last year's Job Power program served <strong>500 youth</strong> across the Nord Department. The program produced nurseries transplanted across the Tap Tap collective farm network, created stipend-earning employment at multiple sites, and built partnerships with Sonje Ayiti Foundation's network of 15 schools and church communities across several communes. The model is validated. Grand Bassin is where it scales.</p>
+  </div>
+</section>
+
+<!-- ═══ WHAT THEY DO ═══ -->
+<section class="section">
+  <div class="container">
+    <h2>What They <span class="red">Do</span></h2>
+    <p>Youth at Grand Bassin are cooperative members from day one -- not trainees, not beneficiaries. The work is real, supervised by experienced site leads, and builds skills that carry beyond the season. SAKALA acquired and adapted appropriate tools specifically to reduce the physical strain that discourages youth from agricultural work. Members also received specialized training to reinforce fieldwork quality.</p>
+    <div class="work-grid">
+      <div class="work-card">
+        <div class="crop-name">Moringa Harvest</div>
+        <p>Harvesting leaves and pods, operating drying racks, packaging moringa powder for Hopital Sacre-Coeur and Harvest Box distribution. June-August, 5 acres. First harvest revenue within the summer window.</p>
+      </div>
+      <div class="work-card">
+        <div class="crop-name">Pepper Cultivation</div>
+        <p>Tending pepper plots. First harvest at 90-120 days -- youth earn direct income from the cash crop before summer ends. 2 acres, July-August peak window.</p>
+      </div>
+      <div class="work-card">
+        <div class="crop-name">Castor Oil Pressing</div>
+        <p>Operating the manual castor press, decanting and storing oil, preparing product for local and export markets. 3 acres, processing ongoing through the summer.</p>
+      </div>
+      <div class="work-card">
+        <div class="crop-name">Nursery Production</div>
+        <p>Propagating seedlings in the site nursery -- the same operation SAKALA has run across the Tap Tap network. Seed bags prepared and transplanted to expand the cooperative's growing capacity.</p>
+      </div>
+      <div class="work-card">
+        <div class="crop-name">Site Infrastructure</div>
+        <p>Building and maintaining the processing shed, irrigation lines, and nursery beds. Cooperative sweat equity that reduces capital cost while building direct ownership of the site.</p>
+      </div>
+      <div class="work-card">
+        <div class="crop-name">Small Livestock</div>
+        <p>Rabbit and chicken production units using recycled materials for cage and feed systems. Directly contributes to environmental protection while generating income for participating youth.</p>
+      </div>
+    </div>
+
+    <div class="photo-pair">
+      <div>
+        <img src="img/girls-nursery-rows.jpg" alt="Two young women in SAKALA shirts working systematically with hundreds of nursery seedling bags">
+        <div class="photo-caption">Systematic nursery preparation &nbsp;·&nbsp; Job Power participants &nbsp;·&nbsp; Nord Department</div>
+      </div>
+      <div>
+        <img src="img/youth-garden-solo.jpg" alt="Young man working in the Jaden Tap Tap community garden, surrounded by plants and recycled tire planters">
+        <div class="photo-caption">Jaden Tap Tap garden &nbsp;·&nbsp; Recycled tire planter system &nbsp;·&nbsp; FatraKa integration</div>
+      </div>
+    </div>
+
+    <p>Month 5 and beyond: profit-share kicks in. Year 2: cinnamon harvest begins, cooperative revenue grows. The youth who spends a summer at Grand Bassin is a cooperative member for as long as they choose to be.</p>
+  </div>
+</section>
+
+<!-- ═══ FROM THE FIELD ═══ -->
+<section class="section dark">
+  <div class="container">
+    <h2>From the <span class="green">Field</span></h2>
+    <p>These are SAKALA participants from the Job Power program -- the same program now expanding to Grand Bassin. Their words are from SAKALA's own program documentation, submitted to the Congregation of the Sisters of St. Joseph of Peace in the Winter 2026 grant cycle.</p>
+
+    <div class="stories-grid">
+      <div class="story-card">
+        <img src="img/girl-seedlings-focused.jpg" alt="Young woman focused on nursery seedling work, SAKALA program" class="story-img">
+        <div class="story-body">
+          <div class="story-quote">"Before, I felt like a burden. Now I help my family and continue my education. Job Power changed how I see my future."</div>
+          <div class="story-name">Nadia, age 16</div>
+          <p class="story-desc">Works in a Tap Tap garden near her community. Contributing to food expenses at home while staying in school. Her stipend covers essentials her family could not previously afford.</p>
+        </div>
+      </div>
+      <div class="story-card">
+        <img src="img/two-youth-nursery.jpg" alt="Two young men working with seedling nursery bags at SAKALA site" class="story-img">
+        <div class="story-body">
+          <div class="story-quote">"This program kept me busy in a good way. I learned skills, earned money, and stayed away from trouble. I feel respected now."</div>
+          <div class="story-name">Junior, age 19</div>
+          <p class="story-desc">Signed his first work contract in tree nursery production through a church partner. Became one of the most active youth in his group within a few months.</p>
+        </div>
+      </div>
+      <div class="story-card">
+        <img src="img/young-woman-planting.jpg" alt="Young woman kneeling and working with seedlings in the garden, other participants visible in background" class="story-img">
+        <div class="story-body">
+          <div class="story-quote">"I didn't know I could love this work. Now I want to study agriculture and have my own farm one day. Job Power helped me discover my strength."</div>
+          <div class="story-name">Lovely, age 17</div>
+          <p class="story-desc">Joined Job Power to "try something new." Now helps supervise younger participants in her garden group. Studying composting, seed selection, and crop management.</p>
+        </div>
+      </div>
+      <div class="story-card">
+        <img src="img/youth-working-together.jpg" alt="Two youth working together at the SAKALA cooperative site" class="story-img">
+        <div class="story-body">
+          <div class="story-quote">"I was making plans to leave for Santo Domingo because life is very hard in Haiti. Thanks to this opportunity I chose instead to invest my time working with youth in the North Department."</div>
+          <div class="story-name">Renaldo</div>
+          <p class="story-desc">Was preparing to emigrate. Now supports youth employment development in the Nord Department and helps build agricultural capacity in his own community.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull">Gang recruitment in northern Haiti targets the same population SAKALA serves: youth ages 15-25, out of school, no income. The summer holiday is the peak recruitment window. Gang structures offer $100-200/month plus protection -- competitive against nothing. SAKALA competes on belonging and future.</div>
+  </div>
+</section>
+
+<!-- ═══ WHO WE ARE -- PARTNERSHIP ═══ -->
+<section class="section light">
+  <div class="container">
+    <h2>Two Organizations. <span class="red">One Campaign.</span></h2>
+
+    <p class="partnership-intro">This campaign has two names on it for a reason. SAKALA brings 20 years of community trust, a proven cooperative model, and a network of youth that no funder can replicate from the outside. BARSS brings the economic architecture, cost-per-job validation, and accountability layer that institutional funders require and that field teams cannot slow down operations to produce. Neither organization can run this campaign alone. Together, they represent the only Haiti youth cooperative with forensic economic validation and external program M&E.</p>
+
+    <div class="partner-split">
+      <div class="partner-col sakala">
+        <div class="partner-col-kicker">The Ground Operation</div>
+        <h3>SAKALA Haiti</h3>
+        <ul class="partner-list">
+          <li>Founded 2002, Cité Soleil -- Pax Christi peacebuilding origins</li>
+          <li>Daniel Tillias, CNN Hero 2019 -- Board Chair</li>
+          <li>Only youth community center in Cité Soleil</li>
+          <li>20+ years operating in Haiti's hardest neighborhoods</li>
+          <li>500 youth served by Job Power program last year; 800 by the full org</li>
+          <li>Programs: Jaden Tap Tap (Haiti's largest urban garden), Job Power, FatraKa, Ekselans!, Sports as Peacebuilding</li>
+          <li>Church network across Nord Department -- local management teams supervising each site</li>
+          <li>Partner network: Sonje Ayiti Foundation (15 schools), AgriPure/Agrinova, Catholic Church, Mennonite Central Committee</li>
+          <li>Current CSJP grant: JOB FOR PEACE 2 -- vocational training in agroecology + life skills</li>
+          <li>SAKALA International registered US 501(c)(3) -- contributions tax-deductible</li>
+        </ul>
+      </div>
+      <div class="partner-col barss">
+        <div class="partner-col-kicker">The Accountability Architecture</div>
+        <h3>BARSS LLC</h3>
+        <ul class="partner-list">
+          <li>Bertil's Analytics, Research, Sciences and Sorceries LLC</li>
+          <li>Wesley Bertil, principal -- EIN 42-2396264</li>
+          <li>Forensic economic analysis and program design for cooperative infrastructure</li>
+          <li>Cost-per-job modeling: $360 derived from actual site inputs, not estimated</li>
+          <li>Revenue projections: $20,855 Year 1 conservative, sourced from soil analysis and crop yield data</li>
+          <li>Grand Bassin site validated via satellite scan (41 parcels analyzed), soil testing (Cambisols eutric, pH 6.0-7.2), and field visit with Dr. Harold Previl, May 2026</li>
+          <li>M&E architecture and external reporting for funders requiring institutional accountability</li>
+          <li>Every sponsor receives a campaign report at season close</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="together-band">
+      <h3>What the Partnership Provides</h3>
+      <ul class="together-list">
+        <li>Every dollar tracked and reported</li>
+        <li>Every claim sourced (soil tests, satellite data, field visits on record)</li>
+        <li>Cost-per-job model independently derived</li>
+        <li>Revenue projections from real crop yield data</li>
+        <li>Youth are cooperative members, not charity recipients</li>
+        <li>Harvest revenue offsets costs within the season</li>
+        <li>Church networks provide youth referral and site supervision</li>
+        <li>Sponsor report delivered at campaign close</li>
+      </ul>
+    </div>
+
+    <img src="img/mentor-teaching-kids.jpg" alt="SAKALA mentor teaching younger participants at the cooperative nursery, hands-on knowledge transfer" class="photo-inline">
+    <div class="photo-caption">Knowledge transfer at the nursery &nbsp;·&nbsp; SAKALA's model: every participant teaches the next &nbsp;·&nbsp; Nord Department, August 2025</div>
+
+    <div class="stats-band" style="margin-top:32px;">
+      <div class="stat"><div class="val">22</div><div class="key">Years SAKALA in Haiti</div></div>
+      <div class="stat"><div class="val">800</div><div class="key">Youth served by org last year</div></div>
+      <div class="stat"><div class="val">500</div><div class="key">Youth served by Job Power last year</div></div>
+      <div class="stat"><div class="val">21</div><div class="key">Acres at Grand Bassin site</div></div>
+      <div class="stat"><div class="val">15</div><div class="key">Youth active at site now</div></div>
+      <div class="stat"><div class="val">$360</div><div class="key">Cost per youth, full summer</div></div>
+    </div>
+
+    <p style="margin-top:24px; font-size:14px; color:#555;">Institutional funders and partners:</p>
+    <div class="cred-strip">
+      <span class="cred-tag">Mennonite Central Committee</span>
+      <span class="cred-tag">SAKALA International 501(c)(3)</span>
+      <span class="cred-tag">Hendrickson Foundation</span>
+      <span class="cred-tag">EPower Foundation</span>
+      <span class="cred-tag">Haiti Solidarity Network NE</span>
+      <span class="cred-tag">CSJP -- Sisters of St. Joseph of Peace</span>
+      <span class="cred-tag">Sonje Ayiti Foundation</span>
+      <span class="cred-tag">AgriPure / Agrinova Ayiti</span>
+      <span class="cred-tag">CNN Hero 2019 -- Daniel Tillias</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SPONSOR FORM ═══ -->
+<div class="form-wrap" id="sponsor">
+  <div class="container">
+    <h2>Apply to <span class="green">Sponsor</span></h2>
+    <p class="form-intro">Submit your application below. BARSS and SAKALA review every application within 48 hours. Once accepted, you receive a secure sign-in link -- your account is created automatically and you're taken straight to your sponsor dashboard.</p>
+
+    <form id="applyForm">
+      <div class="form-row">
+        <div class="field">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" required placeholder="Jean">
+        </div>
+        <div class="field">
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" required placeholder="Pierre">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="field">
+  <label for="interest">What are you applying for?</label>
+  <select id="interest" required style="width:100%;padding:12px;font-family:inherit;font-size:15px;border:2px solid #1a1a1a;background:#fff;">
+    <option value="">Choose one...</option>
+    <option>Kasav Box subscription ($45/month)</option>
+    <option>Youth Sponsor (3 boxes = 1 named youth, $135/month)</option>
+    <option>Grand Bassin Summer Sponsor</option>
+    <option>General support / tell me more</option>
+  </select>
+</div>
+<div class="field">
+        <label for="location">Where are you based?</label>
+        <input type="text" id="location" placeholder="New York · Montreal · Paris · Miami · Boston...">
+      </div>
+
+      <div class="field">
+        <label for="connection">Your connection to Haiti (optional)</label>
+        <input type="text" id="connection" placeholder="Family from Nord · Former volunteer · Heard about SAKALA through...">
+      </div>
+
+      <div class="field">
+        <label for="message">Message to the cohort (optional)</label>
+        <textarea id="message" placeholder="Anything you want the youth at Grand Bassin to know..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="applyBtn">Submit Application</button>
+      <div id="applyMsg" style="display:none; margin-top:16px; padding:16px; font-family:'Courier Prime',monospace; font-size:12px; line-height:1.7; border:1px solid var(--voice-green); color:var(--voice-green); background:rgba(26,171,77,0.06);"></div>
+      <p class="form-note">
+        Applications are reviewed within 48 hours. On acceptance, you receive a secure sign-in link -- no password, no friction. Payment ($360) is completed inside your sponsor dashboard after acceptance.<br><br>
+        SAKALA International is a registered 501(c)(3). Contributions are tax-deductible. Questions: <a href="mailto:wbertil@barssforhaiti.com">wbertil@barssforhaiti.com</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="barss-mark">{ BARSS }</div>
+  SAKALA Haiti x BARSS LLC &nbsp;·&nbsp; Summer Youth Employment Campaign &nbsp;·&nbsp; Grand Bassin + Cite Soleil &nbsp;&middot;&nbsp; Kasav Box Pilot, Haiti &nbsp;·&nbsp; 2026<br>
+  Daniel Tillias, Board Chair, SAKALA &nbsp;·&nbsp; Wesley Bertil, BARSS LLC<br>
+  <a href="mailto:wbertil@barssforhaiti.com">wbertil@barssforhaiti.com</a> &nbsp;·&nbsp;
+  <a href="https://www.sakalainternational.org/" target="_blank" rel="noopener">sakalainternational.org</a><br><br>
+  SAKALA International is a registered 501(c)(3). Contributions are tax-deductible to the extent permitted by law.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+<script>
+// ── TRACKER (update SLOTS_FILLED as sponsors confirm) ──
+const SLOTS_FILLED = 0;
+const TOTAL_SLOTS  = 15;
+const grid      = document.getElementById('slots-grid');
+const remaining = document.getElementById('remaining-count');
+const headline  = document.getElementById('tracker-headline');
+if (SLOTS_FILLED >= TOTAL_SLOTS) {
+  headline.innerHTML = '<span style="color:var(--voice-green)">FULLY FUNDED</span>';
+} else { remaining.textContent = TOTAL_SLOTS - SLOTS_FILLED; }
+for (let i = 0; i < TOTAL_SLOTS; i++) {
+  const slot = document.createElement('div');
+  slot.className = 'slot ' + (i < SLOTS_FILLED ? 'filled' : 'empty');
+  slot.textContent = i < SLOTS_FILLED ? '✓' : (i + 1);
+  grid.appendChild(slot);
+}
+
+// ── APPLICATION FORM ──
+document.getElementById('applyForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('applyBtn');
+  const msg = document.getElementById('applyMsg');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  const { error } = await db.from('sponsors').insert({
+    first_name: document.getElementById('fname').value.trim(),
+    last_name:  document.getElementById('lname').value.trim(),
+    email:      document.getElementById('email').value.trim(),
+    location:   document.getElementById('location').value.trim() || null,
+    connection: document.getElementById('connection').value.trim() || null,
+    message:    ('[' + document.getElementById('interest').value + '] ' + document.getElementById('message').value.trim()).trim() || null,
+  });
+
+  if (error) {
+    btn.disabled = false; btn.textContent = 'Submit Application';
+    msg.style.display = 'block';
+    msg.style.borderColor = '#DC143C'; msg.style.color = '#ff6b81'; msg.style.background = 'rgba(220,20,60,0.06)';
+    msg.textContent = error.code === '23505'
+      ? 'An application with this email already exists. Email wbertil@barssforhaiti.com if you have questions.'
+      : 'Something went wrong. Email wbertil@barssforhaiti.com directly.';
+  } else {
+    btn.textContent = 'Application Submitted';
+    msg.style.display = 'block';
+    msg.textContent = 'Application received. BARSS and SAKALA will review within 48 hours. If accepted, you will receive a sign-in link at ' + document.getElementById('email').value.trim() + ' -- your account will be ready instantly.';
+    e.target.querySelectorAll('input, textarea').forEach(el => el.disabled = true);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · SAKALA Summer 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;1,400&family=Roboto+Slab:wght@700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --black:#000; --parchment:#E3D5B8; --prussian:#003153; --bottle-green:#006A4E; --sodium-orange:#FF6A1F; --voice-green:#1AAB4D; --bone:#F4EFE2; --du-bois-red:#DC143C; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Lora',Georgia,serif; background:#080808; color:var(--bone); font-size:14px; }
+nav { background:var(--black); border-bottom:3px solid var(--du-bois-red); padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:52px; }
+.nav-brand { font-family:'Anton',sans-serif; font-size:14px; letter-spacing:3px; color:var(--du-bois-red); }
+.nav-key { font-family:'Courier Prime',monospace; font-size:10px; color:rgba(244,239,226,0.3); }
+.container { max-width:1100px; margin:0 auto; padding:32px 24px; }
+h2 { font-family:'Anton',sans-serif; font-size:20px; text-transform:uppercase; color:var(--bone); margin-bottom:16px; letter-spacing:0.5px; padding-bottom:10px; border-bottom:2px solid #1a1a1a; }
+h2 .cnt { font-size:12px; color:var(--sodium-orange); font-family:'Courier Prime',monospace; margin-left:8px; }
+.section { margin-bottom:48px; }
+
+/* KEY SETUP */
+#keySetup { background:#0d0d0d; border:2px solid var(--du-bois-red); padding:24px; margin-bottom:32px; }
+#keySetup h3 { font-family:'Anton',sans-serif; font-size:16px; color:var(--du-bois-red); margin-bottom:8px; text-transform:uppercase; }
+#keySetup p { font-size:12px; color:rgba(244,239,226,0.55); margin-bottom:12px; line-height:1.6; }
+.key-row { display:flex; gap:10px; align-items:center; }
+.key-row input { flex:1; background:#0a0a0a; border:2px solid #333; color:var(--bone); font-family:'Courier Prime',monospace; font-size:12px; padding:10px 12px; outline:none; }
+.key-row input:focus { border-color:var(--du-bois-red); }
+.key-row button { background:var(--du-bois-red); color:var(--bone); font-family:'Anton',sans-serif; font-size:13px; letter-spacing:1px; text-transform:uppercase; padding:10px 18px; border:none; cursor:pointer; }
+.key-status { font-family:'Courier Prime',monospace; font-size:11px; margin-top:8px; }
+.key-status.ok { color:var(--voice-green); }
+.key-status.err { color:var(--du-bois-red); }
+
+/* TABS */
+.tabs { display:flex; gap:0; margin-bottom:28px; border-bottom:2px solid #1a1a1a; }
+.tab { font-family:'Anton',sans-serif; font-size:13px; text-transform:uppercase; letter-spacing:1px; padding:12px 20px; cursor:pointer; color:rgba(244,239,226,0.35); border-bottom:3px solid transparent; margin-bottom:-2px; }
+.tab.active { color:var(--sodium-orange); border-bottom-color:var(--sodium-orange); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* TABLE */
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:var(--prussian); color:var(--bone); font-family:'Anton',sans-serif; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; padding:10px 12px; text-align:left; }
+td { padding:10px 12px; border-bottom:1px solid #111; vertical-align:top; }
+tr:hover td { background:#0d0d0d; }
+.badge { display:inline-block; font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:3px 8px; }
+.badge.pending { background:rgba(255,106,31,0.1); color:var(--sodium-orange); border:1px solid var(--sodium-orange); }
+.badge.accepted { background:rgba(26,171,77,0.1); color:var(--voice-green); border:1px solid var(--voice-green); }
+.badge.rejected { background:rgba(220,20,60,0.1); color:var(--du-bois-red); border:1px solid var(--du-bois-red); }
+.badge.paid { background:rgba(26,171,77,0.15); color:var(--voice-green); }
+.badge.unpaid { color:rgba(244,239,226,0.3); }
+
+/* ACTION BUTTONS */
+.btn-accept { background:var(--voice-green); color:var(--black); font-family:'Anton',sans-serif; font-size:11px; letter-spacing:1px; text-transform:uppercase; padding:7px 12px; border:none; cursor:pointer; transition:background 0.15s; }
+.btn-accept:hover { background:#15924a; }
+.btn-accept:disabled { background:#333; color:#666; cursor:not-allowed; }
+.btn-reject { background:none; color:rgba(220,20,60,0.6); font-family:'Courier Prime',monospace; font-size:10px; padding:7px 10px; border:1px solid rgba(220,20,60,0.3); cursor:pointer; }
+.btn-reject:hover { border-color:var(--du-bois-red); color:var(--du-bois-red); }
+.btn-sm { background:var(--prussian); color:var(--bone); font-family:'Courier Prime',monospace; font-size:10px; padding:6px 10px; border:none; cursor:pointer; }
+
+/* POST UPDATE FORM */
+.post-form { background:#0d0d0d; border:2px solid #1a1a1a; padding:28px; max-width:680px; }
+.field { margin-bottom:16px; }
+.field label { display:block; font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:7px; }
+.field input, .field textarea, .field select { width:100%; background:#0a0a0a; border:2px solid #222; color:var(--bone); font-family:'Lora',serif; font-size:14px; padding:11px 13px; outline:none; border-radius:0; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color:var(--voice-green); }
+.field textarea { min-height:120px; resize:vertical; }
+.field select option { background:#0a0a0a; }
+.btn-post { background:var(--voice-green); color:var(--black); font-family:'Anton',sans-serif; font-size:16px; letter-spacing:1px; text-transform:uppercase; padding:14px 28px; border:none; cursor:pointer; }
+.btn-post:hover { background:var(--sodium-orange); }
+.feedback { font-family:'Courier Prime',monospace; font-size:11px; margin-top:10px; }
+.feedback.ok { color:var(--voice-green); }
+.feedback.err { color:var(--du-bois-red); }
+
+/* TRACKER CONTROL */
+.tracker-ctrl { background:#0d0d0d; border:2px solid #1a1a1a; padding:24px; max-width:380px; }
+.tracker-ctrl label { display:block; font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:8px; }
+.tracker-ctrl input[type="number"] { width:100%; background:#0a0a0a; border:2px solid #222; color:var(--bone); font-size:28px; font-family:'Roboto Slab',serif; font-weight:700; padding:12px; outline:none; text-align:center; }
+.tracker-ctrl p { font-size:12px; color:rgba(244,239,226,0.4); margin-top:10px; line-height:1.6; }
+.tracker-ctrl .btn-post { width:100%; margin-top:12px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">{ BARSS } Admin Panel · SAKALA Summer 2026</div>
+  <div class="nav-key" id="navKeyStatus">No service key loaded</div>
+</nav>
+
+<!-- KEY SETUP -->
+<div class="container">
+<div id="keySetup">
+  <h3>Service Role Key Required</h3>
+  <p>Paste your Supabase service_role key below (Settings > API in the Supabase dashboard). Stored in session memory only -- clears when you close this tab. Never committed to GitHub.</p>
+  <div class="key-row">
+    <input type="password" id="serviceKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+    <button onclick="loadKey()">Load Key</button>
+  </div>
+  <div class="key-status" id="keyStatus"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('pending')">Pending <span id="pendingCnt"></span></div>
+  <div class="tab" onclick="showTab('sponsors')">All Sponsors</div>
+  <div class="tab" onclick="showTab('cohort')">Youth Cohort</div>
+  <div class="tab" onclick="showTab('post')">Post Update</div>
+</div>
+
+<!-- PENDING APPLICATIONS -->
+<div class="tab-panel active" id="tab-pending">
+  <h2>Pending Applications <span class="cnt" id="pendingCount"></span></h2>
+  <div id="pendingTable"><div style="color:rgba(244,239,226,0.3);font-family:courier prime,monospace;font-size:11px;letter-spacing:2px;">Load key to view applications.</div></div>
+</div>
+
+<!-- ALL SPONSORS -->
+<div class="tab-panel" id="tab-sponsors">
+  <h2>All Sponsors</h2>
+  <div id="sponsorsTable"></div>
+</div>
+
+<!-- YOUTH COHORT -->
+<div class="tab-panel" id="tab-cohort">
+  <h2>Youth Cohort -- 15 Slots</h2>
+  <div id="cohortTable"></div>
+</div>
+
+<!-- POST UPDATE -->
+<div class="tab-panel" id="tab-post">
+  <h2>Post Field Dispatch</h2>
+  <div class="post-form">
+    <div class="field">
+      <label>Dispatch #</label>
+      <input type="number" id="dispatchNum" min="1" placeholder="1">
+    </div>
+    <div class="field">
+      <label>Title</label>
+      <input type="text" id="updateTitle" placeholder="First Harvest Report -- Grand Bassin">
+    </div>
+    <div class="field">
+      <label>Content</label>
+      <textarea id="updateContent" placeholder="Write the dispatch here..."></textarea>
+    </div>
+    <div class="field">
+      <label>Photo URL (optional)</label>
+      <input type="text" id="updatePhoto" placeholder="https://... (upload to Supabase Storage first)">
+    </div>
+    <div class="field">
+      <label>For specific youth? (optional -- leave blank for all sponsors)</label>
+      <select id="updateYouth"><option value="">All sponsors</option></select>
+    </div>
+    <button class="btn-post" onclick="postUpdate()">Publish Dispatch</button>
+    <div class="feedback" id="postFeedback"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/app.js"></script>
+<script>
+const { createClient } = supabase;
+let adminClient = null;
+
+function loadKey() {
+  const key = document.getElementById('serviceKeyInput').value.trim();
+  if (!key || !key.startsWith('eyJ')) {
+    document.getElementById('keyStatus').className = 'key-status err';
+    document.getElementById('keyStatus').textContent = 'Invalid key. Should start with eyJ...';
+    return;
+  }
+  adminClient = createClient(SUPABASE_URL, key);
+  sessionStorage.setItem('_sk', key);
+  document.getElementById('keyStatus').className = 'key-status ok';
+  document.getElementById('keyStatus').textContent = 'Key loaded. Fetching data...';
+  document.getElementById('navKeyStatus').textContent = 'Service key active';
+  loadAll();
+}
+
+// Restore key from session
+window.addEventListener('load', () => {
+  const sk = sessionStorage.getItem('_sk');
+  if (sk) { document.getElementById('serviceKeyInput').value = sk; loadKey(); }
+});
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['pending','sponsors','cohort','post'][i] === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+name));
+}
+
+async function loadAll() {
+  if (!adminClient) return;
+  await Promise.all([loadPending(), loadSponsors(), loadCohort(), loadYouthOptions()]);
+}
+
+async function loadPending() {
+  const { data } = await adminClient.from('sponsors').select('*').eq('status','pending').order('created_at');
+  const cnt = data?.length || 0;
+  document.getElementById('pendingCount').textContent = cnt;
+  document.getElementById('pendingCnt').textContent = cnt ? `(${cnt})` : '';
+  const el = document.getElementById('pendingTable');
+  if (!cnt) { el.innerHTML = '<div style="color:rgba(244,239,226,0.3);font-family:courier prime,monospace;font-size:11px;padding:20px 0;">No pending applications.</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Name</th><th>Email</th><th>Location</th><th>Connection</th><th>Message</th><th>Applied</th><th>Action</th></tr></thead>
+    <tbody>${data.map(s => `<tr>
+      <td>${s.first_name} ${s.last_name}</td>
+      <td style="font-family:courier prime,monospace;font-size:11px;">${s.email}</td>
+      <td>${s.location||'--'}</td>
+      <td>${s.connection||'--'}</td>
+      <td style="max-width:200px;font-size:12px;">${s.message||'--'}</td>
+      <td style="font-family:courier prime,monospace;font-size:10px;">${new Date(s.created_at).toLocaleDateString()}</td>
+      <td>
+        <button class="btn-accept" onclick="accept('${s.id}','${s.email}','${s.first_name}')">Accept + Invite</button>
+        <button class="btn-reject" onclick="reject('${s.id}')">Reject</button>
+      </td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+async function loadSponsors() {
+  const { data } = await adminClient.from('sponsors').select('*').order('created_at', {ascending:false});
+  const el = document.getElementById('sponsorsTable');
+  if (!data?.length) { el.innerHTML = '<div style="color:rgba(244,239,226,0.3);padding:20px 0;font-family:courier prime,monospace;font-size:11px;">No sponsors yet.</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Payment</th><th>Applied</th><th>Mark Paid</th></tr></thead>
+    <tbody>${data.map(s => `<tr>
+      <td>${s.first_name} ${s.last_name}</td>
+      <td style="font-family:courier prime,monospace;font-size:11px;">${s.email}</td>
+      <td><span class="badge ${s.status}">${s.status}</span></td>
+      <td><span class="badge ${s.payment_complete?'paid':'unpaid'}">${s.payment_complete?'PAID':'Pending'}</span></td>
+      <td style="font-family:courier prime,monospace;font-size:10px;">${new Date(s.created_at).toLocaleDateString()}</td>
+      <td>${!s.payment_complete ? `<button class="btn-sm" onclick="markPaid('${s.id}')">Mark Paid</button>` : ''}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+async function loadCohort() {
+  const { data: youth } = await adminClient.from('youth').select('*').order('slot_number');
+  const { data: pairs } = await adminClient.from('sponsor_youth').select('*, sponsors(first_name,last_name,email)');
+  const el = document.getElementById('cohortTable');
+  el.innerHTML = `<table>
+    <thead><tr><th>Slot</th><th>Code Name</th><th>Community</th><th>Sponsor</th><th>Update Bio</th></tr></thead>
+    <tbody>${(youth||[]).map(y => {
+      const pair = pairs?.find(p => p.youth_id === y.id);
+      const sponsorText = pair ? `${pair.sponsors.first_name} ${pair.sponsors.last_name}` : '<span style="color:rgba(244,239,226,0.3)">Open</span>';
+      return `<tr>
+        <td style="font-family:courier prime,monospace;color:var(--sodium-orange);">#${String(y.slot_number).padStart(2,'0')}</td>
+        <td><input value="${y.code_name}" id="yn_${y.id}" style="background:#0a0a0a;border:1px solid #222;color:var(--bone);padding:4px 8px;font-size:13px;width:120px;"></td>
+        <td>${y.community||'Nord Department'}</td>
+        <td>${sponsorText}</td>
+        <td><button class="btn-sm" onclick="updateYouthName('${y.id}')">Save Name</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+async function loadYouthOptions() {
+  const { data } = await adminClient.from('youth').select('id,slot_number,code_name').order('slot_number');
+  const sel = document.getElementById('updateYouth');
+  sel.innerHTML = '<option value="">All sponsors</option>' + (data||[]).map(y => `<option value="${y.id}">Slot ${y.slot_number} -- ${y.code_name}</option>`).join('');
+}
+
+async function accept(sponsorId, email, firstName) {
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    // 1. Invite via Supabase Auth Admin
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/invite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('_sk')}`,
+        'apikey': sessionStorage.getItem('_sk')
+      },
+      body: JSON.stringify({
+        email,
+        data: { first_name: firstName },
+        redirect_to: DASHBOARD_URL
+      })
+    });
+    const inviteData = await res.json();
+    if (!res.ok) throw new Error(inviteData.msg || inviteData.message || 'Invite failed');
+
+    const userId = inviteData.id;
+
+    // 2. Update sponsor status + link user_id
+    await adminClient.from('sponsors').update({ status: 'accepted', user_id: userId }).eq('id', sponsorId);
+
+    btn.textContent = 'Accepted';
+    btn.style.background = '#15924a';
+    setTimeout(loadAll, 800);
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Accept + Invite';
+    alert('Error: ' + err.message);
+  }
+}
+
+async function reject(sponsorId) {
+  if (!confirm('Reject this application?')) return;
+  await adminClient.from('sponsors').update({ status: 'rejected' }).eq('id', sponsorId);
+  loadAll();
+}
+
+async function markPaid(sponsorId) {
+  await adminClient.from('sponsors').update({ payment_complete: true }).eq('id', sponsorId);
+  loadSponsors();
+}
+
+async function updateYouthName(youthId) {
+  const name = document.getElementById('yn_'+youthId).value.trim();
+  await adminClient.from('youth').update({ code_name: name }).eq('id', youthId);
+}
+
+async function postUpdate() {
+  const title    = document.getElementById('updateTitle').value.trim();
+  const content  = document.getElementById('updateContent').value.trim();
+  const photo    = document.getElementById('updatePhoto').value.trim();
+  const youthId  = document.getElementById('updateYouth').value;
+  const dispNum  = parseInt(document.getElementById('dispatchNum').value) || null;
+  const feedback = document.getElementById('postFeedback');
+
+  if (!title || !content) { feedback.className='feedback err'; feedback.textContent='Title and content required.'; return; }
+
+  const { error } = await adminClient.from('updates').insert({
+    title, content,
+    photo_url: photo || null,
+    youth_id: youthId || null,
+    dispatch_number: dispNum
+  });
+
+  if (error) { feedback.className='feedback err'; feedback.textContent=error.message; }
+  else {
+    feedback.className='feedback ok'; feedback.textContent='Dispatch posted.';
+    document.getElementById('updateTitle').value='';
+    document.getElementById('updateContent').value='';
+    document.getElementById('updatePhoto').value='';
+  }
+}
+</script>
+</body>
+</html>
