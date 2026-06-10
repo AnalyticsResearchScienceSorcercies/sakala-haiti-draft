@@ -110,7 +110,7 @@ const MID    = '#9A9088';
 
 // ── CHART 5: PLAKET LO ACCUMULATION ──
 (function(){
-  const ctx = document.getElementById('chartPlaket');
+  const ctx = document.getElementById('chartPlaket'); if(!ctx) return;
   if(!ctx) return;
   const labels = ['Y1','Y2','Y3','Y4','Y5'];
   new Chart(ctx.getContext('2d'), {
@@ -136,7 +136,7 @@ const MID    = '#9A9088';
 
 // ── CHART 6: KONBIT PRESS PHASES ──
 (function(){
-  const ctx = document.getElementById('chartPress');
+  const ctx = document.getElementById('chartPress'); if(!ctx) return;
   if(!ctx) return;
   new Chart(ctx.getContext('2d'), {
     type: 'bar',
@@ -161,7 +161,7 @@ const MID    = '#9A9088';
 
 // ── CHART 7: KONBIT DATA REVENUE ──
 (function(){
-  const ctx = document.getElementById('chartData');
+  const ctx = document.getElementById('chartData'); if(!ctx) return;
   if(!ctx) return;
   new Chart(ctx.getContext('2d'), {
     type: 'bar',
@@ -187,7 +187,7 @@ const MID    = '#9A9088';
 
 // ── CHART 8: WATERFALL (40/40/20) ──
 (function(){
-  const ctx = document.getElementById('chartWaterfall');
+  const ctx = document.getElementById('chartWaterfall'); if(!ctx) return;
   if(!ctx) return;
   new Chart(ctx.getContext('2d'), {
     type: 'doughnut',
@@ -208,7 +208,7 @@ const MID    = '#9A9088';
 
 // ── CHART 9: INTEGRATED REVENUE Y1-Y10 ──
 (function(){
-  const ctx = document.getElementById('chartIntegrated');
+  const ctx = document.getElementById('chartIntegrated'); if(!ctx) return;
   if(!ctx) return;
   const labels = ['Y1','Y2','Y3','Y4','Y5','Y6','Y7','Y8','Y9','Y10'];
   new Chart(ctx.getContext('2d'), {
@@ -237,7 +237,7 @@ const MID    = '#9A9088';
 
 // ── CHART 10: WAGE COMPARISON ──
 (function(){
-  const ctx = document.getElementById('chartWage');
+  const ctx = document.getElementById('chartWage'); if(!ctx) return;
   if(!ctx) return;
   const labels = ['Y1','Y2','Y3','Y4','Y5','Y6','Y7','Y8','Y9','Y10'];
   new Chart(ctx.getContext('2d'), {
@@ -264,7 +264,7 @@ const MID    = '#9A9088';
 
 // ── CHART 11: THETA TRAJECTORY ──
 (function(){
-  const ctx = document.getElementById('chartTheta');
+  const ctx = document.getElementById('chartTheta'); if(!ctx) return;
   if(!ctx) return;
   const labels = ['2026\n(now)','2027','2028','2029','2030','2031','2032','2033','2034','2035','2036\n(target)'];
   new Chart(ctx.getContext('2d'), {
