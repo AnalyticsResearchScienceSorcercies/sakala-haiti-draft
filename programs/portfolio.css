@@ -1,0 +1,85 @@
+/* SAKALA Haiti — Programs & Data stylesheet (replaces print-portfolio CSS) */
+/* Palette: parchment #F4EFE2 · black #141414 · orange #E86A1F · green #7BAE7F · forest #1F5232 · amber #C8881A */
+
+body { margin:0; background:#F4EFE2; color:#141414; font-family:'Lora',Georgia,serif; font-size:16px; line-height:1.65; }
+
+/* ── BANDS ── */
+.part { padding:56px 0; }
+.part-cream    { background:#F4EFE2; }
+.part-cream-dk { background:#EFE8D8; }
+.part-white    { background:#FBF6E9; }
+.part-dark     { background:#141414; color:#F4EFE2; }
+.part-forest   { background:#1F5232; color:#F4EFE2; }
+.part-inner { max-width:940px; margin:0 auto; padding:0 24px; }
+
+.part-label { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#E86A1F; margin-bottom:10px; }
+.part-title { font-family:'Anton',sans-serif; font-size:clamp(30px,6vw,52px); line-height:.95; text-transform:uppercase; margin:0 0 24px; }
+
+/* ── PROGRAM CARD ── */
+.prog-card { background:transparent; }
+.prog-header { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; border-bottom:4px solid #E86A1F; padding-bottom:14px; margin-bottom:24px; }
+.prog-num  { font-family:'Courier Prime',monospace; font-size:14px; color:#E86A1F; letter-spacing:2px; }
+.prog-name { font-family:'Anton',sans-serif; font-size:clamp(32px,6vw,54px); line-height:.95; text-transform:uppercase; }
+.prog-tag  { font-style:italic; font-size:15px; opacity:.85; }
+
+.prog-meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:3px; margin:22px 0 26px; }
+.prog-meta-cell { background:#141414; color:#F4EFE2; padding:16px 14px; }
+.part-dark .prog-meta-cell, .part-forest .prog-meta-cell { background:rgba(0,0,0,.32); }
+.prog-meta-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#E86A1F; margin-bottom:6px; }
+.prog-meta-val { font-family:'Roboto Slab',serif; font-weight:800; font-size:20px; color:#F4EFE2; }
+
+/* ── TEXT ── */
+.part h3, .sub-title { font-family:'Roboto Slab',serif; font-weight:800; font-size:20px; margin:30px 0 10px; }
+.part p { max-width:74ch; margin:0 0 14px; }
+.lede { font-size:19px; line-height:1.6; }
+.monospace { font-family:'Courier Prime',monospace; }
+.part-dark a, .part-forest a { color:#7BAE7F; }
+.part a { color:#1F5232; font-weight:700; }
+
+/* ── TABLES ── */
+.data-table { width:100%; border-collapse:collapse; margin:22px 0; font-size:14.5px; }
+.data-table th { background:#141414; color:#F4EFE2; font-family:'Roboto Slab',serif; font-weight:700; text-align:left; padding:11px 12px; border:1px solid #141414; }
+.data-table td { padding:10px 12px; border:1px solid rgba(20,20,20,.45); vertical-align:top; }
+.part-dark .data-table th, .part-forest .data-table th { background:#F4EFE2; color:#141414; border-color:#F4EFE2; }
+.part-dark .data-table td, .part-forest .data-table td { border-color:rgba(244,239,226,.4); }
+.td-num { font-family:'Courier Prime',monospace; white-space:nowrap; }
+.td-key { font-weight:700; }
+
+/* ── CHARTS ── */
+.chart-wrap { background:#FBF6E9; border:3px solid #141414; padding:24px; margin:30px 0; }
+.part-dark .chart-wrap, .part-forest .chart-wrap { background:rgba(0,0,0,.28); border-color:rgba(244,239,226,.55); }
+.chart-wrap canvas { width:100% !important; max-height:360px; }
+.chart-title { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#E86A1F; margin-bottom:12px; }
+
+/* ── CALLOUTS / COLUMNS ── */
+.callout { border-left:6px solid #E86A1F; background:#EFE8D8; color:#141414; padding:18px 22px; margin:24px 0; }
+.callout-forest { border-left-color:#1F5232; }
+.part-dark .callout, .part-forest .callout { background:rgba(0,0,0,.3); color:#F4EFE2; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin:22px 0; }
+.col-block { border:2px solid currentColor; padding:18px; }
+.col-block h4 { font-family:'Roboto Slab',serif; margin:0 0 8px; }
+
+/* ── PAGE FURNITURE (hub cards, update + research blocks) ── */
+.bk-update { max-width:940px; margin:28px auto 0; padding:20px 24px; border-left:6px solid #E86A1F; background:#EFE8D8; color:#141414; box-sizing:border-box; }
+.bk-update h3 { font-family:'Roboto Slab',serif; margin:0 0 8px; }
+.bk-update p { margin:0; max-width:none; }
+.bk-research { background:#141414; color:#F4EFE2; padding:36px 0; margin-top:48px; }
+.bk-research h3, .bk-research ul, .bk-research p { max-width:940px; margin-left:auto; margin-right:auto; padding:0 24px; box-sizing:border-box; }
+.bk-research h3 { font-family:'Anton',sans-serif; text-transform:uppercase; color:#E86A1F; font-size:26px; margin-bottom:12px; }
+.bk-research ul { list-style:square; padding-left:44px; }
+.bk-research li { margin:6px 0; }
+.bk-research a { color:#7BAE7F; }
+.bk-hub-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; max-width:1000px; margin:36px auto; padding:0 24px; }
+.bk-card { background:#FBF6E9; border:3px solid #141414; padding:20px; display:block; text-decoration:none; color:#141414; transition:transform .12s; }
+.bk-card:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #E86A1F; }
+.bk-card .num { font-family:'Courier Prime',monospace; color:#E86A1F; font-size:12px; letter-spacing:2px; }
+.bk-card h3 { font-family:'Anton',sans-serif; font-size:24px; text-transform:uppercase; margin:6px 0 4px; }
+.bk-card .tag { font-style:italic; color:#555; font-size:14px; }
+.bk-card .stat { margin-top:10px; font-family:'Roboto Slab',serif; font-weight:800; color:#1F5232; }
+
+/* ── MOBILE ── */
+@media (max-width:640px) {
+  .part { padding:36px 0; }
+  .two-col { grid-template-columns:1fr; }
+  .prog-header { gap:8px; }
+}

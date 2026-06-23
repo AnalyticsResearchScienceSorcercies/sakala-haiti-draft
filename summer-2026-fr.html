@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAKALA Summer 2026 - SAKALA Haiti</title>
+  <meta name="description" content="Programme SAKALA Summer 2026. Grand Bassin, Milot, Nord, Haïti. 21 acres, 8 semaines. Embauchez un jeune -- 360 dollars, huit semaines, un emploi réel.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/konkret.css?v=3">
+  <style>
+    .sk-hero {
+      position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      background: #000;
+    }
+    .sk-hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: brightness(0.45);
+    }
+    .sk-hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 80px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .sk-hero-tag {
+      display: inline-block;
+      background: var(--voice-green);
+      color: #000;
+      font-family: 'Anton', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      margin-bottom: 24px;
+    }
+    .sk-hero-kreyol {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: clamp(16px, 2.5vw, 24px);
+      color: rgba(244,239,226,.65);
+      margin-bottom: 16px;
+    }
+    .sk-photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .sk-photo-cell {
+      overflow: hidden;
+      background: #111;
+      aspect-ratio: 4/3;
+    }
+    .sk-photo-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s ease;
+    }
+    .sk-photo-cell:hover img { transform: scale(1.04); }
+    .sk-photo-cell--tall {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+    .sk-track-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 40px;
+    }
+    .sk-track {
+      background: #0d0d0d;
+      border: 1px solid #1a1a1a;
+      border-top: 3px solid var(--voice-green);
+      padding: 24px 20px;
+    }
+    .sk-track-num {
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--sodium-orange);
+      display: block;
+      margin-bottom: 12px;
+    }
+    .sk-track-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      text-transform: uppercase;
+      color: var(--bone);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .sk-track-desc {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      color: rgba(244,239,226,.4);
+      line-height: 1.6;
+    }
+    .sk-breakdown {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .sk-breakdown-item {
+      background: #0d0d0d;
+      border: 1px solid #1a1a1a;
+      padding: 28px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .sk-breakdown-amt {
+      font-family: 'Anton', sans-serif;
+      font-size: 32px;
+      color: var(--voice-green);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .sk-breakdown-label {
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: rgba(244,239,226,.5);
+      line-height: 1.6;
+    }
+    .sk-cta-band {
+      background: var(--prussian);
+      padding: 80px 24px;
+    }
+    .sk-cta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 48px;
+    }
+    .sk-cta-card {
+      padding: 48px 40px;
+      background: #001f35;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .sk-cta-card--green { background: var(--voice-green); }
+    .sk-cta-card--green .t-h3 { color: #000; }
+    .sk-cta-card--green .t-body { color: rgba(0,0,0,.65); }
+    .sk-cta-card--green .t-label { color: rgba(0,0,0,.5); }
+    .sk-inline-photo {
+      width: 100%;
+      overflow: hidden;
+      max-height: 360px;
+    }
+    .sk-inline-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .sk-photo-grid { grid-template-columns: 1fr 1fr; }
+      .sk-photo-cell--tall { grid-row: span 1; aspect-ratio: 4/3; }
+      .sk-track-grid { grid-template-columns: repeat(2, 1fr); }
+      .sk-cta-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .sk-photo-grid { grid-template-columns: 1fr; }
+      .sk-track-grid { grid-template-columns: 1fr; }
+      .sk-breakdown { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="kn-nav">
+  <div class="container">
+    <a href="index-fr.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">SAKALA Haiti · Konekte Kreye Travay</span></a>
+    <ul class="kn-links">
+      <li><a href="a-propos.html">Qui Sommes-Nous</a></li>
+      <li><a href="nos-actions.html">Programmes</a></li>
+      <li><a href="partners.html">Partenaires</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="devenir-partenaire.html" class="kn-cta kn-cta-ghost">Rejoindre le Mouvement</a>
+    <a href="je-veux-un-emploi.html" class="kn-cta">Trouver un Emploi</a>
+    <a href="summer-2026.html" class="kn-lang">EN</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Fermer</button>
+  <a href="a-propos.html">Qui Sommes-Nous</a>
+  <a href="nos-actions.html">Programmes</a>
+  <a href="partners.html">Partenaires</a>
+  <a href="contact.html">Contact</a>
+  <a href="je-veux-un-emploi.html">Trouver un Emploi</a>
+  <a href="devenir-partenaire.html">Rejoindre le Mouvement</a>
+  <a href="summer-2026.html">English</a>
+</div>
+
+<!-- HERO -->
+<section class="sk-hero">
+  <img class="sk-hero-bg" src="photos/parcelle-giwof.jpg" alt="Équipe SAKALA au travail sur les 21 acres de Grand Bassin">
+  <div class="sk-hero-content">
+    <span class="sk-hero-tag">Programme Phare 2026</span>
+    <p class="sk-hero-kreyol">Nou plante kè kontan, nou rekòlte lavi</p>
+    <h1 class="t-h1" style="max-width:820px; line-height:.9;">SAKALA<br>Summer 2026</h1>
+    <p style="font-family:'Courier Prime',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:rgba(244,239,226,.5); margin-top:20px;">Grand Bassin &nbsp;·&nbsp; Milot, Nord, Haïti &nbsp;·&nbsp; KONKRET &times; BARSS</p>
+  </div>
+</section>
+
+
+<!-- PHOTO GRID -->
+<div class="sk-photo-grid">
+  <div class="sk-photo-cell sk-photo-cell--tall">
+    <img src="photos/pepiniere-sacs.jpg" alt="Jeune participant SAKALA dans son jardin, Grand Bassin" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/pepiniere-sacs.jpg" alt="Équipe SAKALA en formation -- août 2025" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/2025-aout/IMG-20250731-WA0271.jpg" alt="Préparation des semences, pépinière SAKALA" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/parcelle-giwof.jpg" alt="Entretien des plants en pépinière" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/2025-aout/IMG-20250824-WA0285.jpg" alt="Mise en terre des plants, parcelles de Grand Bassin" loading="lazy">
+  </div>
+</div>
+
+<!-- WHAT IS SAKALA -->
+<section class="section bg-near">
+  <div class="container">
+    <div class="kn-split" style="align-items:center; gap:64px;">
+      <div>
+        <span class="t-label mb-12" style="display:block;">Le Programme</span>
+        <h2 class="t-h2 mb-24">Huit Semaines Pour Changer Un Destin</h2>
+        <p class="t-body mb-20">SAKALA est le programme d'apprentissage agricole intensif de KONKRET. Pendant 8 semaines, les jeunes de Milot et des environs travaillent côte à côte sur 21 acres de terrain à Grand Bassin -- formation technique, encadrement personnalisé, salaire régulier et certificat à la sortie.</p>
+        <p class="t-body mb-20">Ce n'est pas un stage. C'est une coopérative en mouvement. Chaque participant apprend à cultiver, à gérer, à collaborer -- et repart avec des compétences concrètes, une expérience réelle, et un réseau solide.</p>
+        <p class="t-body mb-32">Le programme Summer 2026 est la première phase d'un modèle destiné à accompagner 50 000 connexions électriques dans la région de Milot en partenariat avec BARSS.</p>
+        <div class="kn-quote">
+          <p>Nou plante kè kontan, nou rekòlte lavi. On plante avec joie, on récolte la vie.</p>
+          <cite>Devise du programme SAKALA, Grand Bassin</cite>
+        </div>
+      </div>
+      <div>
+        <div class="kn-img-frame" style="height:420px;">
+          <img src="photos/2025-aout/IMG-20250731-WA0271.jpg" alt="Jeune participant SAKALA -- apprentissage agricole à Grand Bassin" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INLINE PHOTO BREAK -->
+<div class="sk-inline-photo">
+  <img src="photos/arrosoir-detail.jpg" alt="Parcelles labellisées SAKALA -- Grand Bassin, Milot" loading="lazy" style="object-position:center 40%;">
+</div>
+
+<!-- APPRENTICESHIP TRACKS -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header text-center">
+      <span class="t-label">Compétences</span>
+      <h2 class="t-h2 mt-16">Les 8 Pistes d'Apprentissage</h2>
+      <p class="t-body mt-16 max-640" style="margin-left:auto;margin-right:auto;color:rgba(244,239,226,.55);">Chaque participant choisit une piste principale et développe des compétences transversales. La polyvalence est la règle.</p>
+    </div>
+    <div class="sk-track-grid">
+      <div class="sk-track">
+        <span class="sk-track-num">01</span>
+        <div class="sk-track-name">Maraîchage</div>
+        <div class="sk-track-desc">Culture potagère, rotation des cultures, gestion du sol.</div>
+      </div>
+      <div class="sk-track">
+        <span class="sk-track-num">02</span>
+        <div class="sk-track-name">Pépinière</div>
+        <div class="sk-track-desc">Production de plants, semis, soins aux jeunes pousses.</div>
+      </div>
+      <div class="sk-track">
+        <span class="sk-track-num">03</span>
+        <div class="sk-track-name">Irrigation</div>
+        <div class="sk-track-desc">Gestion de l'eau, arrosage raisonné, économie hydrique.</div>
+      </div>
+      <div class="sk-track">
+        <span class="sk-track-num">04</span>
+        <div class="sk-track-name">Agroforesterie</div>
+        <div class="sk-track-desc">Arbres fruitiers, couverture végétale, reboisement.</div>
+      </div>
+      <div class="sk-track" style="border-top-color:var(--sodium-orange);">
+        <span class="sk-track-num">05</span>
+        <div class="sk-track-name">Transformation</div>
+        <div class="sk-track-desc">Valorisation de la récolte, conservation, produits finis.</div>
+      </div>
+      <div class="sk-track" style="border-top-color:var(--sodium-orange);">
+        <span class="sk-track-num">06</span>
+        <div class="sk-track-name">Gestion</div>
+        <div class="sk-track-desc">Comptabilité simple, prix de revient, gestion coopérative.</div>
+      </div>
+      <div class="sk-track" style="border-top-color:var(--sodium-orange);">
+        <span class="sk-track-num">07</span>
+        <div class="sk-track-name">Leadership</div>
+        <div class="sk-track-desc">Communication, résolution de conflits, travail en équipe.</div>
+      </div>
+      <div class="sk-track" style="border-top-color:var(--sodium-orange);">
+        <span class="sk-track-num">08</span>
+        <div class="sk-track-name">Commercialisation</div>
+        <div class="sk-track-desc">Vente directe, marchés locaux, relations avec acheteurs.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPERVISION PHOTO -->
+<div class="kn-img-frame" style="max-height:280px;">
+  <img src="photos/2025-aout/IMG-20250801-WA0131.jpg" alt="Suivi et encadrement des participants SAKALA sur le terrain" loading="lazy" style="object-position:center 35%;">
+</div>
+
+<!-- $360 BREAKDOWN -->
+<section class="section bg-near">
+  <div class="container">
+    <div class="kn-split" style="align-items:start; gap:64px;">
+      <div>
+        <span class="t-label mb-12" style="display:block;">Le Coût</span>
+        <h2 class="t-h2 mb-24">$360 Par Jeune</h2>
+        <p class="t-body mb-32">360 dollars couvrent tout. Pas de frais cachés. Chaque centime va directement à la formation et au soutien du participant. Voici la répartition exacte.</p>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/sakala-summer-2026/" class="btn-green" target="_blank" rel="noopener">Sponsoriser un Jeune</a>
+      </div>
+      <div>
+        <div class="sk-breakdown">
+          <div class="sk-breakdown-item">
+            <div class="sk-breakdown-amt">$180</div>
+            <div class="sk-breakdown-label">Salaire du participant<br>sur 8 semaines</div>
+          </div>
+          <div class="sk-breakdown-item">
+            <div class="sk-breakdown-amt">$60</div>
+            <div class="sk-breakdown-label">Alimentation<br>sur le terrain</div>
+          </div>
+          <div class="sk-breakdown-item">
+            <div class="sk-breakdown-amt">$60</div>
+            <div class="sk-breakdown-label">Intrants agricoles<br>semences, outils</div>
+          </div>
+          <div class="sk-breakdown-item">
+            <div class="sk-breakdown-amt">$60</div>
+            <div class="sk-breakdown-label">Encadrement,<br>certification</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM PHOTO STRIP -->
+<div class="sk-photo-grid" style="grid-template-columns:1fr 1fr 1fr;">
+  <div class="sk-photo-cell">
+    <img src="photos/pepiniere-sacs.jpg" alt="Pépinière SAKALA -- plants en sachets, prêts pour mise en terre" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/arrosoir-detail.jpg" alt="Arrosage des cultures -- gestion de l'eau" loading="lazy">
+  </div>
+  <div class="sk-photo-cell">
+    <img src="photos/parcelle-giwof.jpg" alt="Traçage et mesure des parcelles, Grand Bassin" loading="lazy">
+  </div>
+</div>
+
+<!-- TWO CTA CARDS -->
+<div class="sk-cta-band">
+  <div class="container">
+    <div class="kn-section-header text-center" style="margin-bottom:0;">
+      <span class="t-label">Agir</span>
+      <h2 class="t-h2 mt-16" style="max-width:640px; margin-left:auto; margin-right:auto;">Rejoindre le Mouvement SAKALA</h2>
+    </div>
+    <div class="sk-cta-grid">
+      <div class="sk-cta-card sk-cta-card--green">
+        <span class="t-label mb-16" style="display:block;">Diaspora -- Employeurs de la Jeunesse</span>
+        <h3 class="t-h3 mb-16">Embauchez un Jeune</h3>
+        <p class="t-body mb-32">360 dollars. Un jeune en emploi. Huit semaines sur le terrain. Vous financez un poste réel et recevez des mises à jour directement depuis le terrain.</p>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/sakala-summer-2026/" class="btn-ghost" target="_blank" rel="noopener" style="border-color:#000; color:#000;">Accéder au Portail</a>
+      </div>
+      <div class="sk-cta-card">
+        <span class="t-label mb-16" style="display:block; color:var(--voice-green);">Jeunes de Milot et Environs</span>
+        <h3 class="t-h3 mb-16">Rejoindre le Programme</h3>
+        <p class="t-body mb-32" style="color:rgba(244,239,226,.6);">Tu as entre 18 et 35 ans. Tu es motivé. Tu veux apprendre, travailler, et contribuer à ta communauté. Dépose ta candidature dès maintenant.</p>
+        <a href="je-veux-un-emploi.html" class="btn-green">Je Veux Participer</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">SAKALA Haiti</div>
+        <div class="kn-footer-tagline">Konekte Kreye Travay &nbsp;·&nbsp; Milot, Nord, Haïti</div>
+        <p class="kn-footer-desc">Une initiative d'économie solidaire haïtienne organisant l'emploi des jeunes comme la solution principale aux dérives socio-économiques que connaît Haïti.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">L'Organisation</div>
+        <a href="konkret.html">KONKRET</a>
+        <a href="a-propos.html">Qui Sommes-Nous</a>
+        <a href="notre-histoire.html">Notre Histoire</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="nos-actions.html">Programmes</a>
+        <a href="temoignages.html">Témoignages</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Agir</div>
+        <a href="participer.html">Participer</a>
+        <a href="je-veux-un-emploi.html">Je Veux Travailler</a>
+        <a href="employer.html">Employer des Jeunes</a>
+        <a href="devenir-partenaire.html">Devenir Partenaire</a>
+        <a href="summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Directeur</p>
+        <p>Milot, Nord, Haïti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="contact.html">Formulaire de Contact</a>
+        <a href="documents-publics.html">Transparence</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>SAKALA Haiti &nbsp;·&nbsp; Konekte Kreye Travay &nbsp;·&nbsp; 2003-2026</span>
+      <span>Fondé à Milot, Nord, Haïti</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/nav.js"></script>
+</body>
+</html>

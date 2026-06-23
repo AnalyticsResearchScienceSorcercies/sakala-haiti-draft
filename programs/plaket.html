@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Plaket - SAKALA Haiti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:ital,wght@0,400;0,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/konkret.css?v=3"/>
+<link rel="stylesheet" href="portfolio.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head><body>
+<!-- NAV -->
+<nav class="kn-nav">
+  <div class="container">
+    <a href="../index.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">SAKALA Haiti · Konekte Kreye Travay</span></a>
+    <ul class="kn-links">
+      <li><a href="../a-propos.html">About</a></li>
+      <li><a href="../nos-actions.html">Programs</a></li>
+      <li><a href="../partners.html">Partners</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../devenir-partenaire.html" class="kn-cta kn-cta-ghost">Join the Movement</a>
+    <a href="../je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
+    <a href="../index-fr.html" class="kn-lang">FR</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Close</button>
+  <a href="../a-propos.html">About</a>
+  <a href="../nos-actions.html">Programs</a>
+  <a href="../partners.html">Partners</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../je-veux-un-emploi.html">Get a Job</a>
+  <a href="../devenir-partenaire.html">Join the Movement</a>
+  <a href="../index-fr.html">Français</a>
+</div>
+
+
+<div class="bk-update"><h3>Updates (June 2026)</h3><p>The first users come from within the cooperative network... SAKALA and partner payrolls... reaching a few hundred users before any external sales.</p></div>
+<section id="p45" class="part part-dark">
+<div class="part-inner">
+  <div class="prog-card" style="max-width:100%">
+    <div class="prog-header" style="background:#2A2A2A;">
+      <span class="prog-num">4.5</span>
+      <span class="prog-name">PLAK&Egrave;T</span>
+      <span class="prog-tag">The Financial Spine</span>
+    </div>
+    <div class="prog-body" style="background:#1E1E1E;">
+      <div class="prog-meta">
+        <div class="prog-meta-cell" style="background:#2A2A2A;"><div class="prog-meta-label" style="color:#666;">Day-1 Users</div><div class="prog-meta-val" style="color:#C8881A;">300-400</div></div>
+        <div class="prog-meta-cell" style="background:#2A2A2A;"><div class="prog-meta-label" style="color:#666;">External Hire Cost</div><div class="prog-meta-val" style="color:#C8881A;">$0</div></div>
+        <div class="prog-meta-cell" style="background:#2A2A2A;"><div class="prog-meta-label" style="color:#666;">Customer Acquisition Cost</div><div class="prog-meta-val" style="color:#C8881A;">$0</div></div>
+      </div>
+      <p style="color:#A8A098;">Plak&egrave;t is the financial infrastructure that makes all eight programs work as a single system. Two modules: Plak&egrave;t Pay (domestic commerce rails for Haitian vendors) and Plak&egrave;t Payroll (workforce payment with structured savings splitting). The tech stack is built and maintained in-house at BARSS LLC. No external hire. No outside contractor.</p>
+      <h3 class="sub-title">The 60/25/15 Payroll Split</h3>
+      <p style="color:#A8A098;">Every worker in the cooperative system receives wages through Plak&egrave;t Payroll. The split is not optional. It is the mechanism by which individual wages become community wealth accumulation.</p>
+      <table class="data-table">
+        <tr><th>Allocation</th><th>Instrument</th><th>Purpose</th><th>Notes</th></tr>
+        <tr><td style="color:#C0B8B0;">60% &mdash; Take-Home</td><td class="td-num" style="color:#C8881A;">HTG gourdes</td><td style="color:#888;">Daily spending (MonCash wallet)</td><td style="color:#888;">Immediate household use</td></tr>
+        <tr><td style="color:#C0B8B0;">25% &mdash; Savings</td><td class="td-num" style="color:#C8881A;">USDC</td><td style="color:#888;">Inflation-protected savings (Base blockchain)</td><td style="color:#888;">Accessible via Plak&egrave;t wallet</td></tr>
+        <tr><td style="color:#C0B8B0;">15% &mdash; Community</td><td class="td-num" style="color:#C8881A;">L&ograve; SAKALA</td><td style="color:#888;">Gold-backed cooperative equity</td><td style="color:#888;">1 L&ograve; = 1g allocated gold</td></tr>
+      </table>
+      <p style="color:#A8A098;">The L&ograve; SAKALA allocation is the wealth accumulation mechanism. Every paycheck routes 15 percent into the Fon Kominote SAKALA sub-trust for the relevant cooperative enterprise. The worker does not see it leave and does not make a savings decision. It accumulates automatically. At Year 10, the Harvest Box sub-trust alone projects $13.1 million in L&ograve;-denominated gold reserves, distributing $223 per cooperative member per quarter.</p>
+      <p style="color:#A8A098;"><strong style="color:#E8F4EE;">First users from within the network:</strong> SAKALA and partner payrolls reach a few hundred users before any external sales call is made... the first revenue cohort comes at no acquisition cost.</p>
+      <div class="chart-wrap">
+        <div class="chart-title">L&ograve; SAKALA Gold Accumulation via Payroll, Y1-Y5</div>
+        <canvas id="chartPlaket"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+<div class="bk-research"><h3>The Research Behind It</h3><ul><li><a href="https://analyticsresearchsciencesorcercies.github.io/barss-data/BARSS_Report_Pearl_Currency_Full.html" target="_blank">Pearl Currency Report</a></li></ul>
+<p style="font-size:13px;color:#A8A098;">Full methodology, projections, and source data: BARSS LLC research library. Reports open in a new tab.</p></div>
+
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">KONKRET</div>
+        <div class="kn-footer-tagline">SAKALA Haiti · Konekte Kreye Travay &nbsp;&middot;&nbsp; Milot, North, Haiti</div>
+        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">The Organization</div>
+        <a href="../konkret.html">KONKRET</a>
+        <a href="../a-propos.html">About</a>
+        <a href="../notre-histoire.html">Our History</a>
+        <a href="../leadership.html">Leadership</a>
+        <a href="../nos-actions.html">Programs</a>
+        <a href="../temoignages.html">Voices</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Take Action</div>
+        <a href="../participer.html">Participate</a>
+        <a href="../je-veux-un-emploi.html">Get a Job</a>
+        <a href="../employer.html">Hire Youth</a>
+        <a href="../devenir-partenaire.html">Join the Movement</a>
+        <a href="../summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Director</p>
+        <p>Milot, North, Haiti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="../contact.html">Contact Form</a>
+        <a href="../documents-publics.html">Transparency</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>SAKALA Haiti &nbsp;&middot;&nbsp; Konekte Kreye Travay &nbsp;&middot;&nbsp; 2003-2026</span>
+      <span>Founded in Milot, North of Haiti</span>
+    </div>
+  </div>
+</footer>
+<script src="charts.js"></script>
+</body></html>

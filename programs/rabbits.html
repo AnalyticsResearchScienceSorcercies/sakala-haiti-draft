@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Rabbits - SAKALA Haiti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:ital,wght@0,400;0,700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/konkret.css?v=3"/>
+<link rel="stylesheet" href="portfolio.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head><body>
+<!-- NAV -->
+<nav class="kn-nav">
+  <div class="container">
+    <a href="../index.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">SAKALA Haiti · Konekte Kreye Travay</span></a>
+    <ul class="kn-links">
+      <li><a href="../a-propos.html">About</a></li>
+      <li><a href="../nos-actions.html">Programs</a></li>
+      <li><a href="../partners.html">Partners</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../devenir-partenaire.html" class="kn-cta kn-cta-ghost">Join the Movement</a>
+    <a href="../je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
+    <a href="../index-fr.html" class="kn-lang">FR</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Close</button>
+  <a href="../a-propos.html">About</a>
+  <a href="../nos-actions.html">Programs</a>
+  <a href="../partners.html">Partners</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../je-veux-un-emploi.html">Get a Job</a>
+  <a href="../devenir-partenaire.html">Join the Movement</a>
+  <a href="../index-fr.html">Français</a>
+</div>
+
+
+<div class="bk-update"><h3>Updates (June 2026)</h3><p>The rabbit certification model (short training, clear content, question set, certificate) has been adopted as the template for the Konbit Data CCRA credential (June 2026).</p></div>
+<section id="p43" class="part part-cream">
+<div class="part-inner">
+  <div class="prog-card" style="max-width:100%">
+    <div class="prog-header">
+      <span class="prog-num">4.3</span>
+      <span class="prog-name">RABBIT HUSBANDRY</span>
+      <span class="prog-tag">The Protein Node</span>
+    </div>
+    <div class="prog-body">
+      <div class="prog-meta">
+        <div class="prog-meta-cell"><div class="prog-meta-label">Start Herd</div><div class="prog-meta-val">20 does + 2 bucks</div></div>
+        <div class="prog-meta-cell"><div class="prog-meta-label">Y1 Production</div><div class="prog-meta-val">600-800 rabbits</div></div>
+        <div class="prog-meta-cell"><div class="prog-meta-label">Y1 Revenue</div><div class="prog-meta-val">$16,260</div></div>
+      </div>
+      <p>The rabbit program operates on a three-tier market model. The tiers are not separate programs -- they are the same animal at different stages of processing and different price points. Starting herd cost: $500-800. Break-even: achievable in Year 1 at local market prices alone.</p>
+      <table class="data-table">
+        <tr><th>Tier</th><th>Product</th><th>Price</th><th>Market</th><th>Y1 Revenue Share</th></tr>
+        <tr><td>1. Local commodity</td><td>Fresh dressed rabbit</td><td class="td-num">$4-8/lb</td><td>Cap-Haïtien, PAP</td><td class="td-num">70% volume</td></tr>
+        <tr><td>2. TapTap brand</td><td>Diaspora jerky bags</td><td class="td-num">$10-12/bag</td><td>NYC / Miami / Montreal</td><td class="td-num">25% volume</td></tr>
+        <tr><td>3. Label Lakou</td><td>90-day herb-finished</td><td class="td-num">$30-60/lb</td><td>Michelin-track chefs, D'Artagnan channel</td><td class="td-num">5% volume, 40% revenue</td></tr>
+      </table>
+      <p>Label Lakou is Haiti's own rabbit standard, modeled on the French Label Rouge but specific to Haiti's heat-adapted breeds and herb-finishing protocol. CIRAD knowledge-transfer partnership formalizes the certification. This is not aspirational fine dining. D'Artagnan LLC already sells French-origin rabbit at $45/lb to US restaurants. Label Lakou targets the same channel with a price premium justified by origin story, certification, and the diaspora narrative that makes "from SAKALA farms in Haiti" a selling point rather than a liability.</p>
+      <p><strong>The SOIL partnership:</strong> Rabbit manure is exceptionally high-nitrogen. SOIL's ecological sanitation operations in Cap-Haïtien need compost inputs. The rabbit program provides manure to SOIL; SOIL provides compost back for the herb-finishing gardens. Zero-cost input loop, validated by an existing institutional partner.</p>
+      <div class="chart-wrap">
+        <div class="chart-title">Rabbit Revenue by Market Tier, Y1-Y3</div>
+        <canvas id="chartRabbit"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+<div class="bk-research"><h3>The Research Behind It</h3><ul><li><a href="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_KONKRET_Research_Portfolio.html" target="_blank">KONKRET Research Portfolio</a></li></ul>
+<p style="font-size:13px;color:#A8A098;">Full methodology, projections, and source data: BARSS LLC research library. Reports open in a new tab.</p></div>
+
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">KONKRET</div>
+        <div class="kn-footer-tagline">SAKALA Haiti · Konekte Kreye Travay &nbsp;&middot;&nbsp; Milot, North, Haiti</div>
+        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">The Organization</div>
+        <a href="../konkret.html">KONKRET</a>
+        <a href="../a-propos.html">About</a>
+        <a href="../notre-histoire.html">Our History</a>
+        <a href="../leadership.html">Leadership</a>
+        <a href="../nos-actions.html">Programs</a>
+        <a href="../temoignages.html">Voices</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Take Action</div>
+        <a href="../participer.html">Participate</a>
+        <a href="../je-veux-un-emploi.html">Get a Job</a>
+        <a href="../employer.html">Hire Youth</a>
+        <a href="../devenir-partenaire.html">Join the Movement</a>
+        <a href="../summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Director</p>
+        <p>Milot, North, Haiti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="../contact.html">Contact Form</a>
+        <a href="../documents-publics.html">Transparency</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>SAKALA Haiti &nbsp;&middot;&nbsp; Konekte Kreye Travay &nbsp;&middot;&nbsp; 2003-2026</span>
+      <span>Founded in Milot, North of Haiti</span>
+    </div>
+  </div>
+</footer>
+<script src="charts.js"></script>
+</body></html>

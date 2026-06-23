@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Get a Job - SAKALA Haiti</title>
+<meta name="description" content="For young Haitians aged 18 to 35. Join KONKRET and get a job, training, and mentorship in a farming cooperative in Milot, Nord, Haïti."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/konkret.css?v=3"/>
+<style>
+  .kn-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 1000px) {
+    .kn-benefits-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  }
+  @media (max-width: 480px) {
+    .kn-benefits-grid { grid-template-columns: 1fr; }
+  }
+  .kn-benefit-card {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .kn-benefit-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--sodium-orange);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .kn-benefit-name {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .kn-benefit-desc {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: rgba(244,239,226,.5);
+    line-height: 1.6;
+    flex: 1;
+  }
+  .kn-process-box {
+    background: rgba(26,171,77,.05);
+    border: 1px solid rgba(26,171,77,.18);
+    padding: 28px 24px;
+  }
+  .kn-process-box .t-label {
+    display: block;
+    margin-bottom: 16px;
+    color: var(--voice-green);
+  }
+  .kn-process-steps {
+    list-style: none;
+    counter-reset: step;
+  }
+  .kn-process-steps li {
+    counter-increment: step;
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    color: var(--parchment);
+    padding: 10px 0 10px 32px;
+    border-bottom: 1px solid rgba(26,171,77,.1);
+    position: relative;
+    line-height: 1.5;
+  }
+  .kn-process-steps li:last-child { border-bottom: none; }
+  .kn-process-steps li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--voice-green);
+  }
+  .kn-intro-statement {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3.2vw, 30px);
+    color: var(--parchment);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .kn-form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 540px) {
+    .kn-form-row-2 { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="kn-nav">
+  <div class="container">
+    <a href="index.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">SAKALA Haiti · Konekte Kreye Travay</span></a>
+    <ul class="kn-links">
+      <li><a href="a-propos.html">About</a></li>
+      <li><a href="nos-actions.html">Programs</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="devenir-partenaire.html" class="kn-cta kn-cta-ghost">Join the Movement</a>
+    <a href="je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
+    <a href="index-fr.html" class="kn-lang">FR</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Close</button>
+  <a href="a-propos.html">About</a>
+  <a href="nos-actions.html">Programs</a>
+  <a href="partners.html">Partners</a>
+  <a href="contact.html">Contact</a>
+  <a href="je-veux-un-emploi.html">Get a Job</a>
+  <a href="devenir-partenaire.html">Join the Movement</a>
+  <a href="index-fr.html">Français</a>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="kn-page-header" style="background: linear-gradient(rgba(10,10,10,.78), rgba(10,10,10,.92)), url('photos/pepiniere-sacs.jpg') center 45% / cover; padding-top: 72px; padding-bottom: 64px;">
+  <div class="container">
+    <span class="t-label">For Young People</span>
+    <h1 class="t-h1 mb-16">I Want<br>To Work</h1>
+    <p style="font-family:'Courier Prime',monospace; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:rgba(244,239,226,.4);">For young Haitians aged 18 to 35</p>
+  </div>
+</header>
+
+<!-- INTRO -->
+<section class="section bg-near">
+  <div class="container">
+    <p class="kn-intro-statement">Join the Konbit: a job, training, mentorship... and a real chance to build your life.</p>
+    <p class="t-body max-720">The land as the engine, youth as the force. KONKRET doesn't just give you a paycheck... KONKRET gives you a future. Since 2011, we have organized jobs for young Haitians in the rural areas of the North, placing them on structured partner farms and supporting them every step of the way.</p>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">What You Gain</span>
+      <h2 class="t-h2 mt-16">Your Benefits</h2>
+    </div>
+    <div class="kn-benefits-grid">
+      <div class="kn-benefit-card">
+        <span class="kn-benefit-num">01</span>
+        <div class="kn-benefit-name">Steady Pay</div>
+        <div class="kn-benefit-desc">Secure payment every week or every month, depending on the agreement with the partner farm.</div>
+      </div>
+      <div class="kn-benefit-card">
+        <span class="kn-benefit-num">02</span>
+        <div class="kn-benefit-name">Meals On Site</div>
+        <div class="kn-benefit-desc">Depending on the partner farm, one meal a day is provided at the workplace.</div>
+      </div>
+      <div class="kn-benefit-card">
+        <span class="kn-benefit-num">03</span>
+        <div class="kn-benefit-name">Learning</div>
+        <div class="kn-benefit-desc">Building farming and personal skills throughout your journey.</div>
+      </div>
+      <div class="kn-benefit-card">
+        <span class="kn-benefit-num">04</span>
+        <div class="kn-benefit-name">Certificate</div>
+        <div class="kn-benefit-desc">A certificate of participation... a real asset for your professional future.</div>
+      </div>
+      <div class="kn-benefit-card">
+        <span class="kn-benefit-num">05</span>
+        <div class="kn-benefit-name">A Family</div>
+        <div class="kn-benefit-desc">You join a network that supports you. A konbit... a community moving forward together.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIELD PHOTO BREAK -->
+<div class="kn-img-frame" style="max-height:320px;">
+  <img src="photos/parcelle-giwof.jpg" alt="Young KONKRET member tending the nursery -- training in the field" loading="lazy" style="width:100%;object-position:center 30%;">
+</div>
+
+<!-- CONDITIONS -->
+<section class="section bg-near">
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <div class="kn-section-header">
+          <span class="t-label">To Join</span>
+          <h2 class="t-h2 mt-16">The Requirements</h2>
+        </div>
+        <ul class="kn-checklist mt-32">
+          <li>Be between 18 and 35 years old</li>
+          <li>Be motivated, punctual, and ready to work as a team</li>
+          <li>Be willing to be placed on a partner farm in your area</li>
+          <li>Take part in a short intake interview (spoken or written)</li>
+        </ul>
+      </div>
+      <div>
+        <div class="kn-process-box mt-32">
+          <span class="t-label">The Process</span>
+          <ol class="kn-process-steps">
+            <li>Fill out the form below</li>
+            <li>Spoken or written interview with our team</li>
+            <li>Placement on a partner farm in your area</li>
+            <li>Start working</li>
+          </ol>
+        </div>
+        <p style="font-family:'Courier Prime',monospace; font-size:12px; color:rgba(244,239,226,.35); margin-top:20px; line-height:1.6;">We receive applications every week. Reserve your spot now.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION FORM -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">Apply</span>
+      <h2 class="t-h2 mt-16">Reserve Your Spot</h2>
+    </div>
+    <form class="kn-form" action="https://formspree.io/f/mblgnzqv" method="POST">
+      <input type="hidden" name="_subject" value="Candidature KONKRET -- Je Veux Travailler"/>
+      <input type="hidden" name="type_formulaire" value="candidature_emploi"/>
+      <div class="kn-form-row-2">
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="prenom">First Name</label>
+          <input class="kn-form-input" type="text" id="prenom" name="prenom" placeholder="Your first name" required/>
+        </div>
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="nom">Last Name</label>
+          <input class="kn-form-input" type="text" id="nom" name="nom" placeholder="Your last name" required/>
+        </div>
+      </div>
+      <div class="kn-form-row-2">
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="age">Age</label>
+          <input class="kn-form-input" type="number" id="age" name="age" min="18" max="35" placeholder="Between 18 and 35" required/>
+        </div>
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="telephone">Phone</label>
+          <input class="kn-form-input" type="tel" id="telephone" name="telephone" placeholder="Your phone number"/>
+        </div>
+      </div>
+      <div class="kn-form-group">
+        <label class="kn-form-label" for="zone">Area / Town</label>
+        <input class="kn-form-input" type="text" id="zone" name="zone" placeholder="Ex: Milot, Cap-Haïtien, Limbé, Limonade..." required/>
+      </div>
+      <div class="kn-form-group">
+        <label class="kn-form-label" for="message">Message (optional)</label>
+        <textarea class="kn-form-textarea" id="message" name="message" placeholder="Why do you want to join KONKRET? What are you hoping to learn?"></textarea>
+      </div>
+      <button type="submit" class="btn-green" style="width:100%; font-size:16px; padding:18px; cursor:pointer;">Send My Application</button>
+      <div class="kn-form-note mt-16">By submitting this form, you confirm that you are between 18 and 35 years old and that the information provided is accurate. Our team will contact you within 72 hours.</div>
+    </form>
+    <div class="kn-form-success" id="form-success" style="margin-top:16px;">Application received. Our team will contact you within 72 hours.</div>
+  </div>
+</section>
+
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">SAKALA Haiti</div>
+        <div class="kn-footer-tagline">Konekte Kreye Travay &nbsp;·&nbsp; Milot, Nord, Haïti</div>
+        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the main answer to the social and economic struggles Haiti is facing.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">The Organization</div>
+        <a href="konkret.html">KONKRET</a>
+        <a href="a-propos.html">Who We Are</a>
+        <a href="notre-histoire.html">Our Story</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="nos-actions.html">Programs</a>
+        <a href="temoignages.html">Testimonials</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Take Action</div>
+        <a href="participer.html">Get Involved</a>
+        <a href="je-veux-un-emploi.html">I Want To Work</a>
+        <a href="employer.html">Hire Young People</a>
+        <a href="devenir-partenaire.html">Become a Partner</a>
+        <a href="summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Director</p>
+        <p>Milot, Nord, Haïti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="contact.html">Contact Form</a>
+        <a href="documents-publics.html">Transparency</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>SAKALA Haiti &nbsp;·&nbsp; Konekte Kreye Travay &nbsp;·&nbsp; 2003-2026</span>
+      <span>Founded in Milot, Nord, Haïti</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/nav.js"></script></body>
+</html>

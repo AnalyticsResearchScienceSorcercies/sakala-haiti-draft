@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Employer des Jeunes - SAKALA Haiti</title>
+<meta name="description" content="Vous avez un terrain, un atelier ou un commerce ? KONKRET vous met en contact avec des jeunes haitiens formes, motives et prets a travailler. Un partenariat gagnant."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/konkret.css?v=3"/>
+<style>
+  .kn-why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 900px) {
+    .kn-why-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .kn-why-grid { grid-template-columns: 1fr; }
+  }
+  .kn-why-card {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .kn-card-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--sodium-orange);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .kn-card-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 20px;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .kn-card-text {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12px;
+    color: rgba(244,239,226,.5);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .kn-who-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 720px) {
+    .kn-who-grid { grid-template-columns: 1fr; }
+  }
+  .kn-who-card {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-top: 3px solid var(--sodium-orange);
+    padding: 28px 24px;
+  }
+  .kn-who-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  .kn-who-text {
+    font-size: 13px;
+    color: rgba(244,239,226,.5);
+    line-height: 1.65;
+  }
+  .kn-profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 720px) {
+    .kn-profiles-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .kn-profiles-grid { grid-template-columns: 1fr; }
+  }
+  .kn-profile-card {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-left: 3px solid var(--voice-green);
+    padding: 22px 20px;
+  }
+  .kn-profile-role {
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: var(--bone);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .kn-profile-desc {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: rgba(244,239,226,.45);
+    line-height: 1.55;
+  }
+  .kn-intro-statement {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: clamp(20px, 3.2vw, 30px);
+    color: var(--parchment);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .kn-form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 540px) {
+    .kn-form-row-2 { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="kn-nav">
+  <div class="container">
+    <a href="index-fr.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">SAKALA Haiti · Konekte Kreye Travay</span></a>
+    <ul class="kn-links">
+      <li><a href="a-propos.html">Qui Sommes-Nous</a></li>
+      <li><a href="nos-actions.html">Programmes</a></li>
+      <li><a href="partners.html">Partenaires</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="devenir-partenaire.html" class="kn-cta kn-cta-ghost">Rejoindre le Mouvement</a>
+    <a href="je-veux-un-emploi.html" class="kn-cta">Trouver un Emploi</a>
+    <a href="employer.html" class="kn-lang">EN</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Fermer</button>
+  <a href="a-propos.html">Qui Sommes-Nous</a>
+  <a href="nos-actions.html">Programmes</a>
+  <a href="partners.html">Partenaires</a>
+  <a href="contact.html">Contact</a>
+  <a href="je-veux-un-emploi.html">Trouver un Emploi</a>
+  <a href="devenir-partenaire.html">Rejoindre le Mouvement</a>
+  <a href="employer.html">English</a>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="kn-page-header" style="background: linear-gradient(rgba(10,10,10,.78), rgba(10,10,10,.92)), url('photos/2025-aout/IMG-20250731-WA0271.jpg') center 30% / cover; padding-top: 72px; padding-bottom: 64px;">
+  <div class="container">
+    <span class="t-label">Pour les Employeurs</span>
+    <h1 class="t-h1 mb-16">Employer<br>des Jeunes</h1>
+    <p style="font-family:'Courier Prime',monospace; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:rgba(244,239,226,.4);">Pour entrepreneurs, propriétaires et organisations</p>
+  </div>
+</header>
+
+<!-- PITCH -->
+<section class="section bg-near">
+  <div class="container">
+    <p class="kn-intro-statement">Un Partenariat Gagnant Entre Vous et la Jeunesse Haïtienne.</p>
+    <p class="t-body max-720 mb-16">Vous avez un terrain agricole, un atelier, un commerce, un projet social ou une activité génératrice de revenus ? Vous voulez contribuer au changement tout en bénéficiant d'un appui dynamique, sérieux et formé ?</p>
+    <p class="t-body max-720">Mettez un(e) jeune au travail avec KONKRET. Nous sélectionnons, formons et plaçons des jeunes haïtiens de 18 à 35 ans dans des structures comme la vôtre. Vous bénéficiez d'une main-d'oeuvre engagée, notre equipe assure le suivi sur le terrain, et vous participez directement à la reconstruction du tissu économique du Nord d'Haïti.</p>
+  </div>
+</section>
+
+<!-- FIELD PHOTO -->
+<div class="kn-img-frame" style="max-height:300px;">
+  <img src="photos/2025-aout/IMG-20250824-WA0285.jpg" alt="Jeune participant KONKRET au travail dans les champs, Grand Bassin" loading="lazy" style="object-position:center 35%;">
+</div>
+
+<!-- WHY GRID -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">Pourquoi Choisir KONKRET</span>
+      <h2 class="t-h2 mt-16">Ce Que Vous Gagnez</h2>
+    </div>
+    <div class="kn-why-grid">
+      <div class="kn-why-card">
+        <span class="kn-card-num">01</span>
+        <div class="kn-card-title">Jeunes Formés</div>
+        <div class="kn-card-text">Chaque jeune placé a reçu une formation en compétences techniques et humaines avant d'arriver chez vous.</div>
+      </div>
+      <div class="kn-why-card">
+        <span class="kn-card-num">02</span>
+        <div class="kn-card-title">Impact Direct</div>
+        <div class="kn-card-text">Votre activité avance, et un jeune bâtit son avenir. Un seul geste, deux résultats concrets.</div>
+      </div>
+      <div class="kn-why-card">
+        <span class="kn-card-num">03</span>
+        <div class="kn-card-title">Encadrement Régulier</div>
+        <div class="kn-card-text">Notre équipe reste présente sur le terrain. Vous n'êtes pas seul à gérer le processus d'intégration.</div>
+      </div>
+      <div class="kn-why-card">
+        <span class="kn-card-num">04</span>
+        <div class="kn-card-title">Processus Sécurisé</div>
+        <div class="kn-card-text">Tout est encadré par notre structure coopérative. Simple, transparent et sans surprise.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO CAN PARTICIPATE -->
+<section class="section bg-near">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">Qui Peut Participer</span>
+      <h2 class="t-h2 mt-16">Notre Réseau d'Employeurs</h2>
+    </div>
+    <div class="kn-who-grid">
+      <div class="kn-who-card">
+        <div class="kn-who-title">ONG, Coopératives &amp; Projets Communautaires</div>
+        <p class="kn-who-text">Organisations à vocation sociale cherchant à renforcer leurs équipes terrain avec une main-d'oeuvre locale engagée et formée.</p>
+      </div>
+      <div class="kn-who-card">
+        <div class="kn-who-title">Institutions Éducatives ou Religieuses</div>
+        <p class="kn-who-text">Ecoles, centres de formation, paroisses et groupes confessionnels gérant des activités productives ou des jardins communautaires.</p>
+      </div>
+      <div class="kn-who-card">
+        <div class="kn-who-title">Propriétaires de Terrain ou d'Atelier</div>
+        <p class="kn-who-text">Entrepreneurs, propriétaires fonciers, artisans et commerçants souhaitant développer leur activité avec un appui humain structuré.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="kn-img-frame" style="max-height:400px;">
+  <img src="photos/2025-aout/IMG-20250801-WA0131.jpg" alt="KONKRET -- terrain, Haiti 2025" loading="lazy" style="width:100%;object-position:center 40%;">
+</div>
+<!-- YOUTH PROFILES -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">Profils Disponibles</span>
+      <h2 class="t-h2 mt-16">Les Jeunes Que Nous Formons</h2>
+    </div>
+    <div class="kn-profiles-grid">
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Agent Agricole</div>
+        <div class="kn-profile-desc">Préparation du sol, semences, entretien des cultures, récolte. Formé aux techniques maraîchères adaptées au Nord.</div>
+      </div>
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Assistant Transformation</div>
+        <div class="kn-profile-desc">Tri, conditionnement et transformation de produits agricoles. Hygiène alimentaire et gestion post-récolte.</div>
+      </div>
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Ouvrier Manuel</div>
+        <div class="kn-profile-desc">Travaux de maintenance, transport, manutention et appui logistique dans des exploitations ou ateliers.</div>
+      </div>
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Maçon Apprenti</div>
+        <div class="kn-profile-desc">Appui dans les chantiers de construction légère. Initiation aux techniques de maçonnerie et à la sécurité sur site.</div>
+      </div>
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Vendeur / Vendeuse</div>
+        <div class="kn-profile-desc">Gestion de point de vente, relation client, comptabilité de base. Adapté aux commerces de proximité.</div>
+      </div>
+      <div class="kn-profile-card">
+        <div class="kn-profile-role">Assistant Administratif</div>
+        <div class="kn-profile-desc">Saisie, classement, communication et coordination pour des organisations ou bureaux de petite taille.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="section bg-near">
+  <div class="container">
+    <div class="max-720">
+      <div class="kn-quote">
+        <p>Mwen te gen yon ti biznis sou lakou a, men mwen te bezwen men. Jèn lan aprann vit e li ede m fè plis pase m te ka imajine.</p>
+        <cite>Patron d'un petit atelier &nbsp;·&nbsp; Partenaire KONKRET</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLICATION FORM -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header mb-40">
+      <span class="t-label">Proposer un Poste</span>
+      <h2 class="t-h2 mt-16">Mettre un Jeune au Travail</h2>
+    </div>
+    <form class="kn-form" action="https://formspree.io/f/mblgnzqv" method="POST">
+      <input type="hidden" name="_subject" value="Demande Employeur KONKRET -- Employer des Jeunes"/>
+      <input type="hidden" name="type_formulaire" value="demande_employeur"/>
+      <div class="kn-form-row-2">
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="prenom">Prénom</label>
+          <input class="kn-form-input" type="text" id="prenom" name="prenom" placeholder="Votre prénom" required/>
+        </div>
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="nom">Nom</label>
+          <input class="kn-form-input" type="text" id="nom" name="nom" placeholder="Votre nom de famille" required/>
+        </div>
+      </div>
+      <div class="kn-form-row-2">
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="organisation">Organisation</label>
+          <input class="kn-form-input" type="text" id="organisation" name="organisation" placeholder="Nom de votre organisation ou activité"/>
+        </div>
+        <div class="kn-form-group">
+          <label class="kn-form-label" for="telephone">Téléphone</label>
+          <input class="kn-form-input" type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required/>
+        </div>
+      </div>
+      <div class="kn-form-group">
+        <label class="kn-form-label" for="type_activite">Type d'Activité</label>
+        <select class="kn-form-select" id="type_activite" name="type_activite" required>
+          <option value="" disabled selected>Choisir un type...</option>
+          <option value="terrain_agricole">Terrain agricole</option>
+          <option value="atelier">Atelier</option>
+          <option value="commerce">Commerce</option>
+          <option value="ong">ONG ou organisation communautaire</option>
+          <option value="institution">Institution éducative ou religieuse</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="kn-form-group">
+        <label class="kn-form-label" for="description">Description du Poste</label>
+        <textarea class="kn-form-textarea" id="description" name="description" placeholder="Décrivez le travail que vous proposez, les conditions, la durée prévue..." required></textarea>
+      </div>
+      <div class="kn-form-group">
+        <label class="kn-form-label" for="nombre_jeunes">Nombre de Jeunes Souhaités</label>
+        <input class="kn-form-input" type="number" id="nombre_jeunes" name="nombre_jeunes" min="1" max="50" placeholder="Combien de jeunes cherchez-vous ?"/>
+      </div>
+      <button type="submit" class="btn-orange" style="width:100%; font-size:16px; padding:18px; cursor:pointer;">Soumettre ma Demande</button>
+      <div class="kn-form-note mt-16">Notre equipe examinera votre demande et vous contactera dans les 72 heures pour definir les modalites du partenariat.</div>
+    </form>
+    <div class="kn-form-success" id="form-success" style="margin-top:16px;">Demande reçue. Notre equipe vous contactera sous 72 heures.</div>
+  </div>
+</section>
+
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">SAKALA Haiti</div>
+        <div class="kn-footer-tagline">Konekte Kreye Travay &nbsp;·&nbsp; Milot, Nord, Haïti</div>
+        <p class="kn-footer-desc">Une initiative d'économie solidaire haïtienne organisant l'emploi des jeunes comme la solution principale aux dérives socio-économiques que connaît Haïti.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">L'Organisation</div>
+        <a href="konkret.html">KONKRET</a>
+        <a href="a-propos.html">Qui Sommes-Nous</a>
+        <a href="notre-histoire.html">Notre Histoire</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="nos-actions.html">Programmes</a>
+        <a href="temoignages.html">Témoignages</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Agir</div>
+        <a href="participer.html">Participer</a>
+        <a href="je-veux-un-emploi.html">Je Veux Travailler</a>
+        <a href="employer.html">Employer des Jeunes</a>
+        <a href="devenir-partenaire.html">Devenir Partenaire</a>
+        <a href="summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Directeur</p>
+        <p>Milot, Nord, Haïti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="contact.html">Formulaire de Contact</a>
+        <a href="documents-publics.html">Transparence</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>SAKALA Haiti &nbsp;·&nbsp; Konekte Kreye Travay &nbsp;·&nbsp; 2003-2026</span>
+      <span>Fondé à Milot, Nord, Haïti</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/nav.js"></script></body>
+</html>
