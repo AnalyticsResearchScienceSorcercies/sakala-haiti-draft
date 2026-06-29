@@ -825,3 +825,15 @@ a.kn-hire:hover {
 
 /* Hide the to-French language toggle for now — English-only */
 .kn-lang[href$="-fr.html"], .kn-mobile a[href$="-fr.html"] { display: none !important; }
+
+/* Launch polish — collapse the nav CTAs into the hamburger on mobile (they overflowed and forced horizontal scroll) */
+@media (max-width: 820px) {
+  .kn-cta { display: none; }
+}
+/* Split hero (homepage): vertical-center on desktop so the text isn't top-stranded; clean stack + capped image on mobile */
+.kn-hero-split { align-items: center; }
+@media (max-width: 820px) {
+  .kn-hero.kn-hero-split { flex-direction: column; min-height: auto; align-items: stretch; padding-top: 40px; }
+  .kn-hero-split .kn-hero-content { max-width: 100%; }
+  .kn-hero-split .kn-hero-visual { width: 100%; min-height: 220px; max-height: 300px; }
+}
