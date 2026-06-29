@@ -25,7 +25,7 @@ SITES = {
    "match_slots":["V15 crop-fit scorecard","V16 EcoCrop suitability fingerprint (cassava)"],
    "market_intro":"The grower sells raw root for about $0.24 worth per pound of flour; the same crop becomes an $18.75 branded product downstream, roughly 78× over. SAKALA keeps the milling, the brand, and the margin in the cooperative.",
    "market_slots":["V19 the extraction joint (farmer $0.24 of $18.75)","V20 Theta inversion (conventional vs SAKALA)","V21 price-tier ladder","V22 conversion / COGS build (3:1 root→flour)"],
-   "cost":{"up":8100,"opt":46600,"dream":53600},
+   "cost":{"up":8100,"opt":40600,"dream":47600},
    "cost_intro":"$8,100 buys the atom kit, cuttings, contoured beds and a first season of wages. The jump to $46,600 is the flour line and the food-grade shed, the value-capture step that turns root into branded flour.",
    "cost_slots":["V28 cost ramp bars","V29 itemized table with SUPPLY/FAB/IMPORT tags","V56 'what your $120 buys' receipt"],
    "youth":{"now":20,"cap":30},
@@ -56,7 +56,7 @@ SITES = {
    "match_slots":["V15 crop-fit scorecard","V16 fingerprint (why moringa is marginal at pH 5.4)"],
    "market_intro":"Same cassava-flour economics as Quartier-Morin, plus lemongrass and citronella that feed the shared Nord aromatic still... short distillation runs that pay in months, not the years vetiver takes, so cash flows from a cheap field still while the slower crops mature.",
    "market_slots":["V19 the extraction joint","V21 price-tier ladder","V52 fast-cash → slow-cash ladder"],
-   "cost":{"up":6500,"opt":20000,"dream":24000},
+   "cost":{"up":6500,"opt":17000,"dream":21000},
    "cost_intro":"Cheapest campus to get running at $6,500 (atom kit, lime, seed, cover crop, wages). The optimized $20,000 adds solar irrigation and a cistern, the direct answer to the dry season. Cross-checks the independent Milot build at $23,700.",
    "cost_slots":["V28 cost ramp bars","V29 itemized table","V32 break-even curve"],
    "youth":{"now":10,"cap":15},
@@ -87,8 +87,8 @@ SITES = {
    "match_slots":["V15 crop-fit scorecard"],
    "market_intro":"Same cassava economics, but the river could roughly double output per dollar by lifting the campus to two or three harvests a year.",
    "market_slots":["V19 the extraction joint","V21 price-tier ladder"],
-   "cost":{"up":8500,"opt":20000,"dream":24000},
-   "cost_intro":"Numbers assume the parcel clears. The $8,500 runs it as a rain-fed cassava plot. The river is an optional upgrade, not the premise: full year-round irrigation realistically runs $12,000 to $22,000 once the lift-head and the 700 m pipe run are priced, so fund it only if the parcel confirms and the two-to-three-crop economics justify it.",
+   "cost":{"up":5500,"opt":13000,"dream":30000},
+   "cost_intro":"Numbers assume the parcel clears. The $5,500 runs it as a rain-fed cassava plot. The river is an optional upgrade, not the premise: full year-round irrigation realistically runs $12,000 to $22,000 once the lift-head and the 700 m pipe run are priced, so fund it only if the parcel confirms and the two-to-three-crop economics justify it.",
    "cost_slots":["V28 cost ramp bars","V63 cost-confidence bars (everything here is provisional)"],
    "youth":{"now":0,"cap":10},
    "youth_slots":["V36 income multiplier Sankey (fills in once confirmed)"],
@@ -96,7 +96,7 @@ SITES = {
    "fp_lead":"cassava","fp_note":"Same clean cassava fit as the main pin; the river is what would lift it to two or three crops a year.",
    "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":5.4},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":1392},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":1.4}],
    "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
-   "cost_items":[["Confirm parcel + Agriculture atom kit",3600,"IMPORT"],["Seed / cuttings",400,"SUPPLY"],["River abstraction + pump",3000,"IMPORT"],["Working capital",1500,"SERVICE"]],
+   "cost_items":[["Confirm parcel + Agriculture atom kit",3600,"IMPORT"],["Seed / cuttings",400,"SUPPLY"],["Working capital",1500,"SERVICE"]],
    "crops":[["Cassava",98],["Vetiver",98],["Pigeon pea",96],["Lemongrass",96],["Citronella",96],["Cinnamon",91]],
    "cropnote":"Same strong cassava-and-aromatics profile as the main Quartier-Morin pin... the river is what would set it apart.",
    "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
@@ -118,7 +118,7 @@ SITES = {
    "match_slots":["V15 crop-fit scorecard (cacao/coffee/breadfruit/vetiver)","V16 fingerprint (cacao)","V51 crop / harvest calendar (perennials + vetiver 18-24mo)"],
    "market_intro":"The high-value crops, but the high-extraction ones too: vetiver oil sells for roughly 170× what the grower gets for the grass, and raw cacao returns the farmer a third of what the same bean earns as local chocolate. Pestel owns the processing, or it stays poor. The still is phased... fast aromatics distil cheaply up north now, and Pestel's own stainless vetiver skid comes online when the roots mature at month 18 to 24.",
    "market_slots":["V19 the extraction joint (vetiver 170×)","V27 vetiver 'extraction laundering' callout","V50 the remedy is the lawsuit","V21 price-tier ladder (cacao raw vs local chocolate)"],
-   "cost":{"up":14900,"opt":60900,"dream":83900},
+   "cost":{"up":14900,"opt":58900,"dream":85900},
    "cost_intro":"The most expensive campus, and the most patient. The $14,900 stabilizes the slope and plants. The big number is a tree-crop establishment and 3-to-5-year income bridge (~$25,000) that is grant capital, not product-purchase money.",
    "cost_slots":["V28 cost ramp bars","V33 the J-curve (tree-crop income dip)","V30 funding-type split (product vs patient/grant)"],
    "youth":{"now":10,"cap":20},
@@ -214,7 +214,7 @@ def build(key, s):
     inv_chart=bc("Inverting the take &#183; conventional vs SAKALA","inversion",
         {"conv":s["inv"]["conv"],"coop":s["inv"]["coop"],"item":s["inv"]["item"]})
     # Cost
-    cost_chart=bc("Capital ladder &#183; today &#8594; dream","cost-ramp",
+    cost_chart=bc("Capital ladder &#183; lean base case, June 2026 capital research","cost-ramp",
         {"up":s["cost"]["up"],"opt":s["cost"]["opt"],"dream":s["cost"]["dream"]})
     # Cost (V29 itemized procurement table)
     costtbl_chart=('<div class="slot-label">The procurement list &#183; up-to-speed line items</div>'
