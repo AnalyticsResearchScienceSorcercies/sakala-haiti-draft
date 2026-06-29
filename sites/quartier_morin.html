@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quartier-Morin · Site Dossier · BARSS Haiti</title>
+<meta name="description" content="Haiti's cassava capital, on the richest soil in the set. The one site shipping a product today."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/konkret.css?v=3"/>
+<style>
+  html { scroll-behavior:smooth; }
+  .d-hero { position:relative; min-height:88vh; display:flex; align-items:flex-end; color:var(--bone); overflow:hidden; }
+  .d-hero .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .d-hero .scrim { position:absolute; inset:0; background:linear-gradient(to top, rgba(6,6,6,.97) 12%, rgba(6,6,6,.6) 48%, rgba(6,6,6,.15) 80%); }
+  .d-hero .inner { position:relative; max-width:1100px; margin:0 auto; padding:0 28px 54px; width:100%; }
+  .d-hero .back { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sodium-orange); text-decoration:none; }
+  .d-hero .badge { display:inline-block; margin:18px 0 12px; font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; padding:6px 11px; border-radius:3px; background:rgba(10,10,10,.5); backdrop-filter:blur(8px); border:1px solid rgba(244,239,226,.2); }
+  .d-hero h1 { font-family:'Anton',sans-serif; font-size:clamp(46px,9vw,96px); line-height:.88; text-transform:uppercase; margin:0; }
+  .d-hero .sub { font-family:'Lora',serif; font-style:italic; font-size:16px; color:rgba(244,239,226,.7); margin:8px 0 4px; }
+  .d-hero .coords { font-family:'Courier Prime',monospace; font-size:12px; color:rgba(244,239,226,.5); }
+  .d-hero .verdict { font-family:'Lora',serif; font-size:clamp(16px,2.4vw,20px); line-height:1.5; max-width:720px; margin:18px 0 24px; }
+  .hstats { display:flex; flex-wrap:wrap; gap:2px; }
+  .hstat { background:rgba(10,10,10,.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(244,239,226,.12); padding:14px 20px; }
+  .hstat .hv { font-family:'Roboto Slab',serif; font-weight:800; font-size:22px; color:var(--sodium-orange); line-height:1; }
+  .hstat .hl { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(244,239,226,.5); margin-top:7px; }
+  .scroll-hint { display:block; margin-top:22px; font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(244,239,226,.4); }
+  /* sticky chapter nav */
+  .chap-nav { position:sticky; top:0; z-index:50; background:rgba(8,8,8,.92); backdrop-filter:blur(12px); border-bottom:1px solid rgba(244,239,226,.1); }
+  .chap-nav .inner { max-width:1100px; margin:0 auto; padding:0 28px; display:flex; gap:26px; overflow-x:auto; }
+  .chap-nav a { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(244,239,226,.55); text-decoration:none; padding:15px 0; white-space:nowrap; border-bottom:2px solid transparent; }
+  .chap-nav a:hover { color:var(--sodium-orange); border-bottom-color:var(--sodium-orange); }
+  /* chapters */
+  .chapter { background:#0b0b0b; color:var(--bone); border-bottom:1px solid rgba(244,239,226,.06); padding:64px 28px; }
+  .chapter:nth-child(even) { background:#0e0e0e; }
+  .chap-inner { max-width:1100px; margin:0 auto; }
+  .chap-head { display:flex; align-items:baseline; gap:14px; margin-bottom:10px; }
+  .chap-num { font-family:'Anton',sans-serif; font-size:30px; color:var(--du-bois-red); }
+  .chap-kicker { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--sodium-orange); }
+  .chapter h2 { font-family:'Anton',sans-serif; font-size:clamp(30px,5vw,52px); text-transform:uppercase; margin:0 0 16px; line-height:.96; }
+  .chap-intro { font-family:'Lora',serif; font-size:clamp(15px,2.2vw,18px); line-height:1.65; color:rgba(244,239,226,.84); max-width:760px; margin:0 0 26px; }
+  .hero-note { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:rgba(244,239,226,.5); border-left:2px solid var(--sodium-orange); padding-left:12px; margin-bottom:24px; }
+  .slot-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:4px; }
+  .hero-note b { color:var(--sodium-orange); }
+  .costrow { display:flex; flex-wrap:wrap; gap:2px; margin-bottom:24px; }
+  .costrow span { background:rgba(244,239,226,.05); padding:14px 22px; font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:rgba(244,239,226,.6); }
+  .costrow b { display:block; font-family:'Roboto Slab',serif; font-size:22px; color:var(--bone); margin-top:6px; }
+  /* graph slots (scaffold placeholders) */
+  .slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+  .slot { border:1.5px dashed rgba(255,106,31,.4); border-radius:5px; min-height:150px; padding:18px; display:flex; flex-direction:column; justify-content:center; gap:8px; background:repeating-linear-gradient(45deg,rgba(255,106,31,.03),rgba(255,106,31,.03) 12px,transparent 12px,transparent 24px); }
+  .slot-tag { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--sodium-orange); }
+  .slot-desc { font-family:'Roboto Slab',serif; font-weight:700; font-size:15px; color:rgba(244,239,226,.85); line-height:1.3; }
+  /* pinned sponsor bar */
+  .spon-bar { position:fixed; bottom:0; left:0; right:0; z-index:60; background:rgba(8,8,8,.94); backdrop-filter:blur(14px); border-top:1px solid rgba(255,106,31,.3); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .spon-bar .lab { font-family:'Lora',serif; font-size:13.5px; color:rgba(244,239,226,.8); }
+  .spon-bar .lab b { color:var(--bone); }
+  .spon-btn { font-family:'Courier Prime',monospace; font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; padding:13px 26px; border-radius:3px; background:var(--sodium-orange); color:#111; white-space:nowrap; }
+  .spon-btn.live { background:var(--voice-green); color:#fff; }
+  .spon-btn:hover { background:#fff; color:#111; }
+  .spon-btn.gated { background:rgba(143,188,217,.18); color:#8fbcd9; }
+  body { padding-bottom:64px; }
+  @media (max-width:600px){ .spon-bar .lab { display:none; } .spon-bar { justify-content:center; } }
+</style>
+</head>
+<body>
+<nav class="kn-nav"><div class="container">
+<a href="../index.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">BARSS Haiti · Konekte Kreye Travay</span></a>
+<ul class="kn-links">
+<li><a href="../a-propos.html">About</a></li>
+<li><a href="../ground-partners.html">Ground Partners</a></li>
+<li><a href="../fatraka.html">FatraKa</a></li>
+<li><a href="../partners.html">Partners</a></li>
+<li><a href="../contact.html">Contact</a></li>
+</ul>
+<a href="../ground-partners.html" class="kn-cta kn-cta-ghost">All sites</a>
+<a href="../je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
+</div></nav>
+
+<header class="d-hero">
+  <img class="bg" src="../img/sites/quartier_morin_context.jpg" alt="Satellite view of Quartier-Morin"/>
+  <div class="scrim"></div>
+  <div class="inner">
+    <a href="../ground-partners.html" class="back">← All four sites</a>
+    <span class="badge">Active · live product</span>
+    <h1>Quartier-Morin</h1>
+    <div class="sub">Nord · Kayimit</div>
+    <div class="coords">19.6825, -72.18488</div>
+    <p class="verdict">Haiti's cassava capital, on the richest soil in the set. The one site shipping a product today.</p>
+    <div class="hstats"><div class="hstat"><div class="hv">5.2%</div><div class="hl">soil organic carbon</div></div><div class="hstat"><div class="hv">1.3°</div><div class="hl">flat ground</div></div><div class="hstat"><div class="hv">20 → 30</div><div class="hl">youth</div></div><div class="hstat"><div class="hv">$8,100</div><div class="hl">to get running</div></div></div>
+    <span class="scroll-hint">Scroll the dossier ↓</span>
+  </div>
+</header>
+
+<nav class="chap-nav"><div class="inner">
+  <a href="#land">01 · Land</a>
+  <a href="#match">02 · Match</a>
+  <a href="#market">03 · Market</a>
+  <a href="#cost">04 · Cost</a>
+  <a href="#youth">05 · Youth</a>
+</div></nav>
+
+
+<section class="chapter" id="land">
+  <div class="chap-inner">
+    <div class="chap-head"><span class="chap-num">01</span><span class="chap-kicker">The land, measured</span></div>
+    <h2>The ground</h2>
+    <p class="chap-intro">Flat, deep, carbon-rich clay loam, the best growing ground we surveyed. pH 5.6, soil organic carbon 5.2%, CEC 27. The one catch is slow drainage on flat land, so beds get contoured to shed standing water. Erosion is real but modest at 18.9 t/ha.</p>
+    <div class="slot-label">Erosion &#183; RUSLE model</div><div class="bchart" data-chart="erosion-dial" data-site="quartier_morin" data-a="18.9" data-r="4508" data-k="0.0308" data-ls="0.34" data-c="0.4" style="margin:6px 0 28px"></div><div class="slot-label">Rainfall &#183; 15-year monthly normals vs crop water need</div><div class="bchart" data-chart="climograph" data-site="quartier_morin" data-months="80,67,78,96,121,70,69,90,105,122,156,97" data-annual="1152" data-need="100" style="margin:6px 0 28px"></div><div class="slot-label">Soil texture &#183; USDA classification</div><div class="bchart" data-chart="texture" data-site="quartier_morin" data-sand="30.7" data-silt="35.5" data-clay="33.8" data-texture="clay loam" style="margin:6px 0 28px"></div><div class="slot-label">Soil report card &#183; vs the agronomic sweet spot</div><div class="bchart" data-chart="soil-card" data-site="quartier_morin" data-ph="5.6" data-soc="5.24" data-cec="27.1" data-slope="1.3" style="margin:6px 0 28px"></div>
+    <div class="slots"></div>
+  </div>
+</section>
+<section class="chapter" id="match">
+  <div class="chap-inner">
+    <div class="chap-head"><span class="chap-num">02</span><span class="chap-kicker">Land &#8594; enterprise</span></div>
+    <h2>The match</h2>
+    <p class="chap-intro">Cassava grades a perfect 1.0 here, alongside pigeon pea, lemongrass and citronella. The match is unambiguous: cassava to flour to the Harvest Box, with aromatic grass feeding the shared Nord distillery.</p>
+    <div class="slot-label">Crop suitability &#183; EcoCrop match (0-100)</div><div class="bchart" data-chart="crop-fit" data-site="quartier_morin" data-crops='[["Cassava", 100], ["Pigeon pea", 100], ["Vetiver", 100], ["Lemongrass", 100], ["Citronella", 94], ["Castor", 92], ["Moringa", 89], ["Avocado", 86]]' data-note="Cassava grades a perfect 1.0, alongside the aromatic grasses that feed the Nord distillery. An unusually deep bench for one field." style="margin:6px 0 28px"></div>
+    <div class="slots"><div class="slot"><span class="slot-tag">graph slot</span><span class="slot-desc">V16 EcoCrop suitability fingerprint (cassava)</span></div></div>
+  </div>
+</section>
+<section class="chapter" id="market">
+  <div class="chap-inner">
+    <div class="chap-head"><span class="chap-num">03</span><span class="chap-kicker">The value chain</span></div>
+    <h2>The market</h2>
+    <p class="chap-intro">The grower sells raw root for about $0.24 worth per pound of flour; the same crop becomes an $18.75 branded product downstream, roughly 78× over. SAKALA keeps the milling, the brand, and the margin in the cooperative.</p>
+    <div class="slot-label">Where the value goes &#183; the extraction joint</div><div class="bchart" data-chart="value-joint" data-site="quartier_morin" data-farmer="0.24" data-final="18.75" data-item="a branded pound of single-origin kasav" data-unit="$" style="margin:6px 0 28px"></div><div class="slot-label">Price ladder &#183; $/lb</div><div class="bchart" data-chart="price-ladder" data-site="quartier_morin" data-tiers='[["Farmgate root", 0.08, 0.08], ["US ethnic staple", 3, 5], ["US health shelf", 8, 13], ["Premium branded", 18.75, 18.75]]' data-unit="$/lb" style="margin:6px 0 28px"></div><div class="slot-label">The demand side &#183; Haitian diaspora by US state</div><div class="bchart" data-chart="diaspora" data-rows='[["Florida",488000,true],["New York",182000,true],["Massachusetts",81000,true],["New Jersey",62000,false],["Georgia",50000,false],["Connecticut",28000,false],["Pennsylvania",28000,false],["Maryland",25000,false],["Texas",20000,false],["Illinois",12000,false]]' style="margin:6px 0 28px"></div>
+    <div class="slots"><div class="slot"><span class="slot-tag">graph slot</span><span class="slot-desc">V20 Theta inversion (conventional vs SAKALA)</span></div><div class="slot"><span class="slot-tag">graph slot</span><span class="slot-desc">V22 conversion / COGS build (3:1 root→flour)</span></div></div>
+  </div>
+</section>
+<section class="chapter" id="cost">
+  <div class="chap-inner">
+    <div class="chap-head"><span class="chap-num">04</span><span class="chap-kicker">Real &#8594; dream</span></div>
+    <h2>The cost</h2>
+    <p class="chap-intro">$8,100 buys the atom kit, cuttings, contoured beds and a first season of wages. The jump to $46,600 is the flour line and the food-grade shed, the value-capture step that turns root into branded flour.</p>
+    <div class="costrow"><span>Up to speed <b>$8,100</b></span><span>Optimized <b>$46,600</b></span><span>Dream <b>$53,600</b></span></div><div class="slot-label">Capital ladder &#183; today &#8594; dream</div><div class="bchart" data-chart="cost-ramp" data-site="quartier_morin" data-up="8100" data-opt="46600" data-dream="53600" style="margin:6px 0 28px"></div>
+    <div class="slots"><div class="slot"><span class="slot-tag">graph slot</span><span class="slot-desc">V29 itemized table with SUPPLY/FAB/IMPORT tags</span></div><div class="slot"><span class="slot-tag">graph slot</span><span class="slot-desc">V56 'what your $120 buys' receipt</span></div></div>
+  </div>
+</section>
+<section class="chapter" id="youth">
+  <div class="chap-inner">
+    <div class="chap-head"><span class="chap-num">05</span><span class="chap-kicker">Who it pays</span></div>
+    <h2>The youth</h2>
+    <p class="chap-intro">20 young people work here today, room for 30. A six-month renewable apprenticeship at $52/month base plus a surplus share, and a 40%-rising-to-51% ownership stake in the cooperative. Binding constraint: Shelf-stable milling, so the harvest ships before it spoils.</p>
+    <div class="slot-label">The work in young hands</div><div class="bchart" data-chart="youth-strip" data-site="quartier_morin" data-now="20" data-cap="30" data-inc="708" style="margin:6px 0 28px"></div><div class="slot-label">Ownership ramp &#183; the apprenticeship</div><div class="bchart" data-chart="ownership" data-site="quartier_morin"  style="margin:6px 0 28px"></div><div class="slot-label">How one wage ripples &#183; the local multiplier</div><div class="bchart" data-chart="income-flow" data-site="quartier_morin" data-now="20" data-inc="708" style="margin:6px 0 28px"></div>
+    <div class="slots"></div>
+  </div>
+</section>
+
+<section class="chapter" id="sponsor" style="text-align:center;background:var(--bottle-green);">
+  <div class="chap-inner">
+    <h2>Put your money on this ground</h2>
+    <p class="chap-intro" style="margin:0 auto 26px;">Your purchase of cassava flour funds this site directly: the wages, the equipment, the assets that stay in the cooperative. The proof of exactly what it did ships back with the harvest.</p>
+    <a class="spon-btn live" href="../acheter-boite.html">Sponsor this site</a>
+  </div>
+</section>
+
+<div class="spon-bar">
+  <span class="lab"><b>Quartier-Morin</b> · Active · live product</span>
+  <a class="spon-btn live" href="../acheter-boite.html">Sponsor this site</a>
+</div>
+
+<script src="../js/nav.js"></script>
+<script src="../js/barss-charts.js"></script>
+</body>
+</html>
