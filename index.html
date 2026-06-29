@@ -134,6 +134,18 @@
     }
     @media (max-width: 820px) {
       .values-grid { grid-template-columns: 1fr !important; }
+      /* hero: restore right padding when stacked + let text wrap inside the phone */
+      .kn-hero.kn-hero-split { padding: 40px 24px !important; }
+      .kn-hero-split .kn-hero-content { max-width: 100% !important; min-width: 0; }
+      .kn-hero-content .t-h1 { white-space: normal; overflow-wrap: break-word; }
+      .hero-mission { max-width: 100%; }
+      /* stats: a two-up that actually fits, smaller number + tighter cells */
+      .kn-stats-grid { grid-template-columns: 1fr 1fr; }
+      .kn-stat-n { font-size: 30px; }
+      .kn-stat { padding: 20px 10px; }
+    }
+    @media (max-width: 460px) {
+      .kn-stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
