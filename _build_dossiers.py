@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Generate the four Layer-3 site dossier scaffolds (sites/<key>.html).
+"""Generate the four Layer-3 campus dossier scaffolds (campuses/<key>.html).
 Scroll-snap chapters, hero over satellite, sticky chapter nav, pinned sponsor,
 and labelled GRAPH SLOTS keyed to the viz catalog (V-IDs) ready to fill."""
 import os, io, json
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-OUT  = os.path.join(REPO, "sites")
+OUT  = os.path.join(REPO, "campuses")
 os.makedirs(OUT, exist_ok=True)
 
-# per-site curated content (mirrors the SITES object in ground-partners.html)
+# per-campus curated content (mirrors the SITES object in campuses.html)
 SITES = {
  "quartier_morin": {
    "name":"Quartier-Morin","dept":"Nord","sub":"Kayimit",
    "coords":"19.6825, -72.18488","status":"Active · live product","cls":"live",
-   "verdict":"Haiti's cassava capital, on the richest soil in the set. The one site shipping a product today.",
+   "verdict":"Haiti's cassava capital, on the richest soil in the set. The one campus shipping a product today.",
    "live":True,"gated":False,
    "hero_stats":[("5.2%","soil organic carbon"),("1.3°","flat ground"),("20 → 30","youth"),("$8,100","to get running")],
    "hero_graph":"V4 texture triangle + V19 extraction-joint",
@@ -34,7 +34,7 @@ SITES = {
    "fp_lead":"cassava","fp_note":"pH and slope sit in cassava's sweet spot and the rainfall is comfortably inside its range... an unusually clean match.",
    "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":5.6},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":1152},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":1.3}],
    "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
-   "cost_items":[["Agriculture atom kit (tools, the cohort)",3600,"IMPORT"],["Cassava cuttings + pigeon pea seed",400,"SUPPLY"],["Contoured beds + drainage (the flood fix)",1500,"FAB"],["Starter hand processing (grater, press, racks)",600,"IMPORT"],["Site manager + first-season working capital",2000,"SERVICE"]],
+   "cost_items":[["Agriculture atom kit (tools, the cohort)",3600,"IMPORT"],["Cassava cuttings + pigeon pea seed",400,"SUPPLY"],["Contoured beds + drainage (the flood fix)",1500,"FAB"],["Starter hand processing (grater, press, racks)",600,"IMPORT"],["Campus manager + first-season working capital",2000,"SERVICE"]],
    "crops":[["Cassava",100],["Pigeon pea",100],["Vetiver",100],["Lemongrass",100],["Citronella",94],["Castor",92],["Moringa",89],["Avocado",86]],
    "cropnote":"Cassava grades a perfect 1.0, alongside the aromatic grasses that feed the Nord distillery. An unusually deep bench for one field.",
    "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
@@ -54,10 +54,10 @@ SITES = {
    "land_slots":["V9 climograph + dry-season band (HERO: Dec-Mar gap)","V54 water-balance calendar (rain vs crop need)","V8 the lime fix (pH 5.4 → 6.5)","V7 soil gauges","V11 erosion dial (52.9 t/ha)","V4 texture triangle"],
    "match_intro":"Cassava again grades perfectly, joined by fast-cash aromatic grasses (lemongrass, citronella) and castor. Moringa is marginal here, held back by the acidic soil until the lime goes in.",
    "match_slots":["V15 crop-fit scorecard","V16 fingerprint (why moringa is marginal at pH 5.4)"],
-   "market_intro":"Same cassava-flour economics as Quartier-Morin, plus aromatic grass that feeds the shared Nord distillery while the site waits on slower crops.",
+   "market_intro":"Same cassava-flour economics as Quartier-Morin, plus aromatic grass that feeds the shared Nord distillery while the campus waits on slower crops.",
    "market_slots":["V19 the extraction joint","V21 price-tier ladder","V52 fast-cash → slow-cash ladder"],
    "cost":{"up":6500,"opt":20000,"dream":24000},
-   "cost_intro":"Cheapest site to get running at $6,500 (atom kit, lime, seed, cover crop, wages). The optimized $20,000 adds solar irrigation and a cistern, the direct answer to the dry season. Cross-checks the independent Milot build at $23,700.",
+   "cost_intro":"Cheapest campus to get running at $6,500 (atom kit, lime, seed, cover crop, wages). The optimized $20,000 adds solar irrigation and a cistern, the direct answer to the dry season. Cross-checks the independent Milot build at $23,700.",
    "cost_slots":["V28 cost ramp bars","V29 itemized table","V32 break-even curve"],
    "youth":{"now":10,"cap":15},
    "youth_slots":["V36 income multiplier Sankey"],
@@ -81,14 +81,14 @@ SITES = {
    "hero_graph":"V13 water-access map + GATED overlay",
    "erosion":{"R":7739,"K":0.0303,"LS":0.37,"C":0.301,"A":26.1},
    "rain":{"months":"53,41,74,114,180,137,121,145,169,162,126,72","annual":1392},
-   "land_intro":"Flat clay-loam with the network's one real advantage: a major river only 728 m away, close enough to make year-round irrigation cheap. That could mean two to three crops a year instead of one. But this pin is unconfirmed (about 3.5 km from the main Quartier-Morin site, next to an industrial quarry) and nothing is funded until Dan verifies the parcel.",
+   "land_intro":"Flat clay-loam with the network's one real advantage: a major river only 728 m away, close enough to make year-round irrigation cheap. That could mean two to three crops a year instead of one. But this pin is unconfirmed (about 3.5 km from the main Quartier-Morin campus, next to an industrial quarry) and nothing is funded until Dan verifies the parcel.",
    "land_slots":["V13 water-access map (728 m to Grande Rivière du Nord — HERO)","V1 annotated satellite (the quarry next door)","V11 erosion dial (26.1 t/ha)","V4 texture triangle","GATED OVERLAY — verification banner over the whole page"],
    "match_intro":"Same cassava match as the main Quartier-Morin pin, but the river lifts it: year-round irrigation could roughly double output per dollar.",
    "match_slots":["V15 crop-fit scorecard"],
-   "market_intro":"Same cassava economics, but the river could roughly double output per dollar by lifting the site to two or three harvests a year.",
+   "market_intro":"Same cassava economics, but the river could roughly double output per dollar by lifting the campus to two or three harvests a year.",
    "market_slots":["V19 the extraction joint","V21 price-tier ladder"],
    "cost":{"up":8500,"opt":20000,"dream":24000},
-   "cost_intro":"Numbers assume the parcel clears. The $8,500 includes a river abstraction pump; the optimized $20,000 builds the full year-round irrigation that is this site's whole reason to exist.",
+   "cost_intro":"Numbers assume the parcel clears. The $8,500 includes a river abstraction pump; the optimized $20,000 builds the full year-round irrigation that is this campus's whole reason to exist.",
    "cost_slots":["V28 cost ramp bars","V63 cost-confidence bars (everything here is provisional)"],
    "youth":{"now":0,"cap":10},
    "youth_slots":["V36 income multiplier Sankey (fills in once confirmed)"],
@@ -119,7 +119,7 @@ SITES = {
    "market_intro":"The high-value crops, but the high-extraction ones too: vetiver oil sells for roughly 170× what the grower gets for the grass, and raw cacao returns the farmer a third of what the same bean earns as local chocolate. Pestel owns the processing, or it stays poor.",
    "market_slots":["V19 the extraction joint (vetiver 170×)","V27 vetiver 'extraction laundering' callout","V50 the remedy is the lawsuit","V21 price-tier ladder (cacao raw vs local chocolate)"],
    "cost":{"up":14900,"opt":60900,"dream":83900},
-   "cost_intro":"The most expensive site, and the most patient. The $14,900 stabilizes the slope and plants. The big number is a tree-crop establishment and 3-to-5-year income bridge (~$25,000) that is grant capital, not product-purchase money.",
+   "cost_intro":"The most expensive campus, and the most patient. The $14,900 stabilizes the slope and plants. The big number is a tree-crop establishment and 3-to-5-year income bridge (~$25,000) that is grant capital, not product-purchase money.",
    "cost_slots":["V28 cost ramp bars","V33 the J-curve (tree-crop income dip)","V30 funding-type split (product vs patient/grant)"],
    "youth":{"now":10,"cap":20},
    "youth_slots":["V36 income multiplier Sankey"],
@@ -127,7 +127,7 @@ SITES = {
    "fp_lead":"vetiver","fp_note":"Vetiver tolerates the steepest slope of any crop in the set and sits right in its rainfall and pH band... the erosion-and-cash answer for this hillside.",
    "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":9.5,"absMin":4.5,"absMax":9.0,"optMin":5.5,"optMax":7.5,"val":5.9},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3200,"absMin":700,"absMax":3000,"optMin":1000,"optMax":2000,"val":1029},{"label":"Slope","unit":"°","sMin":0,"sMax":45,"absMin":0,"absMax":35,"optMin":0,"optMax":35,"val":9.9}],
    "inv":{"conv":11,"coop":50,"item":"a kilo of cacao"},
-   "cost_items":[["Agriculture atom kit",3600,"IMPORT"],["Contour structures + vetiver hedges",2500,"FAB"],["Moringa + tree seedlings, ~2 ha",4000,"SUPPLY"],["On-site composting setup",800,"FAB"],["Rabbit starter + hutchery + feed",2500,"FAB"],["Working capital",1500,"SERVICE"]],
+   "cost_items":[["Agriculture atom kit",3600,"IMPORT"],["Contour structures + vetiver hedges",2500,"FAB"],["Moringa + tree seedlings, ~2 ha",4000,"SUPPLY"],["On-campus composting setup",800,"FAB"],["Rabbit starter + hutchery + feed",2500,"FAB"],["Working capital",1500,"SERVICE"]],
    "crops":[["Vetiver",100],["Pigeon pea",100],["Cassava",91],["Castor",89],["Mango",87],["Moringa",85],["Cacao",66],["Breadfruit",64],["Coffee",56]],
    "cropnote":"The suitability model is rainfall-conservative, so it scores the tree crops moderate (cacao 66, coffee 56). The Grand'Anse play trades raw suitability for downstream value... and vetiver, the erosion-and-cash crop, grades a perfect 1.0.",
    "value":{"farmer":6.74,"final":60,"item":"a kilo of cacao made into local chocolate","unit":"$"},
@@ -140,12 +140,12 @@ NAV = """<nav class="kn-nav"><div class="container">
 <a href="../index.html" class="kn-brand"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">BARSS Haiti · Konekte Kreye Travay</span></a>
 <ul class="kn-links">
 <li><a href="../a-propos.html">About</a></li>
-<li><a href="../ground-partners.html">Ground Partners</a></li>
+<li><a href="../campuses.html">Campuses</a></li>
 <li><a href="../fatraka.html">FatraKa</a></li>
 <li><a href="../partners.html">Partners</a></li>
 <li><a href="../contact.html">Contact</a></li>
 </ul>
-<a href="../ground-partners.html" class="kn-cta kn-cta-ghost">All sites</a>
+<a href="../campuses.html" class="kn-cta kn-cta-ghost">All campuses</a>
 <a href="../je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
 </div></nav>"""
 
@@ -171,7 +171,7 @@ def chapter(cid, num, kicker, title, intro, slots, extra=""):
 def build(key, s):
     spons = ('<a class="spon-btn gated" style="pointer-events:none">Gated · verifying with Dan</a>'
              if s["gated"] else
-             f'<a class="spon-btn {"live" if s["live"] else ""}" href="../acheter-boite.html">Sponsor this site</a>')
+             f'<a class="spon-btn {"live" if s["live"] else ""}" href="../acheter-boite.html">Sponsor this campus</a>')
     hero_stats = "".join(
         f'<div class="hstat"><div class="hv">{v}</div><div class="hl">{l}</div></div>'
         for v,l in s["hero_stats"])
@@ -251,7 +251,7 @@ def build(key, s):
         +'<div class="bchart" data-chart="stack-bar" data-segs=\''+_fund+'\' '
         +'data-note="Most of Pestel\'s full build is patient or grant capital (the tree-crop bridge, the distillery, certification), not product-purchase money... which is why it is the slow founding play, not a quick sponsorship." style="margin:6px 0 28px"></div>')
     # V56 receipt (QM cost, the flagship)
-    _items=json.dumps([["Youth wages",52],["Seeds & cuttings",15],["Equipment fund (the site's asset)",25],["Milling & packing",18],["Freight & handling",10]])
+    _items=json.dumps([["Youth wages",52],["Seeds & cuttings",15],["Equipment fund (the campus's asset)",25],["Milling & packing",18],["Freight & handling",10]])
     _outs=json.dumps([["~6 lb","of cassava flour, shipped to you"],["~9 hrs","of paid work for a young person"],["1","season report: who was hired, what grew"]])
     receipt_chart=("" if key!="quartier_morin" else
         '<div class="slot-label">A purchase, not a donation &#183; what your box buys</div>'
@@ -277,12 +277,12 @@ def build(key, s):
     remedy_chart=("" if key!="pestel" else
         '<div class="slot-label">The remedy is the lawsuit &#183; operation vs extraction</div>'
         +'<div class="bchart" data-chart="remedy" data-pairs=\''+_rem+'\' '
-        +'data-note="The same vetiver chain BARSS documents as extraction in the litigation is the one this site inverts in practice. Operations and the case are one argument." style="margin:6px 0 28px"></div>')
+        +'data-note="The same vetiver chain BARSS documents as extraction in the litigation is the one this campus inverts in practice. Operations and the case are one argument." style="margin:6px 0 28px"></div>')
     # Youth
     youth_chart=bc("The work in young hands","youth-strip",{"now":y["now"],"cap":y["cap"],"inc":708})
     own_chart=bc("Ownership ramp &#183; the apprenticeship","ownership",{})
     income_chart=bc("How one wage ripples &#183; the local multiplier","income-flow",{"now":y["now"],"inc":708})
-    # site-specific extras
+    # campus-specific extras
     pestel_land=pestel_market=pestel_cost=milot_land=""
     if key=="pestel":
         pestel_land=bc("Soil-loss clock &#183; with and without erosion control","depletion",{"a":e["A"],"bd":1.35,"depth":25})
@@ -321,7 +321,7 @@ def build(key, s):
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>{s['name']} · Site Dossier · BARSS Haiti</title>
+<title>{s['name']} · Campus Dossier · BARSS Haiti</title>
 <meta name="description" content="{s['verdict']}"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -385,10 +385,10 @@ def build(key, s):
 {NAV}
 
 <header class="d-hero">
-  <img class="bg" src="../img/sites/{key}_context.jpg" alt="Satellite view of {s['name']}"/>
+  <img class="bg" src="../img/campuses/{key}_context.jpg" alt="Satellite view of {s['name']}"/>
   <div class="scrim"></div>
   <div class="inner">
-    <a href="../ground-partners.html" class="back">← All four sites</a>
+    <a href="../campuses.html" class="back">← All four campuses</a>
     <span class="badge">{s['status']}</span>
     <h1>{s['name']}</h1>
     <div class="sub">{s['dept']} · {s['sub']}</div>
@@ -411,8 +411,8 @@ def build(key, s):
 
 <section class="chapter" id="sponsor" style="text-align:center;background:var(--bottle-green);">
   <div class="chap-inner">
-    <h2>{'This site is gated' if s['gated'] else 'Put your money on this ground'}</h2>
-    <p class="chap-intro" style="margin:0 auto 26px;">{'Nothing here is funded until Dan confirms the parcel, the flood fringe, and the quarry next door. Check back, or sponsor one of the live sites in the meantime.' if s['gated'] else 'Your purchase of cassava flour funds this site directly: the wages, the equipment, the assets that stay in the cooperative. The proof of exactly what it did ships back with the harvest.'}</p>
+    <h2>{'This campus is gated' if s['gated'] else 'Put your money on this ground'}</h2>
+    <p class="chap-intro" style="margin:0 auto 26px;">{'Nothing here is funded until Dan confirms the parcel, the flood fringe, and the quarry next door. Check back, or sponsor one of the live campuses in the meantime.' if s['gated'] else 'Your purchase of cassava flour funds this campus directly: the wages, the equipment, the assets that stay in the cooperative. The proof of exactly what it did ships back with the harvest.'}</p>
     {spons}
   </div>
 </section>
@@ -431,5 +431,5 @@ for key, s in SITES.items():
     html = build(key, s)
     with io.open(os.path.join(OUT, key + ".html"), "w", encoding="utf-8") as f:
         f.write(html)
-    print("wrote sites/%s.html" % key)
+    print("wrote campuses/%s.html" % key)
 print("done")
