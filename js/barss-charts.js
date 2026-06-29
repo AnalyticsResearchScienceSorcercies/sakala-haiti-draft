@@ -133,7 +133,95 @@
       ".dia-bar>span{display:block;height:100%;border-radius:3px}",
       ".dia-val{flex:0 0 42px;font-family:'Roboto Slab',serif;font-weight:800;font-size:12.5px;color:"+BONE+";text-align:right}",
       ".dia-note{font-family:'Lora',serif;font-size:12.5px;line-height:1.55;color:rgba(244,239,226,.6);margin-top:12px;border-top:1px solid rgba(244,239,226,.1);padding-top:12px}",
-      ".dia-note i{color:"+ORANGE+";font-style:normal}.dia-note b{color:"+BONE+"}"
+      ".dia-note i{color:"+ORANGE+";font-style:normal}.dia-note b{color:"+BONE+"}",
+      /* V16 EcoCrop fingerprint */
+      ".fp{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:22px}",
+      ".fp-lead{font-family:'Roboto Slab',serif;font-weight:800;font-size:16px;color:"+BONE+";margin-bottom:16px}",
+      ".fp-lead span{color:"+GREEN+"}",
+      ".fp-row{margin-bottom:15px}",
+      ".fp-hd{display:flex;justify-content:space-between;font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:rgba(244,239,226,.7);margin-bottom:6px}",
+      ".fp-hd b{font-family:'Roboto Slab',serif;font-weight:800}",
+      ".fp-track{position:relative;height:14px;background:rgba(244,239,226,.04);border-radius:3px}",
+      ".fp-abs{position:absolute;top:0;bottom:0;background:rgba(244,239,226,.11);border-radius:2px}",
+      ".fp-opt{position:absolute;top:0;bottom:0;background:rgba(26,171,77,.32);border-radius:2px}",
+      ".fp-mark{position:absolute;top:-3px;bottom:-3px;width:3px;border-radius:2px}",
+      ".fp-note{font-family:'Lora',serif;font-style:italic;font-size:12.5px;line-height:1.5;color:rgba(244,239,226,.6);margin-top:10px}",
+      /* V20 Theta inversion */
+      ".inv{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:22px}",
+      ".inv-row{margin-bottom:14px}",
+      ".inv-lab{font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(244,239,226,.7);margin-bottom:6px}",
+      ".inv-bar{display:flex;height:36px;border-radius:4px;overflow:hidden}",
+      ".inv-seg{display:flex;align-items:center;justify-content:center;font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:.3px;color:"+BONE+";white-space:nowrap;overflow:hidden;padding:0 4px}",
+      ".inv-note{font-family:'Lora',serif;font-size:13.5px;line-height:1.55;color:rgba(244,239,226,.82);margin-top:14px}",
+      ".inv-note b{color:"+GREEN+";font-weight:600}",
+      /* V29 itemized cost table */
+      ".ctab{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:14px 16px}",
+      ".ctab table{width:100%;border-collapse:collapse}",
+      ".ctab td{font-family:'Lora',serif;font-size:13.5px;color:rgba(244,239,226,.85);padding:9px 8px;border-bottom:1px solid rgba(244,239,226,.07);vertical-align:middle}",
+      ".ctab td.amt{text-align:right;font-family:'Roboto Slab',serif;font-weight:800;color:"+BONE+";white-space:nowrap}",
+      ".ctab .tag{font-family:'Courier Prime',monospace;font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;padding:3px 7px;border-radius:3px;white-space:nowrap}",
+      ".ctab tr.tot td{border-top:2px solid rgba(244,239,226,.22);border-bottom:none;font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:"+BONE+";padding-top:11px}",
+      ".ct-key{font-family:'Courier Prime',monospace;font-size:9px;letter-spacing:.3px;color:rgba(244,239,226,.4);margin-top:10px;line-height:1.5}",
+      /* V51 crop calendar */
+      ".cal{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:18px 16px;overflow-x:auto}",
+      ".cal table{width:100%;border-collapse:collapse;min-width:440px}",
+      ".cal th{font-family:'Courier Prime',monospace;font-size:9px;font-weight:400;color:rgba(244,239,226,.5);padding:2px;text-align:center}",
+      ".cal td.crop{font-family:'Lora',serif;font-size:12.5px;color:rgba(244,239,226,.85);white-space:nowrap;padding-right:10px;text-align:right}",
+      ".cal td.cell{padding:2px 1px}",
+      ".cal .blk{height:15px;border-radius:2px;background:rgba(244,239,226,.05)}",
+      ".cal .blk.grow{background:rgba(244,239,226,.13)}",
+      ".cal .blk.harv{background:"+GREEN+"}",
+      ".cal .blk.plant{background:"+AMBER+"}",
+      ".cal-key{font-family:'Courier Prime',monospace;font-size:9px;color:rgba(244,239,226,.45);margin-top:10px}",
+      ".cal-key i{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 4px 0 12px;vertical-align:middle}",
+      /* V52 fast-cash */
+      ".fc{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:20px}",
+      ".fc-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}",
+      ".fc-name{flex:0 0 120px;font-family:'Lora',serif;font-size:13px;color:rgba(244,239,226,.85);text-align:right}",
+      ".fc-bar{flex:1;height:16px;background:rgba(244,239,226,.06);border-radius:3px;overflow:hidden}",
+      ".fc-bar>span{display:block;height:100%;border-radius:3px}",
+      ".fc-val{flex:0 0 64px;font-family:'Courier Prime',monospace;font-size:11px;color:"+BONE+"}",
+      ".fc-note{font-family:'Lora',serif;font-style:italic;font-size:12.5px;line-height:1.5;color:rgba(244,239,226,.6);margin-top:10px}",
+      /* stacked bar (V22 COGS, V30 funding) */
+      ".sbox{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:20px}",
+      ".sbar{display:flex;height:40px;border-radius:4px;overflow:hidden;margin-bottom:13px}",
+      ".sbar .seg{display:flex;align-items:center;justify-content:center;font-family:'Courier Prime',monospace;font-size:10px;color:"+BONE+";overflow:hidden;padding:0 3px;white-space:nowrap}",
+      ".sleg{display:flex;flex-wrap:wrap;gap:6px 16px}",
+      ".sleg span{font-family:'Courier Prime',monospace;font-size:10.5px;color:rgba(244,239,226,.72)}",
+      ".sleg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}",
+      /* V32 break-even */
+      ".be{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:20px}",
+      ".be svg{width:100%;height:auto;display:block}",
+      ".be-cap{font-family:'Lora',serif;font-style:italic;font-size:13px;line-height:1.55;color:rgba(244,239,226,.6);margin-top:10px}",
+      /* V63 cost confidence */
+      ".conf{background:rgba(244,239,226,.03);border:1px solid rgba(244,239,226,.08);border-radius:6px;padding:20px}",
+      ".cf2-row{margin-bottom:14px}",
+      ".cf2-hd{display:flex;justify-content:space-between;align-items:baseline;font-family:'Courier Prime',monospace;font-size:10.5px;letter-spacing:.3px;text-transform:uppercase;color:rgba(244,239,226,.74);margin-bottom:6px}",
+      ".cf2-hd .q{color:"+AMBER+";font-size:9px}",
+      ".cf2-hd b{font-family:'Roboto Slab',serif;font-weight:800;color:"+BONE+";text-transform:none}",
+      ".cf2-track{position:relative;height:12px;background:rgba(244,239,226,.06);border-radius:3px}",
+      ".cf2-rng{position:absolute;top:0;bottom:0;border-radius:3px}",
+      ".conf-note{font-family:'Lora',serif;font-style:italic;font-size:12.5px;line-height:1.5;color:rgba(244,239,226,.6);margin-top:8px}",
+      /* V50 remedy = lawsuit */
+      ".rem{display:grid;grid-template-columns:1fr 1fr;gap:2px}",
+      ".rem-h{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:11px 12px;text-align:center;line-height:1.3}",
+      ".rem-h.bad{background:rgba(220,20,60,.16);color:#ec9aa3}",
+      ".rem-h.good{background:rgba(26,171,77,.16);color:#8fe0ad}",
+      ".rem-cell{font-family:'Lora',serif;font-size:13px;line-height:1.45;padding:12px;background:rgba(244,239,226,.03);color:rgba(244,239,226,.85)}",
+      ".rem-cell.bad{border-left:2px solid "+RED+"}",
+      ".rem-cell.good{border-left:2px solid "+GREEN+"}",
+      ".rem-note{font-family:'Lora',serif;font-style:italic;font-size:12.5px;line-height:1.5;color:rgba(244,239,226,.6);margin-top:12px}",
+      /* V56 receipt */
+      ".rcpt{background:rgba(244,239,226,.04);border:1px solid rgba(244,239,226,.1);border-radius:6px;padding:22px 24px;max-width:400px;margin:0 auto}",
+      ".rcpt-h{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:"+ORANGE+";text-align:center;border-bottom:1px dashed rgba(244,239,226,.25);padding-bottom:12px;margin-bottom:14px}",
+      ".rcpt-row{display:flex;justify-content:space-between;align-items:baseline;font-family:'Courier Prime',monospace;font-size:12.5px;color:rgba(244,239,226,.82);padding:6px 0;border-bottom:1px dotted rgba(244,239,226,.12)}",
+      ".rcpt-row b{font-family:'Roboto Slab',serif;font-weight:800;color:"+BONE+"}",
+      ".rcpt-tot{display:flex;justify-content:space-between;font-family:'Roboto Slab',serif;font-weight:800;font-size:16px;color:"+BONE+";padding-top:12px;margin-top:6px}",
+      ".rcpt-out{border-top:1px dashed rgba(244,239,226,.25);margin-top:14px;padding-top:14px}",
+      ".rcpt-o{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}",
+      ".rcpt-o .ov{font-family:'Roboto Slab',serif;font-weight:800;font-size:17px;color:"+GREEN+";flex:0 0 auto}",
+      ".rcpt-o .ol{font-family:'Lora',serif;font-size:13px;color:rgba(244,239,226,.78)}",
+      ".rcpt-note{font-family:'Lora',serif;font-style:italic;font-size:12.5px;line-height:1.5;color:rgba(244,239,226,.6);margin-top:14px;text-align:center}"
     ].join("");
     document.head.appendChild(css);
   }
@@ -505,6 +593,154 @@
       +'<div class="dia-note"><i>&#9733;</i> the three hub states for the Harvest Box. About <b>'+(total/1e6).toFixed(1)+' million</b> people of Haitian ancestry across the US... the demand side of the chain. <span style="opacity:.6">U.S. Census ACS.</span></div></div>';
   }
 
+  /* ---- V16 EcoCrop suitability fingerprint ---- */
+  function renderFingerprint(el){
+    var lead=el.dataset.lead||"", note=el.dataset.note||"";
+    var axes=JSON.parse(el.dataset.axes||"[]"); // {label,unit,sMin,sMax,absMin,absMax,optMin,optMax,val}
+    function pct(v,a){return Math.max(0,Math.min(100,(v-a.sMin)/(a.sMax-a.sMin)*100));}
+    var rows=axes.map(function(a){
+      var inOpt=a.val>=a.optMin&&a.val<=a.optMax, inAbs=a.val>=a.absMin&&a.val<=a.absMax;
+      var col=inOpt?GREEN:inAbs?AMBER:RED;
+      var aL=pct(a.absMin,a), aW=pct(a.absMax,a)-aL, oL=pct(a.optMin,a), oW=pct(a.optMax,a)-oL;
+      return '<div class="fp-row"><div class="fp-hd"><span>'+a.label+'</span><span>site <b style="color:'+col+'">'+a.val+a.unit+'</b></span></div>'
+        +'<div class="fp-track"><span class="fp-abs" style="left:'+aL+'%;width:'+aW+'%"></span>'
+        +'<span class="fp-opt" style="left:'+oL+'%;width:'+oW+'%"></span>'
+        +'<span class="fp-mark" style="left:calc('+pct(a.val,a)+'% - 1.5px);background:'+col+'"></span></div></div>';
+    }).join("");
+    el.innerHTML='<div class="fp"><div class="fp-lead">Best-fit crop: <span>'+lead+'</span></div>'+rows
+      +'<div class="fp-note">Grey band = where '+lead+' grows at all; green = its sweet spot; the marker is this site. '+note+'</div></div>';
+  }
+
+  /* ---- V20 Theta inversion (conventional vs SAKALA) ---- */
+  function renderInversion(el){
+    var conv=+el.dataset.conv, coop=+el.dataset.coop, item=el.dataset.item||"the final price";
+    function seg(w,bg,txt){return '<div class="inv-seg" style="width:'+w+'%;background:'+bg+'">'+(w>13?txt:'')+'</div>';}
+    el.innerHTML='<div class="inv">'
+      +'<div class="inv-row"><div class="inv-lab">Conventional chain</div><div class="inv-bar">'
+        +seg(Math.max(3,conv),RED,'farmer '+conv+'%')
+        +seg(100-Math.max(3,conv),'rgba(220,20,60,.28)','captured downstream')+'</div></div>'
+      +'<div class="inv-row"><div class="inv-lab">The SAKALA model</div><div class="inv-bar">'
+        +seg(coop,GREEN,'cooperative '+coop+'%')
+        +seg(100-coop,'rgba(244,239,226,.12)','US freight + retail')+'</div></div>'
+      +'<div class="inv-note">Conventionally the grower keeps about '+conv+'% of '+item+'. By owning the growing, processing, and brand, the cooperative keeps roughly <b>'+coop+'%</b> on the Haiti side... the rest is genuine US distribution. <span style="opacity:.55">A model of the design, not a measured split.</span></div></div>';
+  }
+
+  /* ---- V29 itemized cost table (the procurement list) ---- */
+  function renderCostTable(el){
+    var rows=JSON.parse(el.dataset.rows||"[]"); // [[label, amount, tag]]
+    var label=el.dataset.label||"Up to speed";
+    var TAG={SUPPLY:["#23416f","#9bbce0"],FAB:["#15803d","#8fe0ad"],IMPORT:["#7e6018","#e6cd86"],SERVICE:["#3f3f46","#b6b6c0"],PATIENT:["#7a1420","#ec9aa3"]};
+    var tot=rows.reduce(function(a,r){return a+r[1];},0);
+    var trs=rows.map(function(r){
+      var t=TAG[r[2]]||TAG.SERVICE;
+      return '<tr><td>'+r[0]+'</td><td><span class="tag" style="background:'+t[0]+';color:'+t[1]+'">'+r[2]+'</span></td><td class="amt">$'+r[1].toLocaleString()+'</td></tr>';
+    }).join("");
+    el.innerHTML='<div class="ctab"><table>'+trs
+      +'<tr class="tot"><td>'+label+'</td><td></td><td class="amt">$'+tot.toLocaleString()+'</td></tr></table>'
+      +'<div class="ct-key"><b style="color:#9bbce0">SUPPLY</b> consumables &#183; <b style="color:#8fe0ad">FAB</b> build locally &#183; <b style="color:#e6cd86">IMPORT</b> procure / write-off donation &#183; <b style="color:#b6b6c0">SERVICE</b> operating &#183; <b style="color:#ec9aa3">PATIENT</b> grant capital</div></div>';
+  }
+
+  /* ---- V51 crop / harvest calendar ---- */
+  function renderCalendar(el){
+    var rows=JSON.parse(el.dataset.rows||"[]"); // [{crop, plant:[], harv:[], grow:[]}]
+    var M=["J","F","M","A","M","J","J","A","S","O","N","D"];
+    var head='<tr><th></th>'+M.map(function(m){return '<th>'+m+'</th>';}).join("")+'</tr>';
+    var body=rows.map(function(r){
+      var cells="";
+      for(var i=1;i<=12;i++){
+        var c=(r.harv&&r.harv.indexOf(i)>=0)?'harv':(r.plant&&r.plant.indexOf(i)>=0)?'plant':(r.grow&&r.grow.indexOf(i)>=0)?'grow':'';
+        cells+='<td class="cell"><div class="blk '+c+'"></div></td>';
+      }
+      return '<tr><td class="crop">'+r.crop+'</td>'+cells+'</tr>';
+    }).join("");
+    el.innerHTML='<div class="cal"><table>'+head+body+'</table>'
+      +'<div class="cal-key"><i style="background:'+AMBER+'"></i>plant<i style="background:rgba(244,239,226,.13)"></i>grow<i style="background:'+GREEN+'"></i>harvest'
+      +(el.dataset.note?' &#183; '+el.dataset.note:'')+'</div></div>';
+  }
+
+  /* ---- V52 fast-cash ladder ---- */
+  function renderFastCash(el){
+    var rows=JSON.parse(el.dataset.rows||"[]"); // [[crop, months]]
+    var cap=+(el.dataset.cap||24);
+    var bars=rows.map(function(r){
+      var m=r[1], over=m>cap, col=m<=9?GREEN:m<=15?AMBER:RED;
+      var disp=over?(Math.round(m/12)+"+ yrs"):(m+" mo");
+      return '<div class="fc-row"><span class="fc-name">'+r[0]+'</span>'
+        +'<span class="fc-bar"><span style="width:'+Math.min(100,m/cap*100)+'%;background:'+col+'"></span></span>'
+        +'<span class="fc-val">'+disp+'</span></div>';
+    }).join("");
+    el.innerHTML='<div class="fc">'+bars+(el.dataset.note?'<div class="fc-note">'+el.dataset.note+'</div>':'')+'</div>';
+  }
+
+  /* ---- generic stacked bar (V22 COGS, V30 funding split) ---- */
+  function renderStackBar(el){
+    var segs=JSON.parse(el.dataset.segs||"[]"); // [[label, value, color, disp]]
+    var total=segs.reduce(function(a,s){return a+s[1];},0);
+    var bar=segs.map(function(s){var w=s[1]/total*100;return '<div class="seg" style="width:'+w+'%;background:'+s[2]+'">'+(w>12?s[0]:'')+'</div>';}).join("");
+    var leg=segs.map(function(s){return '<span><i style="background:'+s[2]+'"></i>'+s[0]+(s[3]?' '+s[3]:'')+'</span>';}).join("");
+    el.innerHTML='<div class="sbox"><div class="sbar">'+bar+'</div><div class="sleg">'+leg+'</div>'
+      +(el.dataset.note?'<div class="fc-note">'+el.dataset.note+'</div>':'')+'</div>';
+  }
+
+  /* ---- V32 break-even ---- */
+  function renderBreakeven(el){
+    var be=+(el.dataset.be||44), unit=el.dataset.unit||"units";
+    var xmax=Math.round(be*2.2);
+    var W=620,H=210,padL=20,padR=18,padT=18,padB=34,pw=W-padL-padR,ph=H-padT-padB;
+    var ymin=-be, ymax=xmax-be;
+    function X(n){return padL+pw*n/xmax;}
+    function Y(v){return padT+ph*(1-(v-ymin)/(ymax-ymin));}
+    var zeroY=Y(0), p0=[X(0),Y(-be)], p1=[X(xmax),Y(xmax-be)], bp=[X(be),zeroY];
+    var areaLoss='M'+p0[0]+' '+zeroY+' L'+p0[0]+' '+p0[1]+' L'+bp[0]+' '+zeroY+' Z';
+    var areaProf='M'+bp[0]+' '+zeroY+' L'+p1[0]+' '+p1[1]+' L'+p1[0]+' '+zeroY+' Z';
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Break-even">'
+      +'<path d="'+areaLoss+'" fill="rgba(220,20,60,.12)"/>'
+      +'<path d="'+areaProf+'" fill="rgba(26,171,77,.14)"/>'
+      +'<line x1="'+padL+'" y1="'+zeroY+'" x2="'+(W-padR)+'" y2="'+zeroY+'" stroke="rgba(244,239,226,.3)"/>'
+      +'<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="'+GREEN+'" stroke-width="3"/>'
+      +'<circle cx="'+bp[0]+'" cy="'+zeroY+'" r="6" fill="'+ORANGE+'" stroke="#0c0c0c" stroke-width="2"/>'
+      +'<text x="'+bp[0]+'" y="'+(zeroY-12)+'" text-anchor="middle" font-family="Roboto Slab,serif" font-weight="800" font-size="14" fill="'+ORANGE+'">~'+be+'</text>'
+      +'<text x="'+bp[0]+'" y="'+(H-12)+'" text-anchor="middle" font-family="Courier Prime,monospace" font-size="10" fill="rgba(244,239,226,.6)">break-even</text>'
+      +'<text x="'+(padL+4)+'" y="'+(p0[1]+4)+'" font-family="Courier Prime,monospace" font-size="10" fill="#e08a8a">loss</text>'
+      +'<text x="'+(W-padR-4)+'" y="'+(p1[1]+12)+'" text-anchor="end" font-family="Courier Prime,monospace" font-size="10" fill="#8fe0ad">profit</text>'
+      +'</svg>';
+    el.innerHTML='<div class="be">'+svg+'<div class="be-cap">'+(el.dataset.note||('About '+be+' '+unit+' and the line pays for itself, then compounds.'))+'</div></div>';
+  }
+
+  /* ---- V63 cost-confidence ranges ---- */
+  function renderConfidence(el){
+    var rows=JSON.parse(el.dataset.rows||"[]"); // [[item, low, high, quote]]
+    var max=Math.max.apply(null,rows.map(function(r){return r[2];}))*1.05;
+    var bars=rows.map(function(r){
+      var q=r[3], col=q?ORANGE:"#5fa8c9";
+      var L=r[1]/max*100, W2=Math.max(2,(r[2]-r[1])/max*100);
+      var disp=r[1]===r[2]?("$"+r[1].toLocaleString()):("$"+r[1].toLocaleString()+"-"+r[2].toLocaleString());
+      return '<div class="cf2-row"><div class="cf2-hd"><span>'+r[0]+(q?' <span class="q">&#9888; needs quote</span>':'')+'</span><b>'+disp+'</b></div>'
+        +'<div class="cf2-track"><span class="cf2-rng" style="left:'+L+'%;width:'+W2+'%;background:'+col+(q?';background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.18),rgba(255,255,255,.18) 4px,transparent 4px,transparent 8px)':'')+'"></span></div></div>';
+    }).join("");
+    el.innerHTML='<div class="conf">'+bars+(el.dataset.note?'<div class="conf-note">'+el.dataset.note+'</div>':'')+'</div>';
+  }
+
+  /* ---- V50 the remedy is the lawsuit ---- */
+  function renderRemedy(el){
+    var pairs=JSON.parse(el.dataset.pairs||"[]"); // [[extraction, remedy]]
+    var cells='<div class="rem-h bad">The extraction the lawsuit targets</div><div class="rem-h good">The remedy this operation is</div>';
+    pairs.forEach(function(p){ cells+='<div class="rem-cell bad">'+p[0]+'</div><div class="rem-cell good">'+p[1]+'</div>'; });
+    el.innerHTML='<div class="rem">'+cells+'</div>'+(el.dataset.note?'<div class="rem-note">'+el.dataset.note+'</div>':'');
+  }
+
+  /* ---- V56 "what your $X buys" receipt ---- */
+  function renderReceipt(el){
+    var total=+(el.dataset.total||120);
+    var items=JSON.parse(el.dataset.items||"[]"), outs=JSON.parse(el.dataset.outs||"[]");
+    var rows=items.map(function(it){return '<div class="rcpt-row"><span>'+it[0]+'</span><b>$'+it[1]+'</b></div>';}).join("");
+    var os=outs.map(function(o){return '<div class="rcpt-o"><span class="ov">'+o[0]+'</span><span class="ol">'+o[1]+'</span></div>';}).join("");
+    el.innerHTML='<div class="rcpt"><div class="rcpt-h">Your $'+total+' box &#183; where it goes</div>'+rows
+      +'<div class="rcpt-tot"><span>Total</span><span>$'+total+'</span></div>'
+      +'<div class="rcpt-out">'+os+'</div>'
+      +(el.dataset.note?'<div class="rcpt-note">'+el.dataset.note+'</div>':'')+'</div>';
+  }
+
   var REGISTRY={
     "erosion-dial":renderErosionDial, "climograph":renderClimograph,
     "texture":renderTexture, "soil-card":renderSoilCard, "crop-fit":renderCropFit,
@@ -512,7 +748,11 @@
     "cost-ramp":renderCostRamp, "ownership":renderOwnership, "youth-strip":renderYouthStrip,
     "income-flow":renderIncomeFlow, "jcurve":renderJCurve, "depletion":renderDepletion,
     "vetiver-call":renderVetiverCall, "lime-fix":renderLime,
-    "haiti-map":renderHaitiMap, "diaspora":renderDiaspora
+    "haiti-map":renderHaitiMap, "diaspora":renderDiaspora,
+    "fingerprint":renderFingerprint, "inversion":renderInversion, "cost-table":renderCostTable,
+    "calendar":renderCalendar, "fast-cash":renderFastCash, "stack-bar":renderStackBar,
+    "breakeven":renderBreakeven, "confidence":renderConfidence, "remedy":renderRemedy,
+    "receipt":renderReceipt
   };
 
   function renderAll(root){

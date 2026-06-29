@@ -31,6 +31,10 @@ SITES = {
    "youth":{"now":20,"cap":30},
    "youth_slots":["V36 income multiplier Sankey"],
    "soil":{"ph":5.6,"soc":5.24,"cec":27.1,"slope":1.3,"sand":30.7,"silt":35.5,"clay":33.8,"texture":"clay loam"},
+   "fp_lead":"cassava","fp_note":"pH and slope sit in cassava's sweet spot and the rainfall is comfortably inside its range... an unusually clean match.",
+   "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":5.6},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":1152},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":1.3}],
+   "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
+   "cost_items":[["Agriculture atom kit (tools, the cohort)",3600,"IMPORT"],["Cassava cuttings + pigeon pea seed",400,"SUPPLY"],["Contoured beds + drainage (the flood fix)",1500,"FAB"],["Starter hand processing (grater, press, racks)",600,"IMPORT"],["Site manager + first-season working capital",2000,"SERVICE"]],
    "crops":[["Cassava",100],["Pigeon pea",100],["Vetiver",100],["Lemongrass",100],["Citronella",94],["Castor",92],["Moringa",89],["Avocado",86]],
    "cropnote":"Cassava grades a perfect 1.0, alongside the aromatic grasses that feed the Nord distillery. An unusually deep bench for one field.",
    "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
@@ -58,6 +62,10 @@ SITES = {
    "youth":{"now":10,"cap":15},
    "youth_slots":["V36 income multiplier Sankey"],
    "soil":{"ph":5.4,"soc":3.62,"cec":21.2,"slope":3.5,"sand":34.7,"silt":34.1,"clay":31.2,"texture":"clay loam"},
+   "fp_lead":"cassava","fp_note":"Cassava is unfussy here; the only nudge is lime to lift the acidic pH toward the green band.",
+   "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":5.4},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":1392},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":3.5}],
+   "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
+   "cost_items":[["Agriculture atom kit",3600,"IMPORT"],["Lime (pH 5.4 to 6.5)",600,"SUPPLY"],["Cassava + aromatic seed / cuttings",400,"SUPPLY"],["Cover-crop / mulch (the erosion flag)",400,"SUPPLY"],["Working capital",1500,"SERVICE"]],
    "crops":[["Cassava",98],["Vetiver",98],["Lemongrass",96],["Citronella",96],["Pigeon pea",96],["Cinnamon",91]],
    "cropnote":"Moringa, the current nursery crop, is held back by the acidic soil until lime goes in... cassava and the aromatic grasses grade highest here.",
    "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
@@ -85,6 +93,10 @@ SITES = {
    "youth":{"now":0,"cap":10},
    "youth_slots":["V36 income multiplier Sankey (fills in once confirmed)"],
    "soil":{"ph":5.4,"soc":3.93,"cec":20.6,"slope":1.4,"sand":33.1,"silt":34.8,"clay":32.1,"texture":"clay loam"},
+   "fp_lead":"cassava","fp_note":"Same clean cassava fit as the main pin; the river is what would lift it to two or three crops a year.",
+   "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":5.4},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":1392},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":1.4}],
+   "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
+   "cost_items":[["Confirm parcel + Agriculture atom kit",3600,"IMPORT"],["Seed / cuttings",400,"SUPPLY"],["River abstraction + pump",3000,"IMPORT"],["Working capital",1500,"SERVICE"]],
    "crops":[["Cassava",98],["Vetiver",98],["Pigeon pea",96],["Lemongrass",96],["Citronella",96],["Cinnamon",91]],
    "cropnote":"Same strong cassava-and-aromatics profile as the main Quartier-Morin pin... the river is what would set it apart.",
    "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
@@ -112,6 +124,10 @@ SITES = {
    "youth":{"now":10,"cap":20},
    "youth_slots":["V36 income multiplier Sankey"],
    "soil":{"ph":5.9,"soc":6.19,"cec":33.7,"slope":9.9,"sand":22.1,"silt":37.2,"clay":40.7,"texture":"clay"},
+   "fp_lead":"vetiver","fp_note":"Vetiver tolerates the steepest slope of any crop in the set and sits right in its rainfall and pH band... the erosion-and-cash answer for this hillside.",
+   "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":9.5,"absMin":4.5,"absMax":9.0,"optMin":5.5,"optMax":7.5,"val":5.9},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3200,"absMin":700,"absMax":3000,"optMin":1000,"optMax":2000,"val":1029},{"label":"Slope","unit":"°","sMin":0,"sMax":45,"absMin":0,"absMax":35,"optMin":0,"optMax":35,"val":9.9}],
+   "inv":{"conv":11,"coop":50,"item":"a kilo of cacao"},
+   "cost_items":[["Agriculture atom kit",3600,"IMPORT"],["Contour structures + vetiver hedges",2500,"FAB"],["Moringa + tree seedlings, ~2 ha",4000,"SUPPLY"],["On-site composting setup",800,"FAB"],["Rabbit starter + hutchery + feed",2500,"FAB"],["Working capital",1500,"SERVICE"]],
    "crops":[["Vetiver",100],["Pigeon pea",100],["Cassava",91],["Castor",89],["Mango",87],["Moringa",85],["Cacao",66],["Breadfruit",64],["Coffee",56]],
    "cropnote":"The suitability model is rainfall-conservative, so it scores the tree crops moderate (cacao 66, coffee 56). The Grand'Anse play trades raw suitability for downstream value... and vetiver, the erosion-and-cash crop, grades a perfect 1.0.",
    "value":{"farmer":6.74,"final":60,"item":"a kilo of cacao made into local chocolate","unit":"$"},
@@ -189,9 +205,79 @@ def build(key, s):
     diaspora_chart=("" if key=="pestel" else
         '<div class="slot-label">The demand side &#183; Haitian diaspora by US state</div>'
         +'<div class="bchart" data-chart="diaspora" data-rows=\''+DIASPORA+'\' style="margin:6px 0 28px"></div>')
+    # Match (V16 fingerprint)
+    fp_chart=('<div class="slot-label">Why it fits &#183; EcoCrop suitability fingerprint</div>'
+        +'<div class="bchart" data-chart="fingerprint" data-lead="'+s["fp_lead"]+'" '
+        +"data-axes='"+json.dumps(s["fp_axes"])+"' "
+        +'data-note="'+s["fp_note"]+'" style="margin:6px 0 28px"></div>')
+    # Market (V20 inversion)
+    inv_chart=bc("Inverting the take &#183; conventional vs SAKALA","inversion",
+        {"conv":s["inv"]["conv"],"coop":s["inv"]["coop"],"item":s["inv"]["item"]})
     # Cost
     cost_chart=bc("Capital ladder &#183; today &#8594; dream","cost-ramp",
         {"up":s["cost"]["up"],"opt":s["cost"]["opt"],"dream":s["cost"]["dream"]})
+    # Cost (V29 itemized procurement table)
+    costtbl_chart=('<div class="slot-label">The procurement list &#183; up-to-speed line items</div>'
+        +'<div class="bchart" data-chart="cost-table" data-label="Up to speed" '
+        +"data-rows='"+json.dumps(s["cost_items"])+"' style=\"margin:6px 0 28px\"></div>")
+    # V22 COGS (cassava market only)
+    _cogs='[["Root x3 lb",0.24,"#1AAB4D","$0.24"],["Milling + labor",0.45,"#5fa8c9","$0.45"],["Drying / energy",0.15,"#8fbcd9","$0.15"],["Packaging",0.30,"#e0a838","$0.30"],["Freight to US",0.40,"#d98c2b","$0.40"],["Compliance",0.20,"#b86b3a","$0.20"]]'
+    cogs_chart=("" if key=="pestel" else
+        '<div class="slot-label">Unit economics &#183; what a pound of flour costs to make and land</div>'
+        +'<div class="bchart" data-chart="stack-bar" data-segs=\''+_cogs+'\' '
+        +'data-note="A pound of branded flour costs roughly $1.74 to make and land in the US and sells on the health shelf at $8-13... that spread is the margin the cooperative keeps. Illustrative; 3 lb of root make 1 lb of flour." style="margin:6px 0 28px"></div>')
+    # V52 fast-cash (Milot market)
+    _fc=json.dumps([["Lemongrass",5],["Citronella",6],["Moringa",8],["Cassava",10],["Vetiver",20]])
+    fastcash_chart=("" if key!="milot_fedanoir" else
+        '<div class="slot-label">Fast cash to slow cash &#183; months to first income</div>'
+        +'<div class="bchart" data-chart="fast-cash" data-rows=\''+_fc+'\' '
+        +'data-note="Start the aromatic grasses for cash in months, plant cassava and vetiver alongside; the slow crops pay later. The portfolio keeps wages flowing while it matures." style="margin:6px 0 28px"></div>')
+    # V51 harvest calendar (Pestel match)
+    _cal=json.dumps([
+        {"crop":"Moringa","plant":[1,2],"grow":[],"harv":[3,4,5,6,7,8,9,10,11,12]},
+        {"crop":"Cassava","plant":[4,5],"grow":[6,7,8,9,10,11],"harv":[12,1,2,3]},
+        {"crop":"Vetiver","plant":[4,5],"grow":[6,7,8,9,10],"harv":[11,12,1]},
+        {"crop":"Cacao","plant":[],"grow":[3,4,8,9],"harv":[10,11,12,1,2,5,6,7]},
+        {"crop":"Coffee","plant":[],"grow":[3,4,5,6,7,8,9,10],"harv":[11,12,1,2]},
+        {"crop":"Breadfruit","plant":[],"grow":[2,3,4,5,6,10,11],"harv":[7,8,9,12,1]}])
+    calendar_chart=("" if key!="pestel" else
+        '<div class="slot-label">The harvest calendar &#183; what comes in when</div>'
+        +'<div class="bchart" data-chart="calendar" data-rows=\''+_cal+'\' '
+        +'data-note="vetiver matures over 18-24 months" style="margin:6px 0 28px"></div>')
+    # V30 funding-type split (Pestel cost)
+    _fund='[["Product-purchasable",16,"#1AAB4D","$16k"],["Patient / grant",44,"#ec9aa3","$44k"],["Gated",24,"rgba(143,188,217,.55)","$24k"]]'
+    funding_chart=("" if key!="pestel" else
+        '<div class="slot-label">Where the money comes from &#183; funding type</div>'
+        +'<div class="bchart" data-chart="stack-bar" data-segs=\''+_fund+'\' '
+        +'data-note="Most of Pestel\'s full build is patient or grant capital (the tree-crop bridge, the distillery, certification), not product-purchase money... which is why it is the slow founding play, not a quick sponsorship." style="margin:6px 0 28px"></div>')
+    # V56 receipt (QM cost, the flagship)
+    _items=json.dumps([["Youth wages",52],["Seeds & cuttings",15],["Equipment fund (the site's asset)",25],["Milling & packing",18],["Freight & handling",10]])
+    _outs=json.dumps([["~6 lb","of cassava flour, shipped to you"],["~9 hrs","of paid work for a young person"],["1","season report: who was hired, what grew"]])
+    receipt_chart=("" if key!="quartier_morin" else
+        '<div class="slot-label">A purchase, not a donation &#183; what your box buys</div>'
+        +'<div class="bchart" data-chart="receipt" data-total="120" data-items=\''+_items+'\' data-outs=\''+_outs+'\' '
+        +'data-note="Half of what you pay for is the proof of what it did." style="margin:6px 0 28px"></div>')
+    # V32 break-even (Milot cost)
+    breakeven_chart=("" if key!="milot_fedanoir" else
+        '<div class="slot-label">Self-financing &#183; the break-even point</div>'
+        +'<div class="bchart" data-chart="breakeven" data-be="44" data-unit="subscriptions" '
+        +'data-note="Each $90-a-quarter Harvest Box subscription covers its share of the cost. About 44 of them and the cassava line pays for itself, then every box after is surplus the cooperative keeps." style="margin:6px 0 28px"></div>')
+    # V63 cost-confidence (pin2 cost)
+    _conf=json.dumps([["River pump + abstraction",2000,4000,1],["Year-round irrigation",4000,7000,1],["Agriculture atom kit",3600,3600,0],["Flour processing share",3000,5000,0]])
+    confidence_chart=("" if key!="quartier_morin_pin2" else
+        '<div class="slot-label">How firm are these numbers &#183; screening estimates</div>'
+        +'<div class="bchart" data-chart="confidence" data-rows=\''+_conf+'\' '
+        +'data-note="Everything here is a screening estimate until Dan confirms the parcel. The pump and the year-round irrigation are the two lines we need real quotes for before committing a dollar." style="margin:6px 0 28px"></div>')
+    # V50 remedy = lawsuit (Pestel market)
+    _rem=json.dumps([
+        ["Frager and Givaudan capture almost the entire vetiver chain (Theta 0.9987)","The cooperative owns the still, so the oil margin stays on the hill"],
+        ["The flagship fair-trade program reaches 250 of about 30,000 growers","Every grower here owns a share of the distillation"],
+        ["Growers are price-takers at roughly $30 a bale","A guaranteed floor price plus a share of the oil revenue"],
+        ["Anonymous bulk oil, no origin and no story","Single-origin, traceable, sold direct to the buyer"]])
+    remedy_chart=("" if key!="pestel" else
+        '<div class="slot-label">The remedy is the lawsuit &#183; operation vs extraction</div>'
+        +'<div class="bchart" data-chart="remedy" data-pairs=\''+_rem+'\' '
+        +'data-note="The same vetiver chain BARSS documents as extraction in the litigation is the one this site inverts in practice. Operations and the case are one argument." style="margin:6px 0 28px"></div>')
     # Youth
     youth_chart=bc("The work in young hands","youth-strip",{"now":y["now"],"cap":y["cap"],"inc":708})
     own_chart=bc("Ownership ramp &#183; the apprenticeship","ownership",{})
@@ -207,22 +293,22 @@ def build(key, s):
 
     drop=lambda slots,pref: [x for x in slots if not any(x.startswith(p) for p in pref)]
     land_slots=drop(s["land_slots"],["V11","V9","V4","V5","V7","V1","V12","V8","V76"])
-    match_slots=drop(s["match_slots"],["V15"])
-    market_slots=drop(s["market_slots"],["V19","V21","V27"])
-    cost_slots=drop(s["cost_slots"],["V28","V33"])
+    match_slots=drop(s["match_slots"],["V15","V16","V51"])
+    market_slots=drop(s["market_slots"],["V19","V21","V27","V20","V22","V52","V50"])
+    cost_slots=drop(s["cost_slots"],["V28","V33","V29","V30","V32","V63","V56"])
     youth_slots=drop(s["youth_slots"],["V36"])
 
     chapters="".join([
         chapter("land","01","The land, measured","The ground",s["land_intro"],land_slots,
                 extra=erosion_chart+climo_chart+milot_land+texture_chart+soil_chart+pestel_land),
         chapter("match","02","Land &#8594; enterprise","The match",s["match_intro"],match_slots,
-                extra=crop_chart),
+                extra=crop_chart+fp_chart+calendar_chart),
         chapter("market","03","The value chain","The market",s["market_intro"],market_slots,
-                extra=vj_chart+ladder_chart+pestel_market+diaspora_chart),
+                extra=vj_chart+inv_chart+ladder_chart+cogs_chart+pestel_market+remedy_chart+diaspora_chart+fastcash_chart),
         chapter("cost","04","Real &#8594; dream","The cost",s["cost_intro"],cost_slots,
                 extra=f'<div class="costrow"><span>Up to speed <b>{fmt(s["cost"]["up"])}</b></span>'
                       f'<span>Optimized <b>{fmt(s["cost"]["opt"])}</b></span>'
-                      f'<span>Dream <b>{fmt(s["cost"]["dream"])}</b></span></div>'+cost_chart+pestel_cost),
+                      f'<span>Dream <b>{fmt(s["cost"]["dream"])}</b></span></div>'+cost_chart+costtbl_chart+receipt_chart+breakeven_chart+confidence_chart+funding_chart+pestel_cost),
         chapter("youth","05","Who it pays","The youth",
                 f'{y["now"]} young people work here today, room for {y["cap"]}. '
                 'A six-month renewable apprenticeship at $52/month base plus a surplus share, '
