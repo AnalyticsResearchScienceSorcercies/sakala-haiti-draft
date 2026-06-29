@@ -68,7 +68,7 @@ a { color: inherit; }
   font-weight: 800;
   line-height: 1;
 }
-.t-body  { font-size: 15px; color: var(--parchment); line-height: 1.72; }
+.t-body  { font-size: 17px; color: var(--parchment); line-height: 1.7; }
 .t-small { font-family: 'Courier Prime', monospace; font-size: 12px; color: rgba(244,239,226,.45); }
 
 .green { color: var(--voice-green); }
