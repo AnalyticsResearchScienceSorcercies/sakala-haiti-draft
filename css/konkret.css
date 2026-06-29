@@ -822,3 +822,6 @@ a.kn-hire:hover {
 .kn-lang:hover { color:var(--parchment); border-color:var(--sodium-orange); }
 .kn-cta-ghost { background:transparent !important; color:var(--bone) !important; border:1px solid rgba(244,239,226,.35); }
 .kn-cta-ghost:hover { background:transparent !important; border-color:var(--sodium-orange); color:var(--sodium-orange) !important; }
+
+/* Hide the to-French language toggle for now — English-only */
+.kn-lang[href$="-fr.html"], .kn-mobile a[href$="-fr.html"] { display: none !important; }
