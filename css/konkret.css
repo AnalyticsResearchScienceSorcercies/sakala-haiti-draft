@@ -26,7 +26,7 @@ body {
   font-family: 'Lora', Georgia, serif;
   background: var(--black);
   color: var(--bone);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.65;
   overflow-x: hidden;
 }
@@ -68,7 +68,7 @@ a { color: inherit; }
   font-weight: 800;
   line-height: 1;
 }
-.t-body  { font-size: 17px; color: var(--parchment); line-height: 1.7; }
+.t-body  { font-size: 18px; color: var(--parchment); line-height: 1.7; }
 .t-small { font-family: 'Courier Prime', monospace; font-size: 12px; color: rgba(244,239,226,.45); }
 
 .green { color: var(--voice-green); }
@@ -76,7 +76,7 @@ a { color: inherit; }
 .prussian-col { color: var(--prussian); }
 
 /* --- LAYOUT --- */
-.container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.container { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
 .section { padding: 80px 0; }
 .section-sm { padding: 48px 0; }
 
@@ -705,7 +705,7 @@ a { color: inherit; }
   text-align: left;
   padding-right: 0;
   gap: 48px;
-  max-width: 1200px;
+  max-width: 1320px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;

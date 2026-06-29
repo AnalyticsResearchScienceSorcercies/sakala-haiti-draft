@@ -10,7 +10,7 @@ body { margin:0; background:#F4EFE2; color:#141414; font-family:'Lora',Georgia,s
 .part-white    { background:#FBF6E9; }
 .part-dark     { background:#141414; color:#F4EFE2; }
 .part-forest   { background:#1F5232; color:#F4EFE2; }
-.part-inner { max-width:940px; margin:0 auto; padding:0 24px; }
+.part-inner { max-width:1140px; margin:0 auto; padding:0 24px; }
 
 .part-label { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#E86A1F; margin-bottom:10px; }
 .part-title { font-family:'Anton',sans-serif; font-size:clamp(30px,6vw,52px); line-height:.95; text-transform:uppercase; margin:0 0 24px; }
