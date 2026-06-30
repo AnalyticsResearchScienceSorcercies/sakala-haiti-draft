@@ -33,6 +33,14 @@
   @media (max-width:900px){ .gp-why-grid { grid-template-columns:repeat(2,1fr); } }
   @media (max-width:560px){ .gp-why-grid { grid-template-columns:1fr; } }
 
+  /* ---------- PREMIER TAPTAPS (showcase teaser) ---------- */
+  .gp-premier { position:relative; min-height:360px; display:flex; align-items:flex-end; overflow:hidden; border-top:1px solid rgba(244,239,226,.08); }
+  .gp-premier .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .gp-premier .scrim { position:absolute; inset:0; background:linear-gradient(to top, rgba(6,6,6,.95) 8%, rgba(6,6,6,.55) 48%, rgba(6,6,6,.2) 85%); }
+  .gp-premier .inner { position:relative; max-width:1320px; margin:0 auto; padding:48px 24px 44px; width:100%; color:var(--bone); }
+  .gp-premier .k { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--sodium-orange); display:block; margin-bottom:10px; }
+  .gp-premier h2 { font-family:'Anton',sans-serif; font-size:clamp(30px,5vw,52px); text-transform:uppercase; line-height:.96; margin:0 0 12px; }
+  .gp-premier p { font-family:'Lora',serif; font-size:clamp(15px,2.2vw,18px); line-height:1.6; color:rgba(244,239,226,.85); max-width:640px; margin:0 0 22px; }
   /* ---------- SITE RAIL (Layer 0, horizontal scroll-snap) ---------- */
   .gp-rail-sec { background:#0a0a0a; padding:56px 0 60px; }
   .gp-rail-head { max-width:1320px; margin:0 auto 6px; padding:0 24px; }
@@ -238,6 +246,18 @@
       </div>
     </div>
     <p class="turn">We have spent years on the ground, and now we have the science to prove it. We know each TapTap's soil, water, and the one thing it needs. A sum that would barely register in America rebuilds a life here. <b>This is how the diaspora's money finally stays, and grows.</b></p>
+  </div>
+</section>
+
+<!-- PREMIER TAPTAPS (showcase) -->
+<section class="gp-premier">
+  <img class="bg" src="photos/sakala-plantation.jpg" alt="SAKALA youth working a plantation"/>
+  <div class="scrim"></div>
+  <div class="inner">
+    <span class="k">Premier TapTaps</span>
+    <h2>Where it all started</h2>
+    <p>Before the four below, there was one: the original Tap Tap garden in Cité Soleil, planted by displaced women in 2010. It became the model for everything that followed.</p>
+    <a href="taptaps/cite-soleil.html" class="btn-orange">Read the story →</a>
   </div>
 </section>
 
