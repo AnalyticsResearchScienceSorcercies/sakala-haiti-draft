@@ -103,6 +103,37 @@ SITES = {
    "tiers":{"unit":"$/lb","rows":[["Farmgate root",0.08,0.08],["US ethnic staple",3,5],["US health shelf",8,13],["Premium branded",18.75,18.75]]},
    "constraint":"Dan to confirm the parcel, the flood fringe, and what the quarry is.",
  },
+ "osmond_ouanaminthe": {
+   "name":"D'Osmond","dept":"Nord-Est · Ouanaminthe","sub":"Paroisse Notre Dame du Perpétuel Secours (Père Eddy Modestin)",
+   "coords":"19.517, -71.732 (approx)","status":"Gated · new partner, parcel unconfirmed","cls":"gated",
+   "verdict":"The flattest, sweetest soil in the set... near-neutral clay loam you plant straight into, no lime. The catch is water: a semi-arid plain that lives or dies on the stream to the west. A clean cassava site once the parcel confirms.",
+   "live":False,"gated":True,
+   "hero_stats":[("pH 6.4","no lime needed"),("2.2°","flat ground"),("744mm","semi-arid"),("GATED","awaiting Dan")],
+   "hero_graph":"V9 climograph (the dry-season gap) + GATED overlay",
+   "erosion":{"R":2184,"K":0.0265,"LS":0.59,"C":0.22,"A":7.5},
+   "rain":{"months":"36,20,45,78,98,58,46,59,93,99,80,33","annual":744},
+   "land_intro":"The best raw growing ground we surveyed: flat at 2.2°, near-neutral clay loam at pH 6.4 that needs no lime, with healthy topsoil (SOC 3.2%, CEC 22). It sits about 19 m above the nearest drainage, so flooding is unlikely and erosion is modest at 7.5 t/ha. The one binding constraint is rain... 744 mm/yr on the semi-arid Ouanaminthe plain, with a hard December-to-March dry season. The stream ~730 m to the west is the whole game.",
+   "land_slots":["V9 climograph (744 mm, hard Dec-Mar dry season — HERO)","V54 water-balance calendar (rain vs crop need)","V13 water-access map (~730 m to the west stream)","V7 soil report-card gauges (pH 6.4, no lime needed)","V4 texture triangle (sand 36 / silt 26 / clay 38 → clay loam)","V11 erosion dial (7.5 t/ha vs 11 sustainable)","GATED OVERLAY — verification banner over the whole page"],
+   "match_intro":"Moringa, castor and pigeon pea all grade a perfect 1.0; cassava follows at 0.95, docked only by the dry season. A deep dry-lowland bench... cassava to flour to the Harvest Box as the anchor, with moringa, pigeon pea and peanut widening the field.",
+   "match_slots":["V15 crop-fit scorecard","V16 EcoCrop fingerprint (cassava, rain-limited)"],
+   "market_intro":"Same cassava-flour economics as the Nord sites: the grower gets about $0.24 of root value in a pound of flour that finishes as an $18.75 branded product, and SAKALA keeps the milling and the margin inside the cooperative.",
+   "market_slots":["V19 the extraction joint (farmer $0.24 of $18.75)","V21 price-tier ladder","V22 conversion / COGS build (3:1 root→flour)"],
+   "cost":{"up":6500,"opt":18000,"dream":24000},
+   "cost_intro":"Numbers are provisional until the parcel confirms. The $6,500 runs it as a cassava atom (kit, cuttings, cover crop, wages). The optimized $18,000 adds the dry-season answer... a pump, cistern and drip off the west stream. The jump to the dream figure is a shared cassava processing line, the value-capture step.",
+   "cost_slots":["V28 cost ramp bars","V63 cost-confidence bars (everything here is provisional)","V32 break-even curve"],
+   "youth":{"now":0,"cap":10},
+   "youth_slots":["V36 income multiplier Sankey (fills in once confirmed)"],
+   "soil":{"ph":6.4,"soc":3.22,"cec":22.2,"slope":2.2,"sand":36.3,"silt":26.1,"clay":37.6,"texture":"clay loam"},
+   "fp_lead":"cassava","fp_note":"pH and slope are ideal; cassava is only nudged off a perfect grade by the 744 mm rainfall, which the west stream is there to cover.",
+   "fp_axes":[{"label":"pH","unit":"","sMin":4,"sMax":8.5,"absMin":4.5,"absMax":8.0,"optMin":5.5,"optMax":7.0,"val":6.4},{"label":"Rainfall","unit":"mm","sMin":0,"sMax":3000,"absMin":500,"absMax":2500,"optMin":800,"optMax":1500,"val":744},{"label":"Slope","unit":"°","sMin":0,"sMax":26,"absMin":0,"absMax":20,"optMin":0,"optMax":20,"val":2.2}],
+   "inv":{"conv":2,"coop":55,"item":"a branded pound of kasav"},
+   "cost_items":[["Confirm parcel + Agriculture atom kit",3600,"IMPORT"],["Cassava cuttings + moringa / pigeon-pea seed",400,"SUPPLY"],["Dry-season water off the west stream (pump + cistern + drip)",1500,"FAB"],["Cover-crop / mulch (erosion + moisture)",400,"SUPPLY"],["TapTap manager + first-season working capital",600,"SERVICE"]],
+   "crops":[["Moringa",100],["Castor",100],["Pigeon pea",100],["Cassava",95],["Peanut",95],["Hot peppers",87],["Mango",81],["Vetiver",79]],
+   "cropnote":"Moringa, castor and pigeon pea grade a perfect 1.0; cassava at 0.95 is docked only by rainfall. Not a cacao or wet-fruit site... everything that fits here is dry-hardy.",
+   "value":{"farmer":0.24,"final":18.75,"item":"a branded pound of single-origin kasav","unit":"$"},
+   "tiers":{"unit":"$/lb","rows":[["Farmgate root",0.08,0.08],["US ethnic staple",3,5],["US health shelf",8,13],["Premium branded",18.75,18.75]]},
+   "constraint":"Dan to confirm the exact parcel and acreage; the west stream is the dry-season lifeline.",
+ },
  "pestel": {
    "name":"Pestel","dept":"Grand'Anse · Corail","sub":"Lekòl Kominotè de Pestel",
    "coords":"18.54093, -73.79561","status":"Active · the estate","cls":"",
@@ -388,7 +419,7 @@ def build(key, s):
   <img class="bg" src="../img/taptaps/{key}_context.jpg" alt="Satellite view of {s['name']}"/>
   <div class="scrim"></div>
   <div class="inner">
-    <a href="../taptaps.html" class="back">← All four TapTaps</a>
+    <a href="../taptaps.html" class="back">← All five TapTaps</a>
     <span class="badge">{s['status']}</span>
     <h1>{s['name']}</h1>
     <div class="sub">{s['dept']} · {s['sub']}</div>
