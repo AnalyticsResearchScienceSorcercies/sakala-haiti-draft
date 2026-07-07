@@ -127,7 +127,12 @@ a { color: inherit; }
   color: var(--sodium-orange);
   text-decoration: none;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
 }
+.kn-brand-mark { height: 40px; width: auto; flex: 0 0 auto; display: block; }
+.kn-brand-text { display: flex; flex-direction: column; justify-content: center; }
 .kn-brand span {
   display: block;
   font-family: 'Courier Prime', monospace;
