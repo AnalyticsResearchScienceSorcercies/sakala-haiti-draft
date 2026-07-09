@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>What is a TapTap? - BARSS Haiti</title>
+<meta name="description" content="A TapTap is a youth-owned farm cooperative that turns land, a cohort of young people, and $3,650 into a business the youth own. The full model, down to the last gourde."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/konkret.css?v=7"/>
+<style>
+  /* ---- What is a TapTap : page-specific ---- */
+  .tt-lede{ font-family:'Lora',serif; font-size:clamp(20px,2.6vw,27px); line-height:1.5;
+            color:var(--bone); max-width:820px; }
+  .tt-lede b{ color:var(--sodium-orange); font-weight:700; }
+  .tt-say{ font-family:'Courier Prime',monospace; font-size:13px; letter-spacing:.06em;
+           color:rgba(244,239,226,.55); margin-top:14px; }
+
+  .tt-stat-row{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid #1a1a1a; }
+  .tt-stat-row > div{ padding:26px 22px; border-right:1px solid #1a1a1a; }
+  .tt-stat-row > div:last-child{ border-right:none; }
+  .tt-stat-n{ font-family:'Anton',sans-serif; font-size:clamp(30px,4vw,46px); color:var(--sodium-orange); line-height:1; }
+  .tt-stat-l{ font-family:'Courier Prime',monospace; font-size:12px; text-transform:uppercase;
+              letter-spacing:.14em; color:var(--parchment); margin-top:10px; }
+  @media(max-width:720px){ .tt-stat-row{ grid-template-columns:repeat(2,1fr); } }
+
+  table.tt{ width:100%; border-collapse:collapse; margin-top:8px; font-family:'Roboto Slab',serif; }
+  table.tt th, table.tt td{ text-align:left; padding:13px 16px; border-bottom:1px solid #191919; font-size:15px; }
+  table.tt th{ font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:.14em;
+               text-transform:uppercase; color:var(--sodium-orange); border-bottom:2px solid #262626; }
+  table.tt td:last-child{ color:var(--voice-green); font-weight:700; white-space:nowrap; }
+  table.tt tr:hover td{ background:#0e0e0e; }
+
+  .tt-tiers{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+  .tt-tier{ background:#101010; border-top:3px solid var(--voice-green); padding:26px 24px; }
+  .tt-tier:nth-child(2){ border-top-color:var(--sodium-orange); }
+  .tt-tier:nth-child(3){ border-top-color:var(--prussian); }
+  .tt-tier h4{ font-family:'Anton',sans-serif; font-size:20px; color:var(--bone); margin:8px 0 4px; }
+  .tt-tier .when{ font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:.1em;
+                  text-transform:uppercase; color:var(--sodium-orange); }
+  .tt-tier ul{ list-style:none; margin:14px 0 0; padding:0; }
+  .tt-tier li{ font-family:'Roboto Slab',serif; font-size:14px; color:var(--parchment);
+               padding:7px 0; border-bottom:1px solid #181818; line-height:1.4; }
+  @media(max-width:820px){ .tt-tiers{ grid-template-columns:1fr; } }
+
+  .tt-loop{ border:1px solid #1a1a1a; }
+  .tt-loop-row{ display:grid; grid-template-columns:200px 40px 1fr; align-items:center;
+                gap:0; border-bottom:1px solid #181818; padding:16px 20px; }
+  .tt-loop-row:last-child{ border-bottom:none; }
+  .tt-loop-in{ font-family:'Anton',sans-serif; font-size:17px; color:var(--bone); text-transform:uppercase; letter-spacing:.02em; }
+  .tt-loop-arr{ color:var(--sodium-orange); font-family:'Anton',sans-serif; font-size:20px; text-align:center; }
+  .tt-loop-out{ font-family:'Roboto Slab',serif; font-size:14.5px; color:var(--parchment); line-height:1.45; }
+  .tt-loop-out b{ color:var(--voice-green); }
+  @media(max-width:640px){ .tt-loop-row{ grid-template-columns:1fr; gap:6px; } .tt-loop-arr{ display:none; } }
+
+  .tt-split{ display:flex; height:44px; border:1px solid #1a1a1a; overflow:hidden; margin:22px 0 10px; }
+  .tt-split span{ display:flex; align-items:center; justify-content:center;
+                  font-family:'Courier Prime',monospace; font-size:11px; font-weight:700; color:#000;
+                  letter-spacing:.04em; }
+  .tt-split .s1{ flex:50; background:var(--voice-green); }
+  .tt-split .s2{ flex:20; background:var(--sodium-orange); }
+  .tt-split .s3{ flex:10; background:var(--parchment); }
+  .tt-split .s4{ flex:10; background:#7a8a99; }
+  .tt-split .s5{ flex:10; background:var(--prussian); color:var(--bone); }
+  .tt-split-key{ display:flex; flex-wrap:wrap; gap:18px; font-family:'Courier Prime',monospace;
+                 font-size:12px; color:var(--parchment); }
+  .tt-split-key i{ font-style:normal; display:inline-block; width:11px; height:11px; margin-right:7px; vertical-align:middle; }
+
+  .tt-ladder td:first-child{ font-family:'Anton',sans-serif; font-size:16px; color:var(--bone); letter-spacing:.02em; }
+  .tt-ladder td:last-child{ color:var(--parchment); font-weight:400; white-space:normal; }
+
+  .tt-rules{ display:grid; grid-template-columns:repeat(2,1fr); gap:2px; }
+  .tt-rule{ background:#101010; padding:26px 26px; border-left:3px solid var(--sodium-orange); }
+  .tt-rule .n{ font-family:'Anton',sans-serif; font-size:40px; color:#242424; line-height:.9; }
+  .tt-rule h4{ font-family:'Anton',sans-serif; font-size:19px; color:var(--bone); margin:6px 0 10px; text-transform:uppercase; }
+  .tt-rule p{ font-family:'Roboto Slab',serif; font-size:14.5px; color:var(--parchment); line-height:1.5; }
+  .tt-rule .cost{ font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:.1em;
+                  color:var(--voice-green); margin-top:12px; text-transform:uppercase; }
+  @media(max-width:720px){ .tt-rules{ grid-template-columns:1fr; } }
+
+  .tt-cta{ background:var(--sodium-orange); }
+  .tt-cta .t-h2{ color:#000; }
+  .tt-cta .t-body{ color:#1a1a1a; }
+  .tt-cta .btn-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:26px; }
+  .tt-cta a{ font-family:'Roboto Slab',serif; font-weight:800; text-decoration:none;
+             padding:15px 28px; font-size:15px; }
+  .tt-cta .a1{ background:#000; color:var(--bone); }
+  .tt-cta .a2{ background:var(--voice-green); color:#000; }
+  .tt-cta .a3{ background:transparent; color:#000; border:2px solid #000; }
+
+  .tt-note{ border-left:3px solid var(--du-bois-red); padding:18px 24px; background:#0e0e0e;
+            font-family:'Lora',serif; font-size:17px; color:var(--bone); line-height:1.55; }
+  .tt-note b{ color:var(--sodium-orange); }
+</style>
+</head>
+<body>
+
+<nav class="kn-nav">
+  <div class="container">
+    <a href="index.html" class="kn-brand"><img src="img/konkret-mark.png" alt="" class="kn-brand-mark"><span class="kn-brand-text"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">Not Aid. Ownership.</span></span></a>
+    <ul class="kn-links">
+      <li><a href="a-propos.html">About</a></li>
+      <li><a href="taptaps.html">TapTaps</a></li>
+      <li><a href="fatraka.html">FatraKa</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="taptaps.html" class="kn-cta kn-cta-ghost">Sponsor a TapTap</a>
+    <a href="je-veux-un-emploi.html" class="kn-cta">Get a Job</a>
+    <a href="index-fr.html" class="kn-lang">FR</a>
+    <button class="kn-hamburger" onclick="document.getElementById('kn-mobile-nav').classList.add('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="kn-mobile" id="kn-mobile-nav">
+  <button class="kn-mobile-close" onclick="document.getElementById('kn-mobile-nav').classList.remove('open')">Close</button>
+  <a href="a-propos.html">About</a>
+  <a href="taptaps.html">TapTaps</a>
+  <a href="fatraka.html">FatraKa</a>
+  <a href="partners.html">Partners</a>
+  <a href="contact.html">Contact</a>
+  <a href="je-veux-un-emploi.html">Get a Job</a>
+  <a href="taptaps.html">Sponsor a TapTap</a>
+  <a href="index-fr.html">Français</a>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="kn-page-header" style="background: linear-gradient(rgba(10,10,10,.72), rgba(10,10,10,.93)), url('photos/2025-aout/IMG-20250731-WA0271.jpg') center 32% / cover; padding-top: 78px; padding-bottom: 68px;">
+  <div class="container">
+    <span class="t-label">The Model, In Full</span>
+    <h1 class="t-h1 mb-16">What is a TapTap?</h1>
+    <p class="t-body max-640">A youth-owned farm cooperative that turns a plot of land, a cohort of young people, and $3,650 into a business the youth own. Here is exactly how... down to the last gourde, down to the newest hand.</p>
+  </div>
+</header>
+
+<!-- ONE PARAGRAPH -->
+<section class="section bg-black">
+  <div class="container">
+    <p class="tt-lede">A TapTap is one farm franchise. <b>Ten young people, one plot of land, $3,650 to launch.</b> It grows food, processes it into products, sells them, and splits the profit among the people who did the work... who earn a share of ownership as they go. Not a job program. Not a handout. A business the workers own, watch, and cannot be forced to sell.</p>
+    <p class="tt-say">Se pa charite. Se pou nou tout. &mdash; It is not charity. It belongs to all of us.</p>
+  </div>
+</section>
+
+<!-- DOES IT MAKE MONEY -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">01 &middot; The Economics</span>
+      <h2 class="t-h2">Does it make money? Yes.</h2>
+    </div>
+    <div class="tt-stat-row mb-24">
+      <div><div class="tt-stat-n">$3,650</div><div class="tt-stat-l">To launch one</div></div>
+      <div><div class="tt-stat-n">Month 4</div><div class="tt-stat-l">Break-even</div></div>
+      <div><div class="tt-stat-n">75,000<span style="font-size:.4em"> HTG/mo</span></div><div class="tt-stat-l">By Month 5 (~$550)</div></div>
+      <div><div class="tt-stat-n">2×</div><div class="tt-stat-l">Return, Year 1</div></div>
+    </div>
+    <p class="t-body max-640 mb-24">A franchise of ten youth produces roughly 75,000 HTG a month in sales once established. It pays for itself by Month 4 and returns more than $7,200 on the original $3,650 in the first year. The rule that makes it hold: <span class="orange">fast first, slow second.</span> Start with crops that pay in weeks, layer in the slow, high-value ones behind them, so the youth see money in their hands within a month and the momentum never breaks.</p>
+    <table class="tt">
+      <thead><tr><th>Product</th><th>Time to first sale</th><th>Monthly revenue</th></tr></thead>
+      <tbody>
+        <tr><td>Leafy greens (lettuce, spinach, callaloo)</td><td>3 weeks</td><td>15,000 HTG</td></tr>
+        <tr><td>Herbs (basil, thyme, parsley)</td><td>4 weeks</td><td>8,000 HTG</td></tr>
+        <tr><td>Peppers, tomatoes</td><td>8&ndash;10 weeks</td><td>20,000 HTG</td></tr>
+        <tr><td>Rabbits (3 does)</td><td>3 months</td><td>10,000 HTG</td></tr>
+        <tr><td>Eggs (12 hens)</td><td>2&ndash;5 months</td><td>12,000 HTG</td></tr>
+        <tr><td>Worm castings / vermicast</td><td>6 weeks</td><td>5,000 HTG</td></tr>
+        <tr><td>Honey (2 hives)</td><td>6 months</td><td>8,000 HTG/qtr</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- WHAT IT GROWS -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">02 &middot; What It Grows</span>
+      <h2 class="t-h2">Fast first, slow second.</h2>
+    </div>
+    <div class="tt-tiers">
+      <div class="tt-tier">
+        <span class="when">Money in 3&ndash;4 weeks</span>
+        <h4>Tier 1 &middot; Start here</h4>
+        <ul>
+          <li>Leafy greens... harvest every 3 weeks, continuous</li>
+          <li>Herbs... high margin, sold weekly to markets and restaurants</li>
+          <li>Worm composting... feed scraps, sell vermicast in 6 weeks</li>
+        </ul>
+      </div>
+      <div class="tt-tier">
+        <span class="when">Money in 2&ndash;3 months</span>
+        <h4>Tier 2 &middot; Add in Month 2</h4>
+        <ul>
+          <li>Rabbits... first litter at 3 months, fastest protein to revenue</li>
+          <li>Black soldier fly larvae... eat waste, harvest in 2 weeks, sell as feed</li>
+        </ul>
+      </div>
+      <div class="tt-tier">
+        <span class="when">Money in 5&ndash;6 months</span>
+        <h4>Tier 3 &middot; Add when stable</h4>
+        <ul>
+          <li>Laying hens... buy pullets, eggs every day</li>
+          <li>Beekeeping... first harvest at 6 months, then quarterly, low upkeep</li>
+        </ul>
+      </div>
+    </div>
+    <p class="t-body max-640" style="margin-top:22px;">Every site gets Tier 1 regardless of terrain. Tiers 2 and 3 adapt to the land... flat with water grows beds and rabbits, a steep hillside grows hedgerows and bees, a dry site runs larvae and worms.</p>
+  </div>
+</section>
+
+<!-- THE LOOP -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">03 &middot; The Loop</span>
+      <h2 class="t-h2">Nothing gets wasted.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">Every waste is the next thing's input. Each product feeds another, so after Month 2 the purchased inputs drop to almost nothing.</p>
+    </div>
+    <div class="tt-loop">
+      <div class="tt-loop-row"><div class="tt-loop-in">Kitchen &amp; market waste</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">fed to BSF larvae and worm bins... <b>free feed and free fertilizer</b></div></div>
+      <div class="tt-loop-row"><div class="tt-loop-in">BSF larvae (2 wks)</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">wet larvae feed the chickens and rabbits... dried larvae <b>sell as animal feed</b></div></div>
+      <div class="tt-loop-row"><div class="tt-loop-in">Worm bin (6 wks)</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">castings become <b>T&egrave; Rich fertilizer</b> to sell, or free soil for the beds</div></div>
+      <div class="tt-loop-row"><div class="tt-loop-in">Raised beds</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">greens and herbs <b>sell fresh or processed</b>... scraps go back to the larvae, loop closes</div></div>
+      <div class="tt-loop-row"><div class="tt-loop-in">Rabbits &amp; chickens</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">meat and eggs <b>sell</b>... manure feeds the compost and worms</div></div>
+      <div class="tt-loop-row"><div class="tt-loop-in">Bees</div><div class="tt-loop-arr">&rarr;</div><div class="tt-loop-out">pollinate the garden for free... honey and wax <b>sell</b></div></div>
+    </div>
+    <p class="tt-say" style="margin-top:18px;">After Month 2, the only things a TapTap buys are seeds, packaging, and the occasional animal. Everything else feeds itself.</p>
+  </div>
+</section>
+
+<!-- VALUE ADDED -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">04 &middot; Value-Added</span>
+      <h2 class="t-h2">The real money is not in selling raw.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">Selling raw greens pays the bills. Selling processed products builds wealth... same garden, same youth, four to ten times the revenue. Every product carries the TapTap name.</p>
+    </div>
+    <table class="tt">
+      <thead><tr><th>Raw</th><th>Processed into</th><th>Margin jump</th></tr></thead>
+      <tbody>
+        <tr><td>Peppers</td><td>S&ograve;s Piman TapTap (hot sauce)</td><td>10×</td></tr>
+        <tr><td>Moringa leaves</td><td>Moringa TapTap (powder)</td><td>10×</td></tr>
+        <tr><td>Herbs</td><td>Dried herb packets</td><td>8×</td></tr>
+        <tr><td>Fruit</td><td>Juice or dried fruit</td><td>6×</td></tr>
+        <tr><td>Peanuts</td><td>Manba TapTap (peanut butter)</td><td>4×</td></tr>
+        <tr><td>Worm castings</td><td>T&egrave; Rich TapTap (fertilizer)</td><td>3×</td></tr>
+      </tbody>
+    </table>
+    <div class="tt-note" style="margin-top:26px;">This is how the diaspora buys in: not just funding youth, but <b>buying the harvest</b>... a box shipped from Haiti with hot sauce, moringa powder, peanut butter, dried herbs, and honey. Haiti-made. Youth-produced. Community-owned.</div>
+  </div>
+</section>
+
+<!-- WHO GETS WHAT -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">05 &middot; Who Gets What</span>
+      <h2 class="t-h2">Every hand owns a piece.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">There is no one on a TapTap who works and does not own... from the youth who sweeps the pack-shed to the director who runs the zone, everyone holds shares. Here is where every gourde of a 75,000 HTG month goes.</p>
+    </div>
+
+    <div class="tt-split">
+      <span class="s1">50% Workers</span>
+      <span class="s2">20% Reinvest</span>
+      <span class="s3">10% Board</span>
+      <span class="s4">10% Reserve</span>
+      <span class="s5">10% Federation</span>
+    </div>
+    <div class="tt-split-key mb-24">
+      <span><i style="background:var(--voice-green)"></i>Split among the 10 workers</span>
+      <span><i style="background:var(--sodium-orange)"></i>New beds, animals, repairs</span>
+      <span><i style="background:var(--parchment)"></i>Komite Jaden (board)</span>
+      <span><i style="background:#7a8a99"></i>Emergency reserve</span>
+      <span><i style="background:var(--prussian)"></i>Growth Trust</span>
+    </div>
+
+    <p class="t-body max-640 mb-24">And the share rises as the worker rises. Nobody stays an apprentice... the ladder is built so that experience converts into both income and ownership.</p>
+    <table class="tt tt-ladder">
+      <thead><tr><th>Role</th><th>Monthly share</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>Apranti</td><td>3,000 HTG + 100 shares/mo</td><td>Learning and producing. Paid from Day 1, during training.</td></tr>
+        <tr><td>Asosye</td><td>21% of franchise profit</td><td>A proven producer, after ~6 months. ~12,600 HTG/mo.</td></tr>
+        <tr><td>Asosye Direkt&egrave;</td><td>33% of profit</td><td>Leading a team, after ~18 months. ~19,800 HTG/mo.</td></tr>
+        <tr><td>Direkt&egrave; Zonn</td><td>42% of profit + board seat</td><td>Running a zone, after ~3 years. Can launch new franchises.</td></tr>
+      </tbody>
+    </table>
+    <div class="tt-note" style="margin-top:26px;">Say it plain. In the old model a worker after five years has <b>$2,304 and no ownership</b>. In this one, a worker after five years has <b>$19,407 and co-owns the farm</b>. Same work. Different architecture.</div>
+  </div>
+</section>
+
+<!-- THE 5 RULES -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">06 &middot; Governance</span>
+      <h2 class="t-h2">Everything runs on five rules.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">Skip one and it leaks. Together they cost almost nothing and they are what keep the value from being captured.</p>
+    </div>
+    <div class="tt-rules">
+      <div class="tt-rule"><div class="n">1</div><h4>Vote for your leaders</h4><p>Workers elect three people to run the farm (Komite Jaden) and three different people to watch them (Komite Vijilans). Neither can fire the other. Both answer to the full assembly.</p><div class="cost">Cost: $0</div></div>
+      <div class="tt-rule"><div class="n">2</div><h4>Read the numbers out loud</h4><p>Every Friday, what came in and where it went. Every month, a summary to all members and investors. Every quarter, the full books. Every year, an outside check. No secrets.</p><div class="cost">Cost: $200&ndash;500/yr</div></div>
+      <div class="tt-rule"><div class="n">3</div><h4>Nobody sells what everyone built</h4><p>The farm belongs to the group. Members have use rights... farm, earn, sit on the board. Leave, and the group buys back your shares at book value. The farm itself is never for sale.</p><div class="cost">Cost: ~$500 once</div></div>
+      <div class="tt-rule"><div class="n">4</div><h4>Three people can freeze everything</h4><p>The three watchdogs can freeze all money for 72 hours if all three agree. The freeze triggers an emergency assembly, and only the full group can lift it. Nobody overrides this. Not the board, not an investor, nobody.</p><div class="cost">Cost: $0</div></div>
+      <div class="tt-rule"><div class="n">5</div><h4>Outside eyes on the books</h4><p>Every three months one person from outside sits in on the assembly. No vote, no authority... they look at the numbers and say what they see. That alone keeps everyone honest.</p><div class="cost">Cost: $0&ndash;800/yr</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT RUNS -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">07 &middot; How It Runs</span>
+      <h2 class="t-h2">If they can text, they can run it.</h2>
+    </div>
+    <p class="t-body max-640 mb-24">Spreadsheets intimidate people who do not use them, so the spreadsheet comes to the team instead. Every day at 5 PM the site leader gets four questions by text, in Kreyòl. They reply with four numbers. Those replies fill a live dashboard the director opens on a phone. No app, no internet, no training.</p>
+    <table class="tt">
+      <tbody>
+        <tr><td style="color:var(--sodium-orange);font-family:'Courier Prime',monospace;font-size:13px;">Daily</td><td>Four SMS questions at 5 PM &rarr; a live dashboard, in real time</td><td>60 sec</td></tr>
+        <tr><td style="color:var(--sodium-orange);font-family:'Courier Prime',monospace;font-size:13px;">Weekly</td><td>Friday circle... read the numbers, each youth names one thing learned</td><td>30 min</td></tr>
+        <tr><td style="color:var(--sodium-orange);font-family:'Courier Prime',monospace;font-size:13px;">Monthly</td><td>Revenue, expenses, shares vested &rarr; WhatsApp summary to all</td><td>&mdash;</td></tr>
+        <tr><td style="color:var(--sodium-orange);font-family:'Courier Prime',monospace;font-size:13px;">Quarterly</td><td>Full assembly with the outside advisor present</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TRAINING -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">08 &middot; Training</span>
+      <h2 class="t-h2">Training is paid, and it comes first.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">Nobody touches a garden bed until training is done. Month 1 is the training month, and it is paid... the youth earn their stipend and their first 100 shares before they grow a thing.</p>
+    </div>
+    <table class="tt">
+      <thead><tr><th>Week</th><th>What they learn</th></tr></thead>
+      <tbody>
+        <tr><td>Week 1</td><td>Life skills... the five rules, reading numbers, conflict resolution, what ownership means</td></tr>
+        <tr><td>Week 2</td><td>Growing... raised beds, drip irrigation, planting schedules, organic pest control</td></tr>
+        <tr><td>Week 3</td><td>Animals &amp; compost... rabbits, worms, BSF larvae, eggs</td></tr>
+        <tr><td>Week 4</td><td>Business... record-keeping, market pricing, the equity ladder, running their own Friday circle</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- HOW IT GROWS -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">09 &middot; How It Grows</span>
+      <h2 class="t-h2">The network funds itself.</h2>
+      <p class="t-body max-640" style="margin-top:14px;">Every franchise puts 10% of net profit into a shared Growth Trust. That Trust becomes the replication engine... it launches new franchises without any outside investor.</p>
+    </div>
+    <table class="tt">
+      <thead><tr><th>Month</th><th>Franchises</th><th>Trust balance</th></tr></thead>
+      <tbody>
+        <tr><td>Month 6</td><td>1</td><td>36,000 HTG</td></tr>
+        <tr><td>Month 12</td><td>2</td><td>108,000 HTG</td></tr>
+        <tr><td>Month 18</td><td>4</td><td>252,000 HTG</td></tr>
+        <tr><td>Month 24</td><td>6</td><td>~500,000 HTG ($3,650)</td></tr>
+      </tbody>
+    </table>
+    <p class="t-body max-640" style="margin-top:22px;">By Month 24, six franchises generate enough to launch a new one every two months, on their own money. One farm becomes a zone. Zones become a federation under one brand. Nobody can take the Trust. Nobody can defund it. It grows because the franchises grow.</p>
+  </div>
+</section>
+
+<!-- BARSS FRAME -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">Why It's Built This Way</span>
+      <h2 class="t-h2">Aid leaks. Ownership holds.</h2>
+    </div>
+    <p class="tt-lede">Every rule above is a lock against extraction. The workers own it, so the value stays with the people who made it. Three of them can freeze it, so no one drains it. Nobody can sell it, so it cannot be captured. The Trust replicates it, so it does not depend on a donor's next check. <b>That is the whole design.</b> A TapTap is not a charity that hopes to become sustainable... it is a business, owned from Day 1 by the youth who run it.</p>
+    <p class="tt-say">Not aid. Ownership. &middot; KONKRET × BARSS &middot; Konekte Kreye Travay <span style="color:var(--sodium-orange)">(connect &middot; create &middot; work)</span></p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section tt-cta">
+  <div class="container">
+    <h2 class="t-h2">Start one. Fund one. Join one.</h2>
+    <p class="t-body max-640" style="margin-top:12px;">One more farm is one more job is one more way out for Haiti's youth. Every TapTap begins with someone who decided to help start the next one.</p>
+    <div class="btn-row">
+      <a class="a2" href="participer.html">Sponsor a TapTap &rarr;</a>
+      <a class="a1" href="rejoindre-konbit.html">Join the Konbit &rarr;</a>
+      <a class="a3" href="taptaps/osmond_ouanaminthe.html">See a live site: D'Osmond</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="kn-footer">
+  <div class="container">
+    <div class="kn-footer-grid">
+      <div>
+        <div class="kn-footer-brand">KONKRET</div>
+        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;&middot;&nbsp; Milot, North, Haiti</div>
+        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">The Organization</div>
+        <a href="konkret.html">KONKRET</a>
+        <a href="a-propos.html">About</a>
+        <a href="notre-histoire.html">Our History</a>
+        <a href="leadership.html">Leadership</a>
+        <a href="nos-actions.html">How It Works</a>
+        <a href="temoignages.html">Voices</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Take Action</div>
+        <a href="taptaps.html">Sponsor a TapTap</a>
+        <a href="participer.html">Participate</a>
+        <a href="je-veux-un-emploi.html">Get a Job</a>
+        <a href="employer.html">Hire Youth</a>
+        <a href="devenir-partenaire.html">Host a TapTap</a>
+        <a href="summer-2026.html">SAKALA Summer 2026</a>
+      </div>
+      <div class="kn-footer-col">
+        <div class="kn-footer-col-title">Contact</div>
+        <p>Daniel Tillias, Director</p>
+        <p>Milot, North, Haiti</p>
+        <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="contact.html">Contact Form</a>
+        <a href="documents-publics.html">Transparency</a>
+      </div>
+    </div>
+    <div class="kn-footer-bottom">
+      <span>BARSS Haiti &nbsp;&middot;&nbsp; Konekte Kreye Travay &nbsp;&middot;&nbsp; 2003-2026</span>
+      <span>Founded in Milot, North of Haiti</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/nav.js"></script>
+</body>
+</html>
