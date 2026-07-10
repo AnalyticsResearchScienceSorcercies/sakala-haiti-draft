@@ -247,8 +247,7 @@ const MID    = '#9A9088';
       datasets: [
         { label: 'Gang Baseline (avg, incl. lump sums)', data: [5.5,5.7,5.9,6.1,6.3,6.5,6.7,6.9,7.1,7.3], borderColor: RUST, backgroundColor: 'transparent', borderDash: [5,4], tension: 0.2, pointRadius: 2 },
         { label: 'Haiti Minimum Wage', data: [4.5,4.5,4.8,4.8,5.0,5.2,5.4,5.6,5.8,6.0], borderColor: MID, backgroundColor: 'transparent', borderDash: [3,3], tension: 0.1, pointRadius: 2 },
-        { label: 'SAKALA Cooperative Worker (Bronze)', data: [9.60,10.20,11.00,11.80,12.50,13.20,13.90,14.60,15.20,15.80], borderColor: ORANGE, backgroundColor: 'rgba(212,80,10,0.08)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2.5 },
-        { label: 'SAKALA Platinum Tier', data: [14.40,15.60,17.00,18.20,19.40,20.80,22.00,23.20,24.40,25.00], borderColor: AMBER, backgroundColor: 'transparent', tension: 0.3, pointRadius: 3, borderWidth: 2 }
+        { label: 'SAKALA worker (rises as they train up)', data: [1,3,5,6.5,8,8,8,8,8,8], borderColor: ORANGE, backgroundColor: 'rgba(212,80,10,0.08)', fill: true, tension: 0.3, pointRadius: 4, borderWidth: 2.5 }
       ]
     },
     options: {

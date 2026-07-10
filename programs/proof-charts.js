@@ -70,10 +70,7 @@
     const L=['Yr 1','Yr 2','Yr 3','Yr 4','Yr 5','Yr 6','Yr 7','Yr 8','Yr 9','Yr 10'];
     new Chart(el,{type:'line',
       data:{labels:L,datasets:[
-        {label:'Our worker (entry)',data:[9.60,10.20,11.00,11.80,12.50,13.20,13.90,14.60,15.20,15.80],borderColor:FOREST,backgroundColor:'rgba(31,82,50,0.10)',fill:true,tension:0.3,pointRadius:2,borderWidth:2.5},
-        {label:'Our worker (top level)',data:[14.40,15.60,17.00,18.20,19.40,20.80,22.00,23.20,24.40,25.00],borderColor:AMBER,tension:0.3,pointRadius:2,borderWidth:2},
-        {label:'Gang pay',data:[5.5,5.7,5.9,6.1,6.3,6.5,6.7,6.9,7.1,7.3],borderColor:RUST,borderDash:[5,4],tension:0.2,pointRadius:0,borderWidth:1.5},
-        {label:'Haiti minimum wage',data:[4.5,4.5,4.8,4.8,5.0,5.2,5.4,5.6,5.8,6.0],borderColor:MUTED,borderDash:[3,3],tension:0.1,pointRadius:0,borderWidth:1.5}
+        {label:'A worker's wage, as they train up',data:[1,3,5,7,8,8,8,8,8,8],borderColor:FOREST,backgroundColor:'rgba(31,82,50,0.10)',fill:true,tension:0.3,pointRadius:2,borderWidth:2.5}
       ]},
       options:Object.assign({},base,{
         plugins:{legend:{position:'bottom',labels:{color:INK,boxWidth:12,font:{size:10}}}},
@@ -123,8 +120,8 @@
     const L=['Yr 1','Yr 2','Yr 3','Yr 4','Yr 5'];
     new Chart(el,{
       data:{labels:L,datasets:[
-        {type:'bar',label:'Added that year',data:[34680,80000,130000,200000,300000],backgroundColor:AMBER},
-        {type:'line',label:'Total gold savings',data:[34680,114680,244680,444680,744680],borderColor:FOREST,backgroundColor:'transparent',tension:0.3,pointRadius:4,borderWidth:2.5}
+        {type:'bar',label:'Stake added that year',data:[34680,80000,130000,200000,300000],backgroundColor:AMBER},
+        {type:'line',label:'Total ownership stake',data:[34680,114680,244680,444680,744680],borderColor:FOREST,backgroundColor:'transparent',tension:0.3,pointRadius:4,borderWidth:2.5}
       ]},
       options:Object.assign({},base,{
         plugins:{legend:{position:'bottom',labels:{color:INK,boxWidth:12,font:{size:10}}},
