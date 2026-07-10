@@ -3,7 +3,7 @@
    all pointing straight to the SAKALA International PayPal donation (tax-deductible).
    Label localizes to "Donner" on -fr pages, "Give" elsewhere. Idempotent. */
 (function () {
-  var PAYPAL = 'https://www.paypal.com/donate?token=mJGrYlXM9SNvBYhDEQHM6Pn7h67v4BfG1ZaKOnXAjLztaNTAXuHtFxaQtKscIw_Xj2cfLcO6TGeRguSN';
+  var PAYPAL = 'https://www.paypal.com/donate/?business=PF49VDYFMRYQN&item_name=Job+Power&currency_code=USD';
   var file = (location.pathname.split('/').pop() || 'index.html');
   var isFr = /-fr\.html$/.test(file);
   var LABEL = isFr ? 'Donner' : 'Give';
