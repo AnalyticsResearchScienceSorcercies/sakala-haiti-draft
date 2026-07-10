@@ -113,16 +113,10 @@
         <span class="step-label">Étape 2 · Le paiement</span>
         <h2 class="t-h2 mb-32" style="font-size: clamp(24px, 3.5vw, 40px);">Votre cotisation</h2>
 
-        <!-- ===================================================================
-             PAYPAL SUBSCRIPTION BUTTON ($90 / quarter) GOES HERE.
-             Paste the hosted-button / subscription code from the Pratik PayPal
-             dashboard between the markers below. Recipient = Pratik -> Mercury.
-             Until then, the form on the left captures the member's details.
-        ==================================================================== -->
+        <!-- Konbit membership PAUSED 2026-07-10: live PayPal subscription removed (was -> Pratik/Mercury). Only the SAKALA International donate is a live fund path. -->
         <div class="pay-slot" id="paypal-sub-slot">
-          <div class="price">$90<small> / trimestre</small></div>
-          <div id="paypal-sub-button" style="margin-top:16px;"></div>
-          <div class="soon" id="sub-pay-status">Abonnement sécurisé, facturé chaque trimestre. Annulable à tout moment.</div>
+          <div class="price">Bientôt disponible</div>
+          <div class="soon" id="sub-pay-status">L'adhésion au Konbit n'est pas encore ouverte. Pour mettre des jeunes au travail dès aujourd'hui, faites plutôt un don déductible d'impôt à SAKALA International. <a href="don-fr.html" style="color:var(--sodium-orange);font-weight:700;">Faire un don &rarr;</a></div>
         </div>
 
         <div style="margin-top:28px;">
@@ -181,43 +175,7 @@
   </div>
 </footer>
 
-<!-- PayPal JS SDK (LIVE) — subscription is created SERVER-SIDE by Supabase (paypal-create); secret stays server-side. -->
-<script src="https://www.paypal.com/sdk/js?client-id=AQicdgxZmNJEhuTZiujflM-uiQCV3ti9yMaxm-L3CzSSZcTMSEScyUhQcUNXl6tByUvJABgMrkQRNvgE&vault=true&intent=subscription"></script>
-<script>
-  var BACKEND = 'https://itnmcxemdpauemsnesln.supabase.co/functions/v1/paypal-create';
-  var joinForm = document.getElementById('join-form');
-  function joinValid(){ return joinForm.checkValidity(); }
-  function joinData(){
-    return {
-      type: 'membership',
-      prenom: document.getElementById('j-prenom').value,
-      nom: document.getElementById('j-nom').value,
-      email: document.getElementById('j-email').value,
-      lieu: document.getElementById('j-lieu').value,
-      telephone: document.getElementById('j-tel').value,
-      pourquoi: document.getElementById('j-pourquoi').value
-    };
-  }
-  paypal.Buttons({
-    style: { color:'gold', shape:'rect', label:'subscribe', height:44 },
-    onInit: function(data, actions){
-      actions.disable();
-      function sync(){ joinValid() ? actions.enable() : actions.disable(); }
-      joinForm.addEventListener('input', sync);
-      joinForm.addEventListener('change', sync);
-    },
-    onClick: function(data, actions){ if (!joinValid()){ joinForm.reportValidity(); } },
-    createSubscription: function(){
-      return fetch(BACKEND, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(joinData()) })
-        .then(function(r){ return r.json(); })
-        .then(function(j){ if (!j.id) throw new Error('create failed'); return j.id; });
-    },
-    onApprove: function(data, actions){
-      document.getElementById('paypal-sub-slot').innerHTML =
-        '<div class="price">Bienvenue !</div><div class="soon">Adhésion active (abonnement ' + data.subscriptionID + '). Nous vous contactons pour votre première Kasav Box.</div>';
-    }
-  }).render('#paypal-sub-button');
-</script>
+<!-- Konbit membership PAUSED 2026-07-10: the live PayPal subscription (client-id AQic..., createSubscription -> Supabase paypal-create -> Pratik/Mercury) was removed so the SAKALA International donate is the ONLY live fund path on the site. Restore from git history when membership reopens. -->
 <script src="js/nav.js"></script>
 </body>
 </html>
