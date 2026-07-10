@@ -3,28 +3,43 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Partners · Coming soon · BARSS Haiti</title>
-<meta name="description" content="The partners page for KONKRET and SAKALA Haiti is being finalized. In the meantime, the TapTaps are live and ready to sponsor."/>
+<title>Partners · BARSS Haiti</title>
+<meta name="description" content="The institutions and allies who stand behind KONKRET and SAKALA Haiti... a research partner, women religious, a compost partner, diaspora parishes, and the Haitian diaspora."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="img/favicon.png">
-  <link rel="apple-touch-icon" href="img/favicon.png">
-  <link rel="stylesheet" href="css/konkret.css?v=7"/>
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/konkret.css?v=7"/>
 <style>
-  .ptn-soon { min-height:62vh; display:flex; align-items:center; justify-content:center; background:#141414; color:var(--bone); padding:80px 24px; text-align:center; }
-  .ptn-soon .inner { max-width:620px; }
-  .ptn-soon .kicker { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:18px; }
-  .ptn-soon h1 { font-family:'Anton',sans-serif; font-size:clamp(44px,9vw,84px); line-height:.9; text-transform:uppercase; margin:0 0 20px; }
-  .ptn-soon p { font-family:'Lora',serif; font-size:clamp(16px,2.3vw,19px); line-height:1.65; color:rgba(244,239,226,.8); margin:0 0 30px; }
-  .ptn-soon .cta { display:inline-block; font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#111; background:var(--sodium-orange); text-decoration:none; padding:14px 28px; border-radius:3px; }
-  .ptn-soon .cta:hover { background:#fff; }
-  .ptn-soon .sub { display:block; margin-top:22px; font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(244,239,226,.35); }
+  .pt-lead{ background:#0d0d0d; border:1px solid #1e1e1e; border-left:5px solid var(--sodium-orange);
+            padding:38px 40px; display:grid; grid-template-columns:110px 1fr; gap:30px; align-items:center; }
+  .pt-lead .badge{ width:110px; height:110px; border-radius:50%; background:#000; border:3px solid var(--sodium-orange);
+                   display:flex; align-items:center; justify-content:center; }
+  .pt-lead .badge img{ width:66%; height:66%; object-fit:contain; }
+  .pt-lead h3{ font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(24px,3.4vw,36px); line-height:.95; color:var(--bone); margin:0 0 4px; }
+  .pt-lead .role{ font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:14px; display:block; }
+  .pt-lead p{ font-family:'Roboto Slab',serif; font-size:16px; line-height:1.55; color:var(--parchment); margin:0; }
+  .pt-lead p b{ color:var(--bone); }
+  @media(max-width:640px){ .pt-lead{ grid-template-columns:1fr; text-align:center; } .pt-lead .badge{ margin:0 auto; } }
+
+  .pt-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:2px; }
+  .pt-card{ background:#111; border:1px solid #1a1a1a; border-top:3px solid var(--voice-green); padding:30px 28px; }
+  .pt-card:nth-child(2){ border-top-color:var(--sodium-orange); }
+  .pt-card:nth-child(3){ border-top-color:var(--prussian); }
+  .pt-card:nth-child(4){ border-top-color:var(--du-bois-red); }
+  .pt-card .role{ font-family:'Courier Prime',monospace; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--sodium-orange); display:block; margin-bottom:10px; }
+  .pt-card h4{ font-family:'Anton',sans-serif; text-transform:uppercase; font-size:22px; line-height:.98; color:var(--bone); margin:0 0 12px; }
+  .pt-card p{ font-family:'Roboto Slab',serif; font-size:14.5px; line-height:1.5; color:var(--parchment); margin:0; }
+
+  .pt-note{ font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:.06em; color:rgba(244,239,226,.5); margin-top:26px; }
+  .pt-cta{ background:var(--sodium-orange); }
+  .pt-cta .t-h2{ color:#000; } .pt-cta .t-body{ color:#1a1a1a; }
+  .pt-cta a{ display:inline-block; margin-top:22px; font-family:'Roboto Slab',serif; font-weight:800; text-decoration:none; background:#000; color:var(--bone); padding:15px 30px; font-size:15px; }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="kn-nav">
   <div class="container">
     <a href="index.html" class="kn-brand"><img src="img/konkret-mark.png" alt="" class="kn-brand-mark"><span class="kn-brand-text"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">Not Aid. Ownership.</span></span></a>
@@ -33,7 +48,7 @@
       <li><a href="taptaps.html">TapTaps</a></li>
       <li><a href="what-is-a-taptap.html">What is a TapTap?</a></li>
       <li><a href="fatraka.html">FatraKa</a></li>
-      <li><a href="partners.html">Partners</a></li>
+      <li><a href="partners.html" class="active">Partners</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <a href="taptaps.html" class="kn-cta kn-cta-ghost">Sponsor a TapTap</a>
@@ -55,14 +70,68 @@
   <a href="index-fr.html">Français</a>
 </div>
 
-<!-- COMING SOON -->
-<section class="ptn-soon">
-  <div class="inner">
-    <div class="kicker">Coming soon</div>
-    <h1>Our partners</h1>
-    <p>We are finalizing the institutions and allies who stand behind KONKRET, and confirming each one before we put their name here. This page is on its way. In the meantime, the work itself is live... four TapTaps, surveyed and ready to sponsor.</p>
-    <a class="cta" href="taptaps.html">See the TapTaps →</a>
-    <span class="sub">BARSS Haiti · Konekte Kreye Travay</span>
+<header class="kn-page-header" style="background: linear-gradient(rgba(10,10,10,.78), rgba(10,10,10,.93)), url('photos/2025-aout/IMG-20250801-WA0131.jpg') center 34% / cover; padding-top:76px; padding-bottom:64px;">
+  <div class="container">
+    <span class="t-label">Who Stands Behind the Work</span>
+    <h1 class="t-h1 mb-16">Partners</h1>
+    <p class="t-body max-640">Ownership is a team sport. These are the people and institutions who backed KONKRET before it was easy... a research partner, women religious, a compost partner, diaspora parishes, and the Haitian diaspora itself.</p>
+  </div>
+</header>
+
+<!-- LEAD PARTNER: BARSS -->
+<section class="section bg-black">
+  <div class="container">
+    <div class="kn-section-header"><span class="t-label">The Research Partner</span></div>
+    <div class="pt-lead">
+      <span class="badge"><img src="img/konkret-mark.png" alt="BARSS"></span>
+      <div>
+        <span class="role">Data · Strategy · Research</span>
+        <h3>BARSS</h3>
+        <p><b>Bertil's Analytics Research Sciences &amp; Sorceries.</b> The economist who found the work, joined it, and set out to prove it. BARSS traces, dollar by dollar, whether money becomes economic power on the ground or leaks on the way down... the discipline that turns a good program into one that can go to scale. It is the quiet firm that helps organizations doing real work turn it into gold, and rarely takes the credit. Here, it takes it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDING SUPPORTERS -->
+<section class="section bg-deep">
+  <div class="container">
+    <div class="kn-section-header">
+      <span class="t-label">Founding Supporters</span>
+      <h2 class="t-h2">The ones who believed early.</h2>
+    </div>
+    <div class="pt-grid">
+      <div class="pt-card">
+        <span class="role">Women Religious</span>
+        <h4>Sisters of St. Joseph of Peace</h4>
+        <p>The congregation whose trust and support helped pilot and test this work through the Jobs for Peace program. They showed up first, and they keep showing up.</p>
+      </div>
+      <div class="pt-card">
+        <span class="role">Soil &amp; Sanitation</span>
+        <h4>SOIL Haiti</h4>
+        <p>A partner in turning waste into wealth... compost and regenerative soil that feed the TapTap gardens and close the loop from ground to harvest.</p>
+      </div>
+      <div class="pt-card">
+        <span class="role">Diaspora Parish</span>
+        <h4>St. Anastasia Parish</h4>
+        <p>A parish community in Teaneck, New Jersey whose support helped this program stand up... the diaspora, backing the next generation at home.</p>
+      </div>
+      <div class="pt-card">
+        <span class="role">The Diaspora</span>
+        <h4>Haitians Abroad</h4>
+        <p>Founding partner schools and diaspora families whose early gifts started the first cohorts. Our main partners, and the reason a dollar can become ownership instead of dependency.</p>
+      </div>
+    </div>
+    <p class="pt-note">More partners and logos are being confirmed and added here. If you have stood with this work, we want your name on this page.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section pt-cta">
+  <div class="container">
+    <h2 class="t-h2">Stand with the work.</h2>
+    <p class="t-body max-640" style="margin-top:12px;">Churches, schools, foundations, and diaspora networks... there is a place for you here. One more partner is one more farm, one more job, one more way out for Haiti's youth.</p>
+    <a href="devenir-partenaire.html">Become a Partner →</a>
   </div>
 </section>
 
@@ -72,7 +141,7 @@
     <div class="kn-footer-grid">
       <div>
         <div class="kn-footer-brand">KONKRET</div>
-        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;·&nbsp; Milot, North, Haiti</div>
+        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;·&nbsp; Haiti</div>
         <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
       </div>
       <div class="kn-footer-col">

@@ -3,67 +3,27 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>FatraKa · A Second Hub for Haiti · BARSS Haiti</title>
-<meta name="description" content="Haiti runs through one city. Capture Port-au-Prince and the country chokes. FatraKa is the plan to build a second hub in the North, by its own youth, starting with the thing everyone else throws away."/>
+<title>FatraKa · Coming soon · BARSS Haiti</title>
+<meta name="description" content="FatraKa, the KONKRET waste-to-value hub, is being finalized. In the meantime, the TapTaps are live and ready to sponsor."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="img/favicon.png">
-  <link rel="apple-touch-icon" href="img/favicon.png">
-  <link rel="stylesheet" href="css/konkret.css?v=7"/>
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/konkret.css?v=7"/>
 <style>
-  /* HERO */
-  .fk-hero { background:#0c0c0c; color:var(--bone); padding:96px 24px 80px; text-align:center; border-bottom:1px solid #1a1a1a; }
-  .fk-kicker { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:22px; }
-  .fk-hero h1 { font-family:'Anton',sans-serif; font-size:clamp(44px,9vw,96px); line-height:.92; text-transform:uppercase; margin:0 auto 26px; max-width:14ch; }
-  .fk-hero p { max-width:680px; margin:0 auto; font-family:'Lora',serif; font-size:clamp(16px,2.4vw,20px); line-height:1.65; color:rgba(244,239,226,.82); }
-  /* generic section */
-  .fk-sec { padding:72px 24px; }
-  .fk-sec .wrap { max-width:920px; margin:0 auto; }
-  .fk-eyebrow { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--sodium-orange); display:block; margin-bottom:14px; }
-  .fk-sec h2 { font-family:'Anton',sans-serif; font-size:clamp(28px,5.5vw,52px); line-height:1; text-transform:uppercase; color:var(--bone); margin:0 0 24px; }
-  .fk-sec p.lead { font-family:'Lora',serif; font-size:clamp(16px,2.3vw,19px); line-height:1.7; color:rgba(244,239,226,.85); margin:0 0 18px; }
-  .fk-trap { background:#120d0d; border-top:1px solid #1a1a1a; }
-  .fk-trap h2 { color:#ff6f86; }
-  .fk-trap .fk-eyebrow { color:#ff6f86; }
-  /* three-roads-one-city motif */
-  .fk-converge { font-family:'Courier Prime',monospace; color:rgba(244,239,226,.5); font-size:13px; line-height:1.9; letter-spacing:1px; margin:28px 0 6px; padding:22px 24px; background:#0a0a0a; border-left:3px solid #ff6f86; }
-  .fk-converge b { color:#ff6f86; }
-  .fk-answer { background:#0a140d; border-top:1px solid #14241a; }
-  .fk-answer h2 { color:var(--voice-green); }
-  .fk-answer .fk-eyebrow { color:var(--voice-green); }
-  /* the spine */
-  .fk-spine { background:var(--bone); }
-  .fk-spine .wrap { max-width:880px; }
-  .fk-spine .fk-eyebrow { color:#b4541a; }
-  .fk-spine h2 { color:#141414; }
-  .fk-spine p.lead { color:#3a3a3a; }
-  .fk-layers { margin-top:40px; border-left:3px solid var(--sodium-orange); }
-  .fk-layer { display:grid; grid-template-columns:84px 1fr; gap:18px; padding:22px 0 22px 24px; border-bottom:1px solid rgba(0,0,0,.1); }
-  .fk-layer:last-child { border-bottom:none; }
-  .fk-layer .ln { font-family:'Anton',sans-serif; font-size:52px; line-height:.8; color:rgba(184,84,26,.28); }
-  .fk-layer h3 { font-family:'Roboto Slab',serif; font-weight:800; font-size:20px; color:#141414; margin:0 0 6px; text-transform:uppercase; letter-spacing:.5px; }
-  .fk-layer p { font-family:'Lora',serif; font-size:14.5px; line-height:1.6; color:#444; margin:0; }
-  .fk-spine .close { margin-top:28px; font-family:'Lora',serif; font-style:italic; font-size:17px; color:#141414; }
-  /* proof */
-  .fk-proof { background:#0c0c0c; border-top:1px solid #1a1a1a; }
-  .fk-proof h2 { color:var(--bone); }
-  .fk-proof-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin:32px 0 8px; }
-  .fk-stat { background:#111; padding:24px 16px; text-align:center; }
-  .fk-stat .n { font-family:'Roboto Slab',serif; font-weight:800; font-size:clamp(24px,4vw,34px); color:var(--voice-green); line-height:1; }
-  .fk-stat .l { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(244,239,226,.4); margin-top:8px; }
-  .fk-link { display:inline-block; margin-top:22px; font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--sodium-orange); text-decoration:none; border-bottom:1px solid rgba(255,106,31,.4); padding-bottom:3px; }
-  .fk-link:hover { color:#fff; border-color:#fff; }
-  /* CTA */
-  .fk-cta { background:var(--prussian); color:var(--bone); text-align:center; padding:88px 24px; }
-  .fk-cta h2 { font-family:'Anton',sans-serif; font-size:clamp(28px,5.5vw,54px); text-transform:uppercase; margin:0 auto 22px; max-width:16ch; line-height:1; }
-  .fk-cta p { max-width:640px; margin:0 auto 32px; font-family:'Lora',serif; font-size:clamp(16px,2.3vw,19px); line-height:1.65; }
-  @media (max-width:640px){ .fk-proof-stats { grid-template-columns:repeat(2,1fr); } }
+  .ptn-soon { min-height:62vh; display:flex; align-items:center; justify-content:center; background:#141414; color:var(--bone); padding:80px 24px; text-align:center; }
+  .ptn-soon .inner { max-width:620px; }
+  .ptn-soon .kicker { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:18px; }
+  .ptn-soon h1 { font-family:'Anton',sans-serif; font-size:clamp(44px,9vw,84px); line-height:.9; text-transform:uppercase; margin:0 0 20px; }
+  .ptn-soon p { font-family:'Lora',serif; font-size:clamp(16px,2.3vw,19px); line-height:1.65; color:rgba(244,239,226,.8); margin:0 0 30px; }
+  .ptn-soon .cta { display:inline-block; font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#111; background:var(--sodium-orange); text-decoration:none; padding:14px 28px; border-radius:3px; }
+  .ptn-soon .cta:hover { background:#fff; }
+  .ptn-soon .sub { display:block; margin-top:22px; font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(244,239,226,.35); }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="kn-nav">
   <div class="container">
     <a href="index.html" class="kn-brand"><img src="img/konkret-mark.png" alt="" class="kn-brand-mark"><span class="kn-brand-text"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">Not Aid. Ownership.</span></span></a>
@@ -71,7 +31,7 @@
       <li><a href="a-propos.html">About</a></li>
       <li><a href="taptaps.html">TapTaps</a></li>
       <li><a href="what-is-a-taptap.html">What is a TapTap?</a></li>
-      <li><a href="fatraka.html">FatraKa</a></li>
+      <li><a href="fatraka.html" class="active">FatraKa</a></li>
       <li><a href="partners.html">Partners</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
@@ -94,93 +54,14 @@
   <a href="index-fr.html">Français</a>
 </div>
 
-<!-- HERO -->
-<section class="fk-hero">
-  <div class="fk-kicker">The Flagship · FatraKa</div>
-  <h1>Haiti runs through one city. That is the trap.</h1>
-  <p>Every road, every dollar, every flight funnels through Port-au-Prince. Capture that one city and the whole country chokes. FatraKa is the plan to give Haiti a second heart in the North, built by its own youth, starting with the one thing everyone else throws away.</p>
-</section>
-
-<!-- THE TRAP -->
-<section class="fk-sec fk-trap">
-  <div class="wrap">
-    <span class="fk-eyebrow">01 · The trap</span>
-    <h2>One pinch-point</h2>
-    <p class="lead">Haiti's three national roads all run into the same place. Whoever holds the chokepoints around the capital holds the country.</p>
-    <div class="fk-converge">
-      RN1  (North) &nbsp;&searr;<br/>
-      RN2  (South) &nbsp;&rarr;&nbsp; <b>PORT-AU-PRINCE</b> &nbsp;&rarr;&nbsp; everything<br/>
-      RN3  (Center) &nbsp;&nearr;
-    </div>
-    <p class="lead">In 2022 a single blockade of the main fuel terminal froze the entire nation for months. The capital's airport now sits effectively closed, shot at and shut down. A country with one heart can be stopped with one hand on its throat, and right now a hand is on its throat.</p>
-  </div>
-</section>
-
-<!-- THE ANSWER -->
-<section class="fk-sec fk-answer">
-  <div class="wrap">
-    <span class="fk-eyebrow">02 · The answer</span>
-    <h2>A second hub</h2>
-    <p class="lead">There is already a second city that works. Cap-Haïtien still runs the only functioning international airport in the country, with flights straight to the United States, while the Massif du Nord stands between it and the capital's violence, a mountain wall the gangs have not crossed.</p>
-    <p class="lead">It is a hub waiting to be built into a real one: power, transit, water, work. Give Haiti two hearts, and no single captured city can stop it anymore. That is the whole point of FatraKa. Not a charity in the North. A second center of gravity for a country that has been balancing on one.</p>
-  </div>
-</section>
-
-<!-- THE SPINE -->
-<section class="fk-sec fk-spine">
-  <div class="wrap">
-    <span class="fk-eyebrow">03 · How it gets built</span>
-    <h2>How you build a hub from the ground up</h2>
-    <p class="lead">You do not start with a master plan and a billion dollars. You start with trash, the cheapest and most ignored thing in the city, and you let the spine grow. Each layer pays for the next and runs on the one below it.</p>
-    <div class="fk-layers">
-      <div class="fk-layer">
-        <div class="ln">01</div>
-        <div><h3>Trash to wages</h3><p>Youth collect and sort the waste no one else will touch. Clean streets, real wages, and the raw material for everything stacked above it.</p></div>
-      </div>
-      <div class="fk-layer">
-        <div class="ln">02</div>
-        <div><h3>Routes to transit</h3><p>The collection routes become transit routes. The same spine that carries garbage out carries people and goods in. A city starts to move on its own arteries.</p></div>
-      </div>
-      <div class="fk-layer">
-        <div class="ln">03</div>
-        <div><h3>Power along the line</h3><p>Solar on the spine. The North already has youth-run mesh grids on the ground; the hub plugs into them and grows them instead of waiting on a national grid that never comes.</p></div>
-      </div>
-      <div class="fk-layer">
-        <div class="ln">04</div>
-        <div><h3>Water that feeds</h3><p>The same corridors carry drainage and irrigation. Water that used to flood the streets is routed to grow food instead.</p></div>
-      </div>
-      <div class="fk-layer">
-        <div class="ln">05</div>
-        <div><h3>A city that stops drowning</h3><p>Canals and restored ground turn the rainy season from a yearly disaster into a resource. Flood protection is not a separate megaproject. It is what the first four layers leave behind.</p></div>
-      </div>
-    </div>
-    <p class="close">Five layers, one spine, all of it built and owned by the young people who live there.</p>
-  </div>
-</section>
-
-<!-- THE PROOF -->
-<section class="fk-sec fk-proof">
-  <div class="wrap">
-    <span class="fk-eyebrow">04 · The proof</span>
-    <h2>It already works in the hardest place in the hemisphere</h2>
-    <p class="lead">FatraKa is not a sketch. The first spine is running in Cité Soleil, the toughest urban environment in the Western Hemisphere. If the model holds there, it scales anywhere in the North.</p>
-    <div class="fk-proof-stats">
-      <div class="fk-stat"><div class="n">40</div><div class="l">Youth employed</div></div>
-      <div class="fk-stat"><div class="n">1,000</div><div class="l">Households served</div></div>
-      <div class="fk-stat"><div class="n">6</div><div class="l">Rickshaws, youth-welded</div></div>
-      <div class="fk-stat"><div class="n">$62K</div><div class="l">Year-one revenue</div></div>
-    </div>
-    <p class="lead" style="margin-top:24px;">Forty young people service a thousand households from six rickshaws they welded themselves, with a portable welding certification they carry for life. Three bins per house, organic to compost, wood to biochar, the rest to recycling. Sixty-two thousand dollars in the first year, with no outside capital. The spine is real. Now it scales.</p>
-    <a href="programs/fatraka.html" class="fk-link">See the numbers behind the pilot →</a>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="fk-cta">
-  <div class="container">
-    <h2>This is the plan to un-trap a country</h2>
-    <p>It starts with one rickshaw on one block, and it ends with a second hub that a captured capital can no longer strangle. The plan is real, the proof is running, and the capital to build it exists. The only question left is who helps build it.</p>
-    <a href="contact.html" class="btn-orange">Build it with us</a>
+<!-- COMING SOON -->
+<section class="ptn-soon">
+  <div class="inner">
+    <div class="kicker">Coming soon</div>
+    <h1>FatraKa</h1>
+    <p>FatraKa, the second hub... waste turned into value, another engine for Haitian youth work. We are lining up the partners before we put the details here. It is on its way. In the meantime, the work is live... TapTaps, surveyed and ready to sponsor.</p>
+    <a class="cta" href="taptaps.html">See the TapTaps →</a>
+    <span class="sub">BARSS Haiti · Konekte Kreye Travay</span>
   </div>
 </section>
 
@@ -190,7 +71,7 @@
     <div class="kn-footer-grid">
       <div>
         <div class="kn-footer-brand">KONKRET</div>
-        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;·&nbsp; Milot, North, Haiti</div>
+        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;·&nbsp; Haiti</div>
         <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
       </div>
       <div class="kn-footer-col">
@@ -203,12 +84,11 @@
         <a href="what-is-a-taptap.html">What is a TapTap?</a>
         <a href="temoignages.html">Voices</a>
         <a href="faq.html">FAQ</a>
-        <a href="https://sakalahaiti.substack.com/" target="_blank" rel="noopener">Blog</a>
       </div>
       <div class="kn-footer-col">
         <div class="kn-footer-col-title">Take Action</div>
         <a href="taptaps.html">Sponsor a TapTap</a>
-        <a href="fatraka.html">FatraKa</a>
+        <a href="participer.html">Participate</a>
         <a href="je-veux-un-emploi.html">Get a Job</a>
         <a href="devenir-partenaire.html">Host a TapTap</a>
         <a href="summer-2026.html">SAKALA Summer 2026</a>

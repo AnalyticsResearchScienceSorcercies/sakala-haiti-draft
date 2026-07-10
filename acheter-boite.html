@@ -1,46 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Pre-order the Harvest · Cassava Flour - BARSS Haiti</title>
-<meta name="description" content="Pre-order single-origin Haitian cassava flour, milled at the Quartier-Morin TapTap. Your purchase funds the harvest and puts youth to work. 3, 6, or 12 lb. First shipments Fall 2026."/>
+<title>Pre-order the Harvest · Coming soon · BARSS Haiti</title>
+<meta name="description" content="Harvest pre-orders are opening soon. For now, you can support the youth through a tax-deductible gift to SAKALA International."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Slab:wght@400;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="img/favicon.png">
-  <link rel="apple-touch-icon" href="img/favicon.png">
-  <link rel="stylesheet" href="css/konkret.css?v=7"/>
+<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/konkret.css?v=7"/>
 <style>
-  .step-label { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:10px; display:block; }
-  /* pre-order banner */
-  .preorder-banner { background:rgba(255,106,31,.1); border:1px solid rgba(255,106,31,.4); border-radius:6px; padding:18px 22px; margin:0 auto 0; max-width:1180px; font-family:'Lora',serif; font-size:14.5px; line-height:1.6; color:var(--bone); }
-  .preorder-banner b { color:var(--sodium-orange); }
-  /* weight options */
-  .wt-grid { display:grid; gap:12px; margin-top:8px; }
-  .wt-opt { background:#0d0d0d; border:1px solid #2a2a2a; border-radius:6px; padding:18px 20px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:14px; transition:border-color .15s, background .15s; }
-  .wt-opt:hover { border-color:#4a4a4a; }
-  .wt-opt.sel { border-color:var(--sodium-orange); background:rgba(255,106,31,.07); }
-  .wt-opt .wt-left .wt-name { font-family:'Anton',sans-serif; font-size:21px; text-transform:uppercase; color:var(--bone); line-height:1; }
-  .wt-opt .wt-left .wt-sub { font-family:'Courier Prime',monospace; font-size:10.5px; letter-spacing:.5px; color:rgba(244,239,226,.5); margin-top:6px; }
-  .wt-opt .wt-price { font-family:'Roboto Slab',serif; font-weight:800; font-size:26px; color:var(--sodium-orange); white-space:nowrap; }
-  .wt-opt .wt-price small { display:block; font-family:'Courier Prime',monospace; font-size:10px; font-weight:400; color:rgba(244,239,226,.45); letter-spacing:.5px; text-align:right; margin-top:2px; }
-  .wt-opt .wt-radio { width:18px; height:18px; border-radius:50%; border:2px solid #555; flex:0 0 auto; position:relative; }
-  .wt-opt.sel .wt-radio { border-color:var(--sodium-orange); }
-  .wt-opt.sel .wt-radio:after { content:""; position:absolute; inset:3px; border-radius:50%; background:var(--sodium-orange); }
-  .pay-box { background:#0d0d0d; border:1px solid #2a2a2a; border-top:3px solid var(--sodium-orange); border-radius:6px; padding:24px 24px 18px; margin-top:18px; }
-  .pay-box .pay-total { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:16px; }
-  .pay-box .pay-total .lab { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(244,239,226,.55); }
-  .pay-box .pay-total .amt { font-family:'Roboto Slab',serif; font-weight:800; font-size:30px; color:var(--bone); }
-  .pay-box .soon { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1px; color:rgba(244,239,226,.45); margin-top:12px; text-align:center; }
-  .pick-first { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1px; color:rgba(244,239,226,.4); text-align:center; padding:10px 0; }
-  .ship-note { background:#111; border:1px solid #1f1f1f; border-left:3px solid #C8A341; padding:18px 22px; margin-top:24px; font-family:'Lora',serif; font-size:13.5px; color:var(--parchment); line-height:1.7; }
-  .ship-note b { color:var(--bone); }
+  .ptn-soon { min-height:62vh; display:flex; align-items:center; justify-content:center; background:#141414; color:var(--bone); padding:80px 24px; text-align:center; }
+  .ptn-soon .inner { max-width:640px; }
+  .ptn-soon .kicker { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:18px; }
+  .ptn-soon h1 { font-family:'Anton',sans-serif; font-size:clamp(40px,8vw,74px); line-height:.92; text-transform:uppercase; margin:0 0 20px; }
+  .ptn-soon p { font-family:'Lora',serif; font-size:clamp(16px,2.3vw,19px); line-height:1.65; color:rgba(244,239,226,.8); margin:0 0 30px; }
+  .ptn-soon .cta { display:inline-block; font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#111; background:var(--sodium-orange); text-decoration:none; padding:14px 28px; border-radius:3px; margin:0 6px 10px; }
+  .ptn-soon .cta.ghost { background:transparent; color:var(--bone); border:1px solid rgba(244,239,226,.35); }
+  .ptn-soon .cta:hover { background:#fff; color:#111; }
+  .ptn-soon .sub { display:block; margin-top:22px; font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(244,239,226,.35); }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="kn-nav">
   <div class="container">
     <a href="index.html" class="kn-brand"><img src="img/konkret-mark.png" alt="" class="kn-brand-mark"><span class="kn-brand-text"><span class="kn-brand-logo">KONKRET</span><span class="kn-brand-parent">Not Aid. Ownership.</span></span></a>
@@ -71,120 +55,15 @@
   <a href="index-fr.html">Français</a>
 </div>
 
-<!-- PAGE HEADER -->
-<header class="kn-page-header" style="background: linear-gradient(rgba(10,10,10,.78), rgba(10,10,10,.92)), url('photos/pepiniere-sacs.jpg') center 30% / cover; padding-top: 72px; padding-bottom: 56px;">
-  <div class="container">
-    <span class="t-label" style="display:block; margin-bottom: 14px;">Pre-order · single-origin</span>
-    <h1 class="t-h1 mb-16">Pre-order the harvest</h1>
-    <p class="t-body" style="max-width: 640px; color: rgba(244,239,226,.7);">Single-origin cassava flour, grown and milled at the Quartier-Morin TapTap. Your purchase is not a donation... it funds this season's harvest and puts young people to work on their own ground. Choose your bag below.</p>
-  </div>
-</header>
-
-<!-- PRE-ORDER DISCLAIMER -->
-<div style="background:var(--near-black); padding:22px 24px 0;">
-  <div class="preorder-banner">
-    <b>This is a pre-order, grown to order.</b> The flour is being grown and milled now from this season's harvest at our Quartier-Morin TapTap. Ordering today funds that harvest... which is exactly how your purchase puts youth to work. We will email you a tracking number the moment your flour ships. <b>First shipments estimated Fall 2026.</b>
-  </div>
-</div>
-
-<section class="section bg-near">
-  <div class="container">
-    <div class="kn-split" style="gap: 64px; align-items: start;">
-
-      <!-- LEFT: FORM -->
-      <div>
-        <span class="step-label">Step 1 · Your details</span>
-        <h2 class="t-h2 mb-32" style="font-size: clamp(24px, 3.5vw, 40px);">Where it ships</h2>
-
-        <form id="buy-form" class="kn-form" style="max-width: 100%;" onsubmit="return false;">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div class="kn-form-group">
-              <label class="kn-form-label" for="b-prenom">First name</label>
-              <input class="kn-form-input" type="text" id="b-prenom" name="prenom" placeholder="Your first name" required/>
-            </div>
-            <div class="kn-form-group">
-              <label class="kn-form-label" for="b-nom">Last name</label>
-              <input class="kn-form-input" type="text" id="b-nom" name="nom" placeholder="Your last name" required/>
-            </div>
-          </div>
-
-          <div class="kn-form-group">
-            <label class="kn-form-label" for="b-email">Email <span style="color:rgba(244,239,226,.4)">(for your shipping notification)</span></label>
-            <input class="kn-form-input" type="email" id="b-email" name="email" placeholder="you@email.com" required/>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div class="kn-form-group">
-              <label class="kn-form-label" for="b-qte">Number of bags</label>
-              <input class="kn-form-input" type="number" id="b-qte" name="quantite" min="1" value="1" required/>
-            </div>
-            <div class="kn-form-group">
-              <label class="kn-form-label" for="b-tel">Phone / WhatsApp</label>
-              <input class="kn-form-input" type="text" id="b-tel" name="telephone" placeholder="Optional"/>
-            </div>
-          </div>
-
-          <div class="kn-form-group">
-            <label class="kn-form-label" for="b-adresse">Shipping address</label>
-            <textarea class="kn-form-textarea" id="b-adresse" name="adresse" rows="3" placeholder="Where we ship your flour" style="min-height: 90px;" required></textarea>
-          </div>
-
-          <div class="kn-form-group">
-            <label class="kn-form-label" for="b-note">Note (optional)</label>
-            <textarea class="kn-form-textarea" id="b-note" name="note" rows="2" placeholder="Anything else about your order" style="min-height: 70px;"></textarea>
-          </div>
-          <p style="font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1px; color:rgba(244,239,226,.5); margin-top:6px;">Fill in your details, pick a bag on the right, then pre-order &rarr;</p>
-        </form>
-      </div>
-
-      <!-- RIGHT: WEIGHTS + PAYMENT -->
-      <div>
-        <span class="step-label">Step 2 · Pick your bag</span>
-        <h2 class="t-h2 mb-32" style="font-size: clamp(24px, 3.5vw, 40px);">Choose a weight</h2>
-
-        <div class="wt-grid">
-          <div class="wt-opt" data-weight="3" data-price="45" onclick="pickWeight(this)">
-            <div class="wt-radio"></div>
-            <div class="wt-left" style="flex:1;">
-              <div class="wt-name">3 lb</div>
-              <div class="wt-sub">a try, one household</div>
-            </div>
-            <div class="wt-price">$45<small>$15 / lb</small></div>
-          </div>
-          <div class="wt-opt" data-weight="6" data-price="85" onclick="pickWeight(this)">
-            <div class="wt-radio"></div>
-            <div class="wt-left" style="flex:1;">
-              <div class="wt-name">6 lb</div>
-              <div class="wt-sub">the family bag</div>
-            </div>
-            <div class="wt-price">$85<small>$14.20 / lb</small></div>
-          </div>
-          <div class="wt-opt" data-weight="12" data-price="150" onclick="pickWeight(this)">
-            <div class="wt-radio"></div>
-            <div class="wt-left" style="flex:1;">
-              <div class="wt-name">12 lb</div>
-              <div class="wt-sub">the pantry · best value</div>
-            </div>
-            <div class="wt-price">$150<small>$12.50 / lb</small></div>
-          </div>
-        </div>
-
-        <div class="pay-box">
-          <div class="pay-total">
-            <span class="lab">Pre-order total</span>
-            <span class="amt" id="pay-amt">&mdash;</span>
-          </div>
-          <div id="paypal-buy-button"></div>
-          <div class="pick-first" id="pick-first">Pick a weight and fill your details to pre-order.</div>
-          <div class="soon" id="buy-pay-status" style="display:none;">Secure pre-order by PayPal or card</div>
-        </div>
-
-        <div class="ship-note">
-          <b>Shipping is included</b> in every price, and so is the proof: with your flour comes a short report of the season your money funded... who was hired and what grew. The purchase and the impact are the same act.
-        </div>
-      </div>
-
-    </div>
+<!-- COMING SOON -->
+<section class="ptn-soon">
+  <div class="inner">
+    <div class="kicker">Coming soon</div>
+    <h1>Pre-order the Harvest</h1>
+    <p>Single-origin cassava flour, grown and milled at the Quartier-Morin TapTap. Harvest pre-orders open soon, once the shipping and fulfillment are ready. Until then, you can still put youth to work today with a tax-deductible gift to SAKALA International.</p>
+    <a class="cta" href="https://www.paypal.com/donate?token=mJGrYlXM9SNvBYhDEQHM6Pn7h67v4BfG1ZaKOnXAjLztaNTAXuHtFxaQtKscIw_Xj2cfLcO6TGeRguSN" target="_blank" rel="noopener">Donate to SAKALA →</a>
+    <a class="cta ghost" href="taptaps.html">See the TapTaps →</a>
+    <span class="sub">BARSS Haiti · Konekte Kreye Travay</span>
   </div>
 </section>
 
@@ -193,112 +72,45 @@
   <div class="container">
     <div class="kn-footer-grid">
       <div>
-        <div class="kn-footer-brand">SAKALA Haiti</div>
-        <div class="kn-footer-tagline">Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;&middot;&nbsp; Milot, Nord, Haiti</div>
-        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the central answer to the social and economic troubles Haiti is going through.</p>
+        <div class="kn-footer-brand">KONKRET</div>
+        <div class="kn-footer-tagline">BARSS Haiti · Konekte Kreye Travay <span style="opacity:.6">(connect &middot; create &middot; work)</span> &nbsp;·&nbsp; Haiti</div>
+        <p class="kn-footer-desc">A Haitian solidarity-economy initiative organizing youth employment as the primary answer to the socio-economic breakdown Haiti is living through.</p>
       </div>
       <div class="kn-footer-col">
         <div class="kn-footer-col-title">The Organization</div>
         <a href="konkret.html">KONKRET</a>
-        <a href="a-propos.html">Who We Are</a>
-        <a href="notre-histoire.html">Our Story</a>
+        <a href="a-propos.html">About</a>
+        <a href="notre-histoire.html">Our History</a>
         <a href="leadership.html">Leadership</a>
         <a href="nos-actions.html">How It Works</a>
         <a href="what-is-a-taptap.html">What is a TapTap?</a>
+        <a href="temoignages.html">Voices</a>
         <a href="faq.html">FAQ</a>
       </div>
       <div class="kn-footer-col">
         <div class="kn-footer-col-title">Take Action</div>
         <a href="taptaps.html">Sponsor a TapTap</a>
-        <a href="participer.html">Get Involved</a>
-        <a href="acheter-boite.html">Pre-order flour</a>
-        <a href="je-veux-un-emploi.html">I Want to Work</a>
+        <a href="participer.html">Participate</a>
+        <a href="je-veux-un-emploi.html">Get a Job</a>
+        <a href="devenir-partenaire.html">Host a TapTap</a>
+        <a href="summer-2026.html">SAKALA Summer 2026</a>
       </div>
       <div class="kn-footer-col">
         <div class="kn-footer-col-title">Contact</div>
         <p>Daniel Tillias, Director</p>
-        <p>Milot, Nord, Haiti</p>
+        <p>Milot, North, Haiti</p>
         <a href="mailto:datilias@gmail.com">datilias@gmail.com</a>
+        <a href="contact.html">Contact Form</a>
         <a href="documents-publics.html">Transparency</a>
       </div>
     </div>
     <div class="kn-footer-bottom">
-      <span>BARSS Haiti &nbsp;&middot;&nbsp; Konekte Kreye Travay &nbsp;&middot;&nbsp; 2003-2026</span>
-      <span>Founded in Milot, Nord, Haiti</span>
+      <span>BARSS Haiti &nbsp;·&nbsp; Konekte Kreye Travay &nbsp;·&nbsp; 2003-2026</span>
+      <span>Founded in Milot, North of Haiti</span>
     </div>
   </div>
 </footer>
 
-<!-- PayPal JS SDK (LIVE) — order created SERVER-SIDE by Supabase (paypal-create); secret stays server-side. -->
-<script src="https://www.paypal.com/sdk/js?client-id=AQicdgxZmNJEhuTZiujflM-uiQCV3ti9yMaxm-L3CzSSZcTMSEScyUhQcUNXl6tByUvJABgMrkQRNvgE&currency=USD"></script>
-<script>
-  var BACKEND = 'https://itnmcxemdpauemsnesln.supabase.co/functions/v1/paypal-create';
-  var buyForm = document.getElementById('buy-form');
-  var qtyEl = document.getElementById('b-qte');
-  var selWeight = null, selPrice = 0;
-
-  function fmt(n){ return '$' + Number(n).toLocaleString(); }
-  function qty(){ return Math.max(1, parseInt(qtyEl.value,10) || 1); }
-  function refreshTotal(){
-    var amtEl = document.getElementById('pay-amt');
-    if (!selWeight){ amtEl.innerHTML = '&mdash;'; return; }
-    amtEl.textContent = fmt(selPrice * qty());
-  }
-  function pickWeight(el){
-    document.querySelectorAll('.wt-opt').forEach(function(o){ o.classList.remove('sel'); });
-    el.classList.add('sel');
-    selWeight = el.getAttribute('data-weight');
-    selPrice = Number(el.getAttribute('data-price'));
-    refreshTotal(); sync();
-  }
-  qtyEl.addEventListener('input', refreshTotal);
-
-  function buyValid(){ return buyForm.checkValidity() && !!selWeight; }
-  function buyData(){
-    return {
-      type: 'flour',
-      weight: selWeight,
-      prenom: document.getElementById('b-prenom').value,
-      nom: document.getElementById('b-nom').value,
-      email: document.getElementById('b-email').value,
-      telephone: document.getElementById('b-tel').value,
-      adresse: document.getElementById('b-adresse').value,
-      quantite: qty(),
-      note: document.getElementById('b-note').value
-    };
-  }
-  var ppActions = null;
-  function sync(){
-    if (!ppActions) return;
-    var ready = buyValid();
-    ready ? ppActions.enable() : ppActions.disable();
-    document.getElementById('pick-first').style.display = ready ? 'none' : 'block';
-    document.getElementById('buy-pay-status').style.display = ready ? 'block' : 'none';
-  }
-
-  paypal.Buttons({
-    style: { color:'gold', shape:'rect', label:'pay', height:46 },
-    onInit: function(data, actions){
-      ppActions = actions; actions.disable();
-      buyForm.addEventListener('input', sync);
-      buyForm.addEventListener('change', sync);
-      sync();
-    },
-    onClick: function(data, actions){ if (!buyValid()){ buyForm.reportValidity(); } },
-    createOrder: function(){
-      return fetch(BACKEND, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(buyData()) })
-        .then(function(r){ return r.json(); })
-        .then(function(j){ if (!j.id) throw new Error('create failed'); return j.id; });
-    },
-    onApprove: function(data, actions){
-      return actions.order.capture().then(function(){
-        document.querySelector('.pay-box').innerHTML =
-          '<div class="pay-total"><span class="lab">Pre-order confirmed</span></div>' +
-          '<p style="font-family:\'Lora\',serif; font-size:15px; line-height:1.6; color:var(--bone);">Thank you. Your pre-order is in (ref ' + data.orderID + '). You have funded this season\'s harvest. We will email you a tracking number the moment your flour ships... estimated Fall 2026.</p>';
-      });
-    }
-  }).render('#paypal-buy-button');
-</script>
 <script src="js/nav.js"></script>
 </body>
 </html>
