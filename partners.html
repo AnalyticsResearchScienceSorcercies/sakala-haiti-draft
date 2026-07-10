@@ -12,16 +12,23 @@
 <link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="stylesheet" href="css/konkret.css?v=7"/>
 <style>
-  .pt-lead{ background:#0d0d0d; border:1px solid #1e1e1e; border-left:5px solid var(--sodium-orange);
-            padding:38px 40px; display:grid; grid-template-columns:110px 1fr; gap:30px; align-items:center; }
-  .pt-lead .badge{ width:110px; height:110px; border-radius:50%; background:#000; border:3px solid var(--sodium-orange);
-                   display:flex; align-items:center; justify-content:center; }
-  .pt-lead .badge img{ width:66%; height:66%; object-fit:contain; }
-  .pt-lead h3{ font-family:'Anton',sans-serif; text-transform:uppercase; font-size:clamp(24px,3.4vw,36px); line-height:.95; color:var(--bone); margin:0 0 4px; }
+  .pt-lead{ background:#0d0d0d; border:1px solid #1e1e1e; border-left:5px solid var(--sodium-orange); padding:38px 40px; }
+  .pt-lead .logo-frame{ display:inline-block; background:#000; border:1px solid #2b2b2b; border-radius:8px; padding:14px 22px; margin-bottom:22px; }
+  .pt-lead .logo-frame img{ height:60px; width:auto; display:block; }
   .pt-lead .role{ font-family:'Courier Prime',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--sodium-orange); margin-bottom:14px; display:block; }
   .pt-lead p{ font-family:'Roboto Slab',serif; font-size:16px; line-height:1.55; color:var(--parchment); margin:0; }
   .pt-lead p b{ color:var(--bone); }
-  @media(max-width:640px){ .pt-lead{ grid-template-columns:1fr; text-align:center; } .pt-lead .badge{ margin:0 auto; } }
+  .pt-founder{ margin-top:22px; border-top:1px solid #242424; }
+  .pt-founder summary{ cursor:pointer; list-style:none; font-family:'Courier Prime',monospace; text-transform:uppercase; letter-spacing:.16em; font-size:12px; font-weight:700; color:var(--sodium-orange); padding:16px 0 4px; display:flex; align-items:center; gap:10px; }
+  .pt-founder summary::-webkit-details-marker{ display:none; }
+  .pt-founder summary::before{ content:"\25B8"; display:inline-block; transition:transform .2s; }
+  .pt-founder[open] summary::before{ transform:rotate(90deg); }
+  .pt-founder .fbody{ padding:14px 0 4px; }
+  .pt-founder .fbody p{ font-family:'Roboto Slab',serif; font-size:15px; line-height:1.6; color:var(--parchment); margin:0 0 20px; max-width:72ch; }
+  .pt-founder .fbody p b{ color:var(--bone); }
+  .pt-links{ display:flex; flex-wrap:wrap; gap:10px; }
+  .pt-links a{ font-family:'Courier Prime',monospace; text-transform:uppercase; letter-spacing:.1em; font-size:11px; font-weight:700; text-decoration:none; padding:11px 18px; border:1px solid var(--sodium-orange); color:var(--sodium-orange); border-radius:3px; }
+  .pt-links a:hover{ background:var(--sodium-orange); color:#111; }
 
   .pt-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:2px; }
   .pt-card{ background:#111; border:1px solid #1a1a1a; border-top:3px solid var(--voice-green); padding:30px 28px; }
@@ -83,12 +90,20 @@
   <div class="container">
     <div class="kn-section-header"><span class="t-label">The Research Partner</span></div>
     <div class="pt-lead">
-      <span class="badge"><img src="img/konkret-mark.png" alt="BARSS"></span>
-      <div>
-        <span class="role">Data · Strategy · Research</span>
-        <h3>BARSS</h3>
-        <p><b>Bertil's Analytics Research Sciences &amp; Sorceries.</b> The economist who found the work, joined it, and set out to prove it. BARSS traces, dollar by dollar, whether money becomes economic power on the ground or leaks on the way down... the discipline that turns a good program into one that can go to scale. It is the quiet firm that helps organizations doing real work turn it into gold, and rarely takes the credit. Here, it takes it.</p>
-      </div>
+      <span class="logo-frame"><img src="img/barss-logo.png" alt="BARSS · Bertil's Analytics Research Sciences &amp; Sorceries"></span>
+      <span class="role">Data · Strategy · Research</span>
+      <p>The economist who found the work, joined it, and set out to prove it. BARSS traces, dollar by dollar, whether money becomes economic power on the ground or leaks on the way down... the discipline that turns a good program into one that can scale. It is the quiet firm that helps organizations doing real work turn it into gold, and rarely takes the credit. Here, it takes it.</p>
+      <details class="pt-founder">
+        <summary>Meet the founder &amp; our work</summary>
+        <div class="fbody">
+          <p><b>Wesley Bertil is Haitian.</b> Both his parents were born there. His family holds land in Haiti, where his mother still spends most of the year. He founded BARSS, a forensic research practice that follows the money across dozens of cases of elite extraction and proves whether it became power or leaked away. He brought that rigor to KONKRET, the data spine behind Job Power... the proof that a dollar in becomes a job, a harvest, and a share of ownership for a young Haitian. He built this site too.</p>
+          <div class="pt-links">
+            <a href="https://barssforhaiti.com/" target="_blank" rel="noopener">Website &#8599;</a>
+            <a href="https://www.linkedin.com/in/wesley-bertil-b433872b1/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+            <a href="https://substack.com/@barss4haiti" target="_blank" rel="noopener">Substack &#8599;</a>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -176,6 +191,7 @@
       <span>BARSS Haiti &nbsp;·&nbsp; Konekte Kreye Travay &nbsp;·&nbsp; 2003-2026</span>
       <span>Founded in Milot, North of Haiti</span>
     </div>
+    <div style="text-align:center; padding-top:18px; margin-top:10px; border-top:1px solid rgba(244,239,226,.08);"><a href="https://barssforhaiti.com/" target="_blank" rel="noopener" style="font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,239,226,.4); text-decoration:none;">Site designed &amp; powered by BARSS &middot; Wesley Bertil &#8599;</a></div>
   </div>
 </footer>
 
