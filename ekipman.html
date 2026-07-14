@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KONKRET · Equipment Store (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Slab:wght@700;800&family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000; --near:#0c0c0c; --card:#111010; --card2:#151313;
+  --parchment:#E3D5B8; --bone:#F4EFE2; --orange:#FF6A1F; --green:#1AAB4D;
+  --red:#DC143C; --prussian:#003153; --line:rgba(244,239,226,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lora',Georgia,serif;background:var(--black);color:var(--bone);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:3px}
+.anton{font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.slab{font-family:'Roboto Slab',serif}
+
+/* HERO */
+.hero{padding:54px 24px 30px;max-width:1320px;margin:0 auto}
+.hero .lbl{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange)}
+.hero h1{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(40px,7vw,84px);line-height:.94;margin:10px 0 8px;color:var(--bone)}
+.hero p{font-size:18px;color:var(--parchment);max-width:720px}
+.hero .loop{margin-top:14px;font-size:14px;color:rgba(244,239,226,.6);border-left:3px solid var(--green);padding-left:12px;max-width:720px}
+
+/* TOOLBAR */
+.bar{position:sticky;top:0;z-index:30;background:rgba(6,6,6,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1320px;margin:0 auto;padding:14px 24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search{flex:1 1 260px;min-width:200px;position:relative}
+.search input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--bone);padding:12px 14px;font-family:'Lora',serif;font-size:15px;border-radius:2px}
+.search input:focus{outline:none;border-color:var(--orange)}
+select{background:var(--card);border:1px solid var(--line);color:var(--bone);padding:12px 12px;font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;cursor:pointer}
+select:focus{outline:none;border-color:var(--orange)}
+.count{font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:1px;color:rgba(244,239,226,.55);margin-left:auto;white-space:nowrap}
+
+/* CHIPS (tier) */
+.chips{max-width:1320px;margin:0 auto;padding:16px 24px 0;display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;color:var(--parchment);background:transparent;transition:.15s}
+.chip:hover{border-color:var(--orange)}
+.chip.on{background:var(--orange);color:#000;border-color:var(--orange)}
+
+/* GRID */
+.grid{max-width:1320px;margin:0 auto;padding:22px 24px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column;transition:.18s;position:relative}
+.card:hover{transform:translateY(-3px);border-color:var(--orange);background:var(--card2)}
+.imgwrap{position:relative;height:132px;margin:-20px -20px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,rgba(255,106,31,.12),rgba(255,106,31,0) 68%),#0e0d0d;border-radius:4px 4px 0 0;overflow:hidden}
+.imgwrap svg{width:62px;height:62px;color:var(--orange);opacity:.92;filter:drop-shadow(0 0 10px rgba(255,106,31,.25));transition:.2s}
+.card:hover .imgwrap svg{transform:scale(1.07)}
+.imgwrap .badge{position:absolute;top:10px;right:10px;z-index:2}
+.imgwrap .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;background:#0e0d0d}
+.cat{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:6px}
+.badge{font-family:'Courier Prime',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.badge.T{color:var(--parchment)}
+.badge.M{color:var(--green);border-color:rgba(26,171,77,.4)}
+.badge.F{color:#000;background:var(--orange);border-color:var(--orange)}
+.card h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:19px;line-height:1.05;color:var(--bone);margin-bottom:8px}
+.card .u{font-size:13.5px;color:var(--parchment);line-height:1.5;flex:1;margin-bottom:16px}
+.price{font-family:'Roboto Slab',serif;font-weight:800;font-size:30px;color:var(--orange);line-height:1;margin-bottom:14px}
+.price small{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:1px;color:rgba(244,239,226,.4);display:block;margin-top:5px;font-weight:400}
+.btns{display:flex;flex-direction:column;gap:8px}
+.btn{display:block;text-align:center;padding:11px;font-family:'Courier Prime',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;cursor:pointer;border:1px solid transparent;transition:.15s}
+.btn-fund{background:var(--orange);color:#000;font-weight:700}
+.btn-fund:hover{background:#ff8443}
+.btn-kind{background:transparent;color:var(--bone);border-color:var(--line)}
+.btn-kind:hover{border-color:var(--bone)}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:rgba(244,239,226,.5);font-family:'Courier Prime',monospace;letter-spacing:2px}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal-box{background:var(--near);border:1px solid var(--orange);border-radius:6px;max-width:480px;width:100%;padding:30px}
+.modal-box .lbl{font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--orange)}
+.modal-box h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:26px;margin:8px 0 14px;color:var(--bone);line-height:1.05}
+.modal-box p{font-size:15px;color:var(--parchment);margin-bottom:14px}
+.modal-box ul{margin:0 0 18px 18px;color:var(--parchment);font-size:14px}
+.modal-box li{margin-bottom:6px}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.modal-actions .btn{flex:1;min-width:150px}
+.x{position:absolute;top:16px;right:20px;font-size:26px;color:var(--parchment);cursor:pointer;line-height:1}
+
+.foot{max-width:1320px;margin:0 auto;padding:0 24px 60px;color:rgba(244,239,226,.4);font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:1px;line-height:1.9}
+.foot b{color:var(--orange)}
+@media(max-width:560px){.hero h1{font-size:44px}.count{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="lbl">KONKRET &middot; Boutik Ekipman &middot; Equipment Store</div>
+  <h1>Fund the tool.<br>Or send the tool.</h1>
+  <p>Every machine here turns a Job Power cohort into a business. Pay for one, or donate the actual item... new or good used, a near-equivalent is fine. BARSS verifies each one lands and works.</p>
+  <div class="loop">One system's waste is the next system's feedstock: the distillery's spent grass and the cassava peels feed the green-charcoal line, bound with cassava starch. You are not buying a shopping list, you are wiring a loop.</div>
+</section>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="search"><input id="q" type="search" placeholder="Search equipment..." autocomplete="off"></div>
+    <select id="cat"></select>
+    <select id="sort">
+      <option value="cat">Sort: Category</option>
+      <option value="plow">Sort: Price low to high</option>
+      <option value="phigh">Sort: Price high to low</option>
+      <option value="name">Sort: Name A-Z</option>
+    </select>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+
+<div class="chips" id="chips">
+  <button class="chip on" data-tier="all">All tiers</button>
+  <button class="chip" data-tier="T">Tools &amp; kits &middot; under $1k</button>
+  <button class="chip" data-tier="M">Machines &middot; $1k-10k</button>
+  <button class="chip" data-tier="F">Flagships &middot; $10k+</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="foot">
+  <div><b>PROTOTYPE.</b> Prices are provisional planning numbers, to be replaced with binding Haiti vendor quotes before publish.</div>
+  <div>Fund it routes to the SAKALA International donate rail with the item name on the receipt. Donate-the-item opens an in-kind arrangement.</div>
+</div>
+
+<!-- IN-KIND MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box" style="position:relative">
+    <span class="x" id="mx">&times;</span>
+    <div class="lbl">Donate the item &middot; in kind</div>
+    <h3 id="mtitle">Item</h3>
+    <p>Give the actual equipment instead of the cash. It does not have to be this exact model...</p>
+    <ul>
+      <li>New, or good working used condition.</li>
+      <li>A near-equivalent that does the same job is welcome.</li>
+      <li>We arrange shipping / drop-off to Cap-Haitien or Port-au-Prince.</li>
+      <li>BARSS logs it, confirms it reaches the site, and reports back to you.</li>
+    </ul>
+    <div class="modal-actions">
+      <a class="btn btn-fund" id="mmail" href="#">Email to arrange</a>
+      <button class="btn btn-kind" id="mclose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = [
+/* Farming */
+{c:'Farming',t:'T',n:'Hand-tool & seed bank (per cohort)',p:800,u:'Hoes, machetes, rakes, cans, seed stock for a full cohort.'},
+{c:'Farming',t:'T',n:'Wheelbarrows & garden carts (set of 6)',p:700,u:'Move soil, compost, and harvest.'},
+{c:'Farming',t:'T',n:'Motorized knapsack sprayers (set of 4)',p:900,u:'Foliar feed and pest control across the beds.'},
+{c:'Farming',t:'T',n:'Brush cutter / heavy trimmer',p:500,u:'Clear land fast.'},
+{c:'Farming',t:'T',n:'Chainsaw (agroforestry)',p:400,u:'Pruning and agroforestry at Pestel.'},
+{c:'Farming',t:'T',n:'Powered post-hole auger',p:600,u:'Fencing and tree planting at speed.'},
+{c:'Farming',t:'T',n:'Mechanical seeder / planter',p:400,u:'Even planting, less seed waste.'},
+{c:'Farming',t:'T',n:'Maize sheller',p:900,u:'Shell corn at volume.'},
+{c:'Farming',t:'M',n:'Multi-crop thresher',p:2000,u:'Thresh grain and pigeon-pea.'},
+{c:'Farming',t:'T',n:'Harvest weigh-station (platform scale)',p:600,u:'Weigh and price the harvest fairly.'},
+{c:'Farming',t:'T',n:'Solar electric-fence energizer + kit',p:700,u:'Protect crops and livestock.'},
+{c:'Farming',t:'M',n:'Per-site fencing kit',p:3000,u:'Secure a whole site.'},
+{c:'Farming',t:'M',n:'Two-wheel walking tractor + implements',p:3500,u:'Mechanize bed prep... the biggest single labor multiplier.'},
+{c:'Farming',t:'F',n:'Compact tractor (25-35hp) + implements',p:16000,u:'Cluster-level mechanization across the Nord sites.'},
+{c:'Farming',t:'F',n:'Bundle: Site farm-kit',p:9000,u:'Walking tractor + tools + fencing + sprayers for a cohort.'},
+/* Charcoal */
+{c:'Charcoal',t:'T',n:'Manual briquette press (starter)',p:600,u:'Low-entry production unit.'},
+{c:'Charcoal',t:'T',n:'Dust PPE + safety bundle',p:350,u:'Char dust protection... the safety SKU.'},
+{c:'Charcoal',t:'T',n:'Solar char drying racks',p:900,u:'Dry the char before bagging.'},
+{c:'Charcoal',t:'M',n:'Flame-cap / drum carbonization kiln',p:1200,u:'Entry carbonizer; also makes biochar for soil.'},
+{c:'Charcoal',t:'M',n:'Binder mixer',p:1500,u:'Blend char with cassava-starch binder.'},
+{c:'Charcoal',t:'M',n:'Char grinder / hammer mill',p:2800,u:'Char to powder, shares duty with the flour mill.'},
+{c:'Charcoal',t:'M',n:'Hydraulic briquette press (motorized)',p:3500,u:'Briquettes at volume.'},
+{c:'Charcoal',t:'M',n:'Improved retort (Adam-style)',p:4500,u:'More char per burn.'},
+{c:'Charcoal',t:'F',n:'Bundle: Full green-charcoal micro-line',p:12000,u:'Kiln + grinder + mixer + press + dryer. Waste to fuel.'},
+/* Distillery */
+{c:'Distillery',t:'M',n:'Oil storage drums + filtration',p:2500,u:'Hold and clarify the finished oil.'},
+{c:'Distillery',t:'M',n:'Condenser + Florentine separator',p:2000,u:'Separate oil from hydrosol.'},
+{c:'Distillery',t:'M',n:'Grass chipper-shredder (feedstock)',p:3000,u:'Chop grass to feed the still. Waste goes to charcoal.'},
+{c:'Distillery',t:'M',n:'Bottling & labeling line',p:4000,u:'Sellable, branded oil and perfume.'},
+{c:'Distillery',t:'M',n:'Boiler / steam generator',p:5000,u:'Drives the still.'},
+{c:'Distillery',t:'F',n:'Steam distillation still (200-500L)',p:12000,u:'The core oil-extraction asset. Highest margin on the site.'},
+{c:'Distillery',t:'F',n:'Bundle: Complete Nord distillery',p:28000,u:'Still + boiler + condenser + chipper + storage. Name-it tier.'},
+/* Testing */
+{c:'Testing',t:'T',n:'Handheld meter set (pH/EC/moisture)',p:250,u:'Field spot-checks.'},
+{c:'Testing',t:'T',n:'Grain / flour / char moisture meter',p:300,u:'Shelf-stable product.'},
+{c:'Testing',t:'T',n:'Water quality test kit',p:700,u:'WASH and irrigation safety.'},
+{c:'Testing',t:'T',n:'Portable soil lab (pH/NPK/EC)',p:900,u:'The right amendments per site.'},
+{c:'Testing',t:'M',n:'Bench + analytical balance set',p:1100,u:'Accurate weight for everything downstream.'},
+{c:'Testing',t:'M',n:'Aflatoxin food-safety test kit',p:1200,u:'Proof the cassava and grain are safe to sell.'},
+{c:'Testing',t:'M',n:'Essential-oil QC kit',p:1800,u:'Oil density and purity right at the still.'},
+{c:'Testing',t:'M',n:'Muffle furnace (ash content)',p:2500,u:'Food and charcoal quality.'},
+{c:'Testing',t:'M',n:'Bomb calorimeter (fuel energy)',p:6000,u:'Hard proof the briquette out-burns wood charcoal.'},
+{c:'Testing',t:'M',n:'BARSS verification lab bench',p:8000,u:'The measurement desk, made real.'},
+{c:'Testing',t:'F',n:'Gas chromatograph (oil purity)',p:12000,u:'Export-grade oil certification.'},
+/* Water */
+{c:'Water',t:'T',n:'Hose, lay-flat, fittings bundle',p:500,u:'Move water where the beds are.'},
+{c:'Water',t:'M',n:'Water storage tank (5,000L)',p:1200,u:'Dry-season buffer.'},
+{c:'Water',t:'M',n:'Drip irrigation (per hectare)',p:2000,u:'Water efficiency, higher yield.'},
+{c:'Water',t:'M',n:'Rainwater cistern + guttering',p:3000,u:'Capture wet-season rain for the dry season.'},
+{c:'Water',t:'M',n:'WASH filtration / potable unit',p:2500,u:'Clean water for people.'},
+{c:'Water',t:'M',n:'Solar borehole pump + tanks',p:6000,u:'Groundwater without diesel.'},
+{c:'Water',t:'M',n:'River intake / check dam',p:8000,u:'Year-round irrigation... doubles that site value.'},
+{c:'Water',t:'F',n:'Bundle: Full site water system',p:12000,u:'Borehole + pump + tank + drip. Breaks the dry-season ceiling.'},
+/* Cassava & Food */
+{c:'Cassava & Food',t:'T',n:'Packaging station (sealer, scales, bins)',p:900,u:'Bag and weigh the product.'},
+{c:'Cassava & Food',t:'M',n:'Motorized grater / rasper',p:1800,u:'Grate cassava at volume.'},
+{c:'Cassava & Food',t:'M',n:'Cassava peeler / washer',p:2000,u:'Clean intake, less labor.'},
+{c:'Cassava & Food',t:'M',n:'Hydraulic dewatering press',p:2200,u:'Press the mash to farine base.'},
+{c:'Cassava & Food',t:'M',n:'Large toasting platine + burner',p:1500,u:'Bake kasav.'},
+{c:'Cassava & Food',t:'M',n:'Solar dryer / dehydrator',p:2000,u:'Dry chips, fruit, cassava.'},
+{c:'Cassava & Food',t:'M',n:'Hammer / flour mill',p:3500,u:'Cassava and maize flour.'},
+{c:'Cassava & Food',t:'F',n:'Food-hub kitchen build-out',p:12000,u:'A full processing kitchen.'},
+{c:'Cassava & Food',t:'F',n:'Bundle: Complete cassava line',p:11000,u:'Peeler + grater + press + mill + toaster. Root to product.'},
+/* Nursery */
+{c:'Nursery',t:'T',n:'Grafting / propagation tool kits',p:400,u:'Better fruit-tree stock.'},
+{c:'Nursery',t:'T',n:'Seedling trays, pots, media (bulk)',p:900,u:'Scale up propagation.'},
+{c:'Nursery',t:'M',n:'Germination benches + misting',p:1500,u:'Higher germination rates.'},
+{c:'Nursery',t:'M',n:'Shade-house / greenhouse (per site)',p:4000,u:'Protected propagation year-round.'},
+/* Livestock */
+{c:'Livestock',t:'T',n:'Vet / animal-health kit',p:500,u:'Keep stock healthy.'},
+{c:'Livestock',t:'M',n:'Napier / elephant-grass chopper',p:1800,u:'Feed prep at volume.'},
+{c:'Livestock',t:'M',n:'Breeding stock (starter herd)',p:2000,u:'Begin production.'},
+{c:'Livestock',t:'M',n:'Rabbit hutch battery system',p:3000,u:'Housing for a production unit.'},
+{c:'Livestock',t:'M',n:'Poultry option (coops + incubator)',p:2500,u:'Eggs and a meat alternative.'},
+/* Compost */
+{c:'Compost',t:'T',n:'Collection bins / drums + totes',p:600,u:'Gather feedstock.'},
+{c:'Compost',t:'M',n:'Bagging + platform scale',p:1000,u:'Bag and sell finished compost.'},
+{c:'Compost',t:'M',n:'Screening trommel',p:3000,u:'Grade the product.'},
+{c:'Compost',t:'M',n:'Compost turner / windrow gear',p:5000,u:'Turn at volume.'},
+{c:'Compost',t:'M',n:'Composting-site build',p:8000,u:'Bays, roof, drainage... the production yard.'},
+/* Solar & Power */
+{c:'Solar & Power',t:'T',n:'Okra mesh-grid connection (per unit)',p:300,u:'One household or workspace connected.'},
+{c:'Solar & Power',t:'T',n:'Solar security lighting (set)',p:500,u:'Safe sites after dark.'},
+{c:'Solar & Power',t:'M',n:'Inverter / backup generator',p:2000,u:'Bridge power for tools.'},
+{c:'Solar & Power',t:'M',n:'Solar refrigeration unit',p:5000,u:'Cold without the grid.'},
+{c:'Solar & Power',t:'M',n:'Productive-use solar array + battery',p:9000,u:'Run the mills, pumps, cold, and lab.'},
+{c:'Solar & Power',t:'F',n:'Bundle: Site power system',p:12000,u:'Array + battery + inverter. Electrify a whole site.'},
+/* Transport */
+{c:'Transport',t:'M',n:'Tractor trailer / hauling cart',p:2000,u:'Haul within a site.'},
+{c:'Transport',t:'M',n:'Insulated / refrigerated cargo box',p:2500,u:'Perishables survive the trip.'},
+{c:'Transport',t:'M',n:'Cargo e-trike (harvest hauling)',p:3500,u:'Field to hub, no fuel.'},
+{c:'Transport',t:'M',n:'Moto-taxi (field staff / last mile)',p:2500,u:'Staff mobility.'},
+{c:'Transport',t:'F',n:'A TapTap (outfit a route vehicle)',p:14000,u:'The signature income and transit unit.'},
+{c:'Transport',t:'F',n:'Aggregation delivery truck',p:25000,u:'Pool harvest across sites to market.'},
+/* Cold Chain */
+{c:'Cold Chain',t:'M',n:'Shipping container (store/office/shop)',p:4000,u:'Secure multi-use space.'},
+{c:'Cold Chain',t:'M',n:'Storage warehouse (per site)',p:9000,u:'Dry, lockable harvest and equipment store.'},
+{c:'Cold Chain',t:'F',n:'Walk-in cold room (solar)',p:12000,u:'Hold perishables for price instead of dumping.'},
+/* Workshops */
+{c:'Workshops',t:'T',n:'Industrial sewing machine (each)',p:800,u:'One seamstress at work. Ties to Caribbean Craft.'},
+{c:'Workshops',t:'M',n:'Fabrication: welding kit + generator',p:2000,u:'Build and repair on site.'},
+{c:'Workshops',t:'M',n:'Fabrication: power-tool set',p:2000,u:'A working workshop.'},
+{c:'Workshops',t:'M',n:'Konbit Press: guillotine + binding',p:2500,u:'Finish printed goods.'},
+{c:'Workshops',t:'M',n:'Sewing bank (6 machines)',p:4500,u:'An apparel micro-factory.'},
+{c:'Workshops',t:'M',n:'Konbit Press: pulping / molding gear',p:4000,u:'Recycled and bagasse paper.'},
+{c:'Workshops',t:'M',n:'FatraKa: baler',p:3000,u:'Compress collected waste.'},
+{c:'Workshops',t:'M',n:'FatraKa: plastic shredder',p:5000,u:'Plastic to feedstock.'},
+{c:'Workshops',t:'M',n:'Konbit Press: printing / screen rig',p:8000,u:'Print at volume.'},
+{c:'Workshops',t:'F',n:'FatraKa: extruder / paver molder',p:12000,u:'Plastic waste to pavers and product.'},
+/* Digital */
+{c:'Digital',t:'T',n:'Projector / training screen',p:600,u:'Run a class.'},
+{c:'Digital',t:'M',n:'Field smartphones (set of 5)',p:1000,u:'Field data and mobile payments.'},
+{c:'Digital',t:'M',n:'Solar charging station',p:1200,u:'Keep devices alive off-grid.'},
+{c:'Digital',t:'M',n:'Starlink terminal + first-year service',p:1800,u:'The connectivity that enables everything digital.'},
+{c:'Digital',t:'M',n:'Tablet / laptop training lab (12 units)',p:6000,u:'A Konbit Data classroom.'},
+{c:'Digital',t:'M',n:'Bundle: Konbit Data classroom',p:9000,u:'Lab + Starlink + projector + charging.'},
+/* Packaging */
+{c:'Packaging',t:'T',n:'Impulse / heat sealers + scales',p:500,u:'Seal and weigh.'},
+{c:'Packaging',t:'T',n:'Labeling + branding kit',p:900,u:'On-site labels.'},
+{c:'Packaging',t:'M',n:'Branded packaging first-run',p:1500,u:'Product that looks sellable.'},
+{c:'Packaging',t:'M',n:'Market stall / kiosk build',p:2000,u:'A point of sale.'},
+{c:'Packaging',t:'M',n:'Vacuum sealer / bagging line',p:2500,u:'Longer shelf life, volume bagging.'},
+/* Site & Safety */
+{c:'Site & Safety',t:'T',n:'Fire safety (extinguishers, kit)',p:400,u:'Basic protection.'},
+{c:'Site & Safety',t:'T',n:'Signage / site branding',p:600,u:'A site that reads as real.'},
+{c:'Site & Safety',t:'T',n:'PPE + first-aid bundle (per cohort)',p:700,u:'Boots, gloves, first aid for a cohort.'},
+{c:'Site & Safety',t:'M',n:'Shade / work-roof structure',p:4000,u:'Work through sun and rain.'},
+{c:'Site & Safety',t:'M',n:'WASH / sanitation block',p:5000,u:'Dignity and hygiene on site.'},
+];
+const TIERLABEL={T:'Tools',M:'Machine',F:'Flagship'};
+/* --- item icons (self-contained SVG) --- */
+const IC={
+ farm:'<path d="M12 21V11"/><path d="M12 11C12 7 9.5 4.5 5 4.5 5 9 7.5 11 12 11Z"/><path d="M12 9.5C12 6 14.5 4 18.5 4 18.5 7.5 16 9.5 12 9.5Z"/>',
+ flame:'<path d="M12 3c0 3 2 4 2 7a2 2 0 1 1-4 0c0-1 .3-1.6.7-2C9 10 8 12 8 14a4 4 0 0 0 8 0c0-4-4-6-4-11Z"/>',
+ flask:'<path d="M9 3h6"/><path d="M10 3v6l-5 9a1.6 1.6 0 0 0 1.4 2.5h11.2A1.6 1.6 0 0 0 19 18l-5-9V3"/><path d="M7.5 15h9"/>',
+ drop:'<path d="M12 3s6 6.4 6 10.6A6 6 0 0 1 6 13.6C6 9.4 12 3 12 3Z"/>',
+ sack:'<path d="M8 8h8s1 3 1 7-2 6-5 6-5-2-5-6 1-7 1-7Z"/><path d="M9.5 8V6a2.5 2.5 0 0 1 5 0v2"/>',
+ pot:'<path d="M7 14h10l-1.2 7H8.2L7 14Z"/><path d="M12 14c0-3 2.2-5 5-5-.4 3-2.4 5-5 5Z"/><path d="M12 14V8"/>',
+ rabbit:'<path d="M8 14a4 4 0 0 1 8 0 3 3 0 0 1-3 3h-2a3 3 0 0 1-3-3Z"/><path d="M9.5 10C8.5 7 8.7 3.5 10 3.5S11.6 7 11 10"/><path d="M14.5 10c1-3 .8-6.5-.5-6.5S12.4 7 13 10"/>',
+ leaf:'<path d="M5 19C5 11 10.5 5.5 19 5.5c0 8.5-5.5 14-14 13.5Z"/><path d="M8.5 15.5C11 13 14 11.5 17 10.5"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>',
+ truck:'<path d="M2 7h11v9H2z"/><path d="M13 10h4l3 3v3h-7z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/>',
+ snow:'<path d="M12 2v20M2 12h20M4.5 4.5l15 15M19.5 4.5l-15 15"/>',
+ gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v3M12 17.5v3M3.5 12h3M17.5 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>',
+ laptop:'<rect x="4" y="6" width="16" height="10" rx="1"/><path d="M2 19h20"/>',
+ box:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="M4 7.5l8 4.5 8-4.5"/><path d="M12 12v9"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-4 7.7-8 9-4-1.3-8-4-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/>',
+ tractor:'<circle cx="7" cy="16" r="4"/><circle cx="18" cy="17" r="2.4"/><path d="M7 12V8h3.5l1.8 4H16v3"/><path d="M10.5 8V6h3"/>'
+};
+function wrap(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';}
+const CAT_ICON={'Farming':'farm','Charcoal':'flame','Distillery':'flask','Testing':'flask','Water':'drop','Cassava & Food':'sack','Nursery':'pot','Livestock':'rabbit','Compost':'leaf','Solar & Power':'sun','Transport':'truck','Cold Chain':'snow','Workshops':'gear','Digital':'laptop','Packaging':'box','Site & Safety':'shield'};
+const KW=[['tractor','tractor'],['taptap','truck'],['truck','truck'],['e-trike','truck'],['moto','truck'],['still','flask'],['chromatograph','flask'],['calorimeter','flask'],['furnace','flame'],['power system','sun'],['solar','sun'],['cold room','snow'],['starlink','laptop'],['smartphone','laptop'],['laptop','laptop'],['projector','laptop'],['borehole','drop'],['pump','drop'],['cistern','drop'],['soil lab','pot'],['seedling','pot'],['sewing','gear'],['welding','gear']];
+function iconFor(d){const n=d.n.toLowerCase();for(const[k,ic]of KW){if(n.includes(k))return wrap(IC[ic]);}return wrap(IC[CAT_ICON[d.c]]||IC.box);}
+function slug(s){return s.toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+const DONATE='https://www.paypal.com/donate/?business=PF49VDYFMRYQN&currency_code=USD';
+const MAILTO='wbertil@barssforhaiti.com';
+
+let tier='all';
+const $=s=>document.querySelector(s);
+const grid=$('#grid'), qEl=$('#q'), catEl=$('#cat'), sortEl=$('#sort'), countEl=$('#count');
+
+// build category dropdown
+const cats=[...new Set(DATA.map(d=>d.c))];
+catEl.innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+
+function fmt(n){return '$'+n.toLocaleString('en-US');}
+
+function render(){
+  const q=qEl.value.trim().toLowerCase();
+  const cat=catEl.value, sort=sortEl.value;
+  let rows=DATA.filter(d=>
+    (tier==='all'||d.t===tier)&&
+    (cat==='all'||d.c===cat)&&
+    (!q||d.n.toLowerCase().includes(q)||d.u.toLowerCase().includes(q)||d.c.toLowerCase().includes(q))
+  );
+  if(sort==='plow')rows.sort((a,b)=>a.p-b.p);
+  else if(sort==='phigh')rows.sort((a,b)=>b.p-a.p);
+  else if(sort==='name')rows.sort((a,b)=>a.n.localeCompare(b.n));
+  else rows.sort((a,b)=> a.c===b.c ? a.p-b.p : cats.indexOf(a.c)-cats.indexOf(b.c));
+
+  countEl.textContent=rows.length+' of '+DATA.length+' items';
+  if(!rows.length){grid.innerHTML='<div class="empty">No equipment matches that filter.</div>';return;}
+  grid.innerHTML=rows.map(d=>{
+    const fund=DONATE+'&item_name='+encodeURIComponent('KONKRET equipment: '+d.n)+'&amount='+d.p;
+    return `<div class="card">
+      <div class="imgwrap"><span class="badge ${d.t}">${TIERLABEL[d.t]}</span><img class="photo" src="img/equipment/${slug(d.n)}.jpg" alt="${d.n.replace(/"/g,'&quot;')}" loading="lazy" onerror="this.remove()">${iconFor(d)}</div>
+      <span class="cat">${d.c}</span>
+      <h3>${d.n}</h3>
+      <div class="u">${d.u}</div>
+      <div class="price">${fmt(d.p)}<small>provisional</small></div>
+      <div class="btns">
+        <a class="btn btn-fund" href="${fund}" target="_blank" rel="noopener">Fund it</a>
+        <button class="btn btn-kind" data-n="${d.n.replace(/"/g,'&quot;')}">Donate the item</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// events
+qEl.addEventListener('input',render);
+catEl.addEventListener('change',render);
+sortEl.addEventListener('change',render);
+document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  ch.classList.add('on'); tier=ch.dataset.tier; render();
+}));
+
+// in-kind modal
+const modal=$('#modal');
+grid.addEventListener('click',e=>{
+  const b=e.target.closest('.btn-kind'); if(!b)return;
+  const name=b.dataset.n;
+  $('#mtitle').textContent=name;
+  $('#mmail').href='mailto:'+MAILTO+'?subject='+encodeURIComponent('In-kind donation: '+name)+'&body='+encodeURIComponent('I would like to donate this item (or a near-equivalent) to KONKRET / Job Power:\n\n'+name+'\n\nCondition / model:\nLocation / how I can get it to you:\n');
+  modal.classList.add('on');
+});
+$('#mx').onclick=$('#mclose').onclick=()=>modal.classList.remove('on');
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('on');});
+
+render();
+</script>
+</body>
+</html>
