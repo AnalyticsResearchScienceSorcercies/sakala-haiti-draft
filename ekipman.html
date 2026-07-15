@@ -92,7 +92,7 @@ select:focus{outline:none;border-color:var(--orange)}
 <section class="hero">
   <div class="lbl">KONKRET &middot; Boutik Ekipman &middot; Equipment Store</div>
   <h1>Fund the tool.<br>Or send the tool.</h1>
-  <p>Every machine here turns a Job Power cohort into a business. Pay for one, or donate the actual item... new or good used, a near-equivalent is fine. BARSS verifies each one lands and works.</p>
+  <p>Every machine here turns a Bayo Travay cohort into a business. Pay for one, or donate the actual item... new or good used, a near-equivalent is fine. BARSS verifies each one lands and works.</p>
   <div class="loop">One system's waste is the next system's feedstock: the distillery's spent grass and the cassava peels feed the green-charcoal line, bound with cassava starch. You are not buying a shopping list, you are wiring a loop.</div>
 </section>
 
@@ -361,7 +361,7 @@ grid.addEventListener('click',e=>{
   const b=e.target.closest('.btn-kind'); if(!b)return;
   const name=b.dataset.n;
   $('#mtitle').textContent=name;
-  $('#mmail').href='mailto:'+MAILTO+'?subject='+encodeURIComponent('In-kind donation: '+name)+'&body='+encodeURIComponent('I would like to donate this item (or a near-equivalent) to KONKRET / Job Power:\n\n'+name+'\n\nCondition / model:\nLocation / how I can get it to you:\n');
+  $('#mmail').href='mailto:'+MAILTO+'?subject='+encodeURIComponent('In-kind donation: '+name)+'&body='+encodeURIComponent('I would like to donate this item (or a near-equivalent) to KONKRET / Bayo Travay:\n\n'+name+'\n\nCondition / model:\nLocation / how I can get it to you:\n');
   modal.classList.add('on');
 });
 $('#mx').onclick=$('#mclose').onclick=()=>modal.classList.remove('on');
