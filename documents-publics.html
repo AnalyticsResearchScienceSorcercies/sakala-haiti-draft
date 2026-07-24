@@ -24,6 +24,13 @@
   .doc-list li { display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding:14px 0; border-bottom:1px solid #222; font-size:14px; color:var(--parchment); }
   .doc-list .st { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(244,239,226,.4); white-space:nowrap; }
   .doc-list .st.live { color:var(--voice-green); }
+  .kn-embed { margin-top:34px; }
+  .kn-embed-hd { display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; }
+  .kn-embed-open { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--sodium-orange); text-decoration:none; white-space:nowrap; }
+  .kn-embed-sub { font-family:'Lora',serif; font-size:14px; color:rgba(244,239,226,.55); margin:6px 0 12px; }
+  .kn-embed-frame { border:1px solid #2a2a2a; background:#fff; height:560px; overflow:hidden; }
+  .kn-embed-frame iframe { width:100%; height:100%; border:0; display:block; }
+  @media(max-width:640px){ .kn-embed-frame{ height:460px; } }
 </style>
 </head>
 <body>
@@ -135,6 +142,53 @@
   </div>
 </section>
 
+<!-- EMBEDDED RESEARCH -->
+<section class="section bg-deep">
+  <div class="container" style="max-width:1000px;">
+    <div class="kn-section-header">
+      <span class="t-label">The Evidence, Embedded</span>
+      <h2 class="t-h2 mt-12">The research behind the claims, in full</h2>
+    </div>
+    <p class="t-body" style="max-width:720px;">We don't ask you to take the numbers on faith. The BARSS research desk publishes the full analyses that stand behind every figure on this site. They are embedded here, in full, straight from the source.</p>
+
+    <div class="kn-embed">
+      <div class="kn-embed-hd">
+        <h3 class="t-h3" style="font-size:19px;">Where the aid dollar goes</h3>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Haiti_Funding_Misallocation_Analysis.html" target="_blank" rel="noopener" class="kn-embed-open">Open full &#8599;</a>
+      </div>
+      <p class="kn-embed-sub">The 14-cents-on-the-dollar problem, traced through Haiti's aid flows.</p>
+      <div class="kn-embed-frame"><iframe src="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Haiti_Funding_Misallocation_Analysis.html" title="BARSS: Haiti Funding Misallocation Analysis" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="kn-embed">
+      <div class="kn-embed-hd">
+        <h3 class="t-h3" style="font-size:19px;">The $4 billion the diaspora sends home</h3>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Haitian_Diaspora_Data_Profile.html" target="_blank" rel="noopener" class="kn-embed-open">Open full &#8599;</a>
+      </div>
+      <p class="kn-embed-sub">Remittances at roughly a fifth of GDP, and where they go.</p>
+      <div class="kn-embed-frame"><iframe src="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Haitian_Diaspora_Data_Profile.html" title="BARSS: Haitian Diaspora Data Profile" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="kn-embed">
+      <div class="kn-embed-hd">
+        <h3 class="t-h3" style="font-size:19px;">The TapTap + Konbit model, in full</h3>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Integrated_Vision_TapTap_Konbit.html" target="_blank" rel="noopener" class="kn-embed-open">Open full &#8599;</a>
+      </div>
+      <p class="kn-embed-sub">How a purchase becomes a job, a harvest, and a share of ownership.</p>
+      <div class="kn-embed-frame"><iframe src="https://analyticsresearchsciencesorcercies.github.io/barss-reports/BARSS_Integrated_Vision_TapTap_Konbit.html" title="BARSS: Integrated Vision, TapTap and Konbit" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="kn-embed">
+      <div class="kn-embed-hd">
+        <h3 class="t-h3" style="font-size:19px;">The extraction math: Theta, across 34 cases</h3>
+        <a href="https://analyticsresearchsciencesorcercies.github.io/barss-data/BARSS_EEDTM_Magnum_Opus_Brattle_Full.html" target="_blank" rel="noopener" class="kn-embed-open">Open full &#8599;</a>
+      </div>
+      <p class="kn-embed-sub">The measured ~86% capture rate that the 40/40/20 model is built to reverse.</p>
+      <div class="kn-embed-frame"><iframe src="https://analyticsresearchsciencesorcercies.github.io/barss-data/BARSS_EEDTM_Magnum_Opus_Brattle_Full.html" title="BARSS: EEDTM Magnum Opus (Brattle, full)" loading="lazy"></iframe></div>
+    </div>
+  </div>
+</section>
+
 <!-- PUBLIC LEDGER -->
 <div class="kn-callout-band">
   <div class="container">
@@ -152,7 +206,7 @@
     </div>
     <ul class="doc-list">
       <li><span>501(c)(3) status — SAKALA International (EIN 83-3881370)</span><span class="st live">Public (IRS)</span></li>
-      <li><span>EEDTM methodology &amp; the Theta constant (BARSS research)</span><span class="st">On request</span></li>
+      <li><span>EEDTM methodology &amp; the Theta constant (BARSS research)</span><span class="st live">Embedded above</span></li>
       <li><span>Annual activity report</span><span class="st">Coming soon</span></li>
       <li><span>Financial statements</span><span class="st">Coming soon</span></li>
       <li><span>Unified economic model (40/40/20, efficiency proof)</span><span class="st">On request</span></li>
