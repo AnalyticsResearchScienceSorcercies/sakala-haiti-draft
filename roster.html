@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fatraka · Wòl Ekip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;900&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#F2E8D2; --ink:#1c1b18; --soft:#4a463c; --navy:#1B3A52;
+    --crimson:#D7274C; --orange:#DD7A33; --teal:#1F6F5F; --rule:#e3d8bb; --panel:#ece0c4;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--bone); color:var(--ink); font-family:'Lora',Georgia,serif;}
+  body{padding:0 0 120px; line-height:1.5;}
+  .wrap{max-width:520px; margin:0 auto;}
+
+  header{background:var(--navy); color:var(--bone); padding:22px 20px 18px; text-align:center;}
+  header .mark{font-family:'Roboto Slab',serif; font-weight:900; font-size:20px; letter-spacing:.02em;}
+  header .sub{font-size:13px; color:#a9c0cf; margin-top:2px;}
+  .crule{height:4px; background:var(--crimson);}
+
+  .intro{padding:16px 20px 4px; font-size:15px; color:var(--soft);}
+  .intro b{color:var(--ink);}
+
+  .cur{padding:12px 20px 4px;}
+  .cur .lab{font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:var(--soft); margin-bottom:8px;}
+  .seg{display:flex; gap:10px;}
+  .seg button{flex:1; padding:16px 8px; font-size:16px; font-family:'Roboto Slab',serif; font-weight:700;
+    border:2px solid var(--navy); background:var(--bone); color:var(--navy); border-radius:12px; cursor:pointer;}
+  .seg button.on{background:var(--navy); color:var(--bone);}
+
+  .card{margin:16px 20px; background:#fbf6ea; border:1px solid var(--rule); border-radius:14px; overflow:hidden;}
+  .card .top{display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--panel); border-bottom:1px solid var(--rule);}
+  .badge{width:30px; height:30px; flex:0 0 30px; border-radius:50%; background:var(--teal); color:var(--bone);
+    font-family:'Roboto Slab',serif; font-weight:900; font-size:14px; display:flex; align-items:center; justify-content:center;}
+  .phone{font-family:'Roboto Slab',serif; font-weight:700; font-size:15px; color:var(--navy);}
+  .card .body{padding:8px 16px 16px;}
+  .fld{margin-top:12px;}
+  .fld label{display:block; font-size:13px; color:var(--soft); margin-bottom:5px;}
+  .fld label span{color:#8a8578; font-size:12px;}
+  .fld input{width:100%; font-size:16px; font-family:'Lora',serif; color:var(--ink); background:#fff;
+    border:1.5px solid var(--rule); border-radius:10px; padding:14px 14px; outline:none;}
+  .fld input:focus{border-color:var(--teal); box-shadow:0 0 0 3px rgba(31,111,95,.15);}
+  .fld.pay input{font-family:'Roboto Slab',serif; font-weight:700; color:var(--orange);}
+
+  .bar{position:fixed; left:0; right:0; bottom:0; background:linear-gradient(180deg,rgba(242,232,210,0),var(--bone) 34%);
+    padding:14px 20px calc(16px + env(safe-area-inset-bottom));}
+  .bar .inner{max-width:520px; margin:0 auto;}
+  .send{width:100%; padding:18px; font-size:18px; font-family:'Roboto Slab',serif; font-weight:900; letter-spacing:.02em;
+    color:#fff; background:var(--crimson); border:none; border-radius:14px; cursor:pointer;}
+  .send:disabled{opacity:.6;}
+  .note{text-align:center; font-size:12px; color:var(--soft); margin-top:8px;}
+
+  .done{display:none; padding:60px 24px; text-align:center;}
+  .done.show{display:block;}
+  .done .big{font-family:'Roboto Slab',serif; font-weight:900; font-size:26px; color:var(--teal);}
+  .done p{font-size:16px; color:var(--soft);}
+  .st{font-size:12px; color:var(--teal); margin-top:6px; min-height:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mark">FATRAKA · JOB POWER</div>
+    <div class="sub">Wòl Ekip · Team Roster</div>
+  </header>
+  <div class="crule"></div>
+
+  <div id="form">
+    <div class="intro">Ranpli <b>non</b>, <b>kote</b>, ak <b>pèman chak mwa</b> pou chak moun.<br><span style="font-size:13px;">Fill in name, location, and monthly pay for each person.</span></div>
+
+    <div class="cur">
+      <div class="lab">Lajan · Currency</div>
+      <div class="seg" id="seg">
+        <button type="button" data-c="HTG" class="on">Goud (HTG)</button>
+        <button type="button" data-c="USD">Dola (USD)</button>
+      </div>
+    </div>
+
+    <div id="cards"></div>
+
+    <div class="st" id="st"></div>
+  </div>
+
+  <div class="done" id="done">
+    <div class="big">Mèsi! ✓</div>
+    <p id="doneMsg">Wòl la anrejistre.</p>
+  </div>
+</div>
+
+<div class="bar" id="bar">
+  <div class="inner">
+    <button class="send" id="send">Voye · Send</button>
+    <div class="note">Sa w ranpli ap sove otomatikman. · Saves automatically.</div>
+  </div>
+</div>
+
+<script>
+  var WEBHOOK = "https://script.google.com/macros/s/AKfycbwbc2lI_FQNofSXZ30Im4uVCD31rXFkI0_CwMlIWxw_uctGbsPZVHkSbRwTy7UAarH5/exec";
+  var TOKEN = "fatraka_roster_9F3kZ7xQ2pL8vT";
+  var NUMBERS = ["+509 37 07 7368","+509 36 49 1493","+509 41 23 9408","+509 35 41 5758","+509 41 58 2870","+509 37 03 7310","+509 31 57 9079"];
+  var currency = "HTG";
+
+  var seg = document.getElementById("seg");
+  seg.addEventListener("click", function(e){
+    var b = e.target.closest("button"); if(!b) return;
+    [].forEach.call(seg.children, function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); currency = b.getAttribute("data-c");
+  });
+
+  var cards = document.getElementById("cards");
+  NUMBERS.forEach(function(num, i){
+    var d = document.createElement("div"); d.className = "card"; d.dataset.phone = num;
+    d.innerHTML =
+      '<div class="top"><div class="badge">'+(i+1)+'</div><div class="phone">'+num+'</div></div>'+
+      '<div class="body">'+
+        '<div class="fld"><label>Non <span>· First name</span></label><input data-k="first_name" autocomplete="off"></div>'+
+        '<div class="fld"><label>Siyati <span>· Last name</span></label><input data-k="last_name" autocomplete="off"></div>'+
+        '<div class="fld"><label>Kote / Sit <span>· Location</span></label><input data-k="location" autocomplete="off"></div>'+
+        '<div class="fld pay"><label>Pèman chak mwa <span>· Monthly pay</span></label><input data-k="monthly_stipend" inputmode="numeric" autocomplete="off"></div>'+
+      '</div>';
+    cards.appendChild(d);
+  });
+
+  function post(payload){
+    return fetch(WEBHOOK, { method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(payload) });
+  }
+
+  var send = document.getElementById("send");
+  var st = document.getElementById("st");
+  send.addEventListener("click", async function(){
+    var people = [];
+    [].forEach.call(cards.children, function(card){
+      var vals = {}; [].forEach.call(card.querySelectorAll("input"), function(inp){ vals[inp.dataset.k] = inp.value.trim(); });
+      if(vals.first_name){ vals.reported_phone = card.dataset.phone; people.push(vals); }
+    });
+    if(!people.length){ st.textContent = "Ranpli omwen yon non anvan. · Enter at least one name."; return; }
+
+    send.disabled = true; var ok = 0;
+    for(var i=0;i<people.length;i++){
+      st.textContent = "Ap voye " + (i+1) + " / " + people.length + " ...";
+      var p = people[i];
+      try{
+        await post({ token:TOKEN, form:"roster", reported_by:"Roster Form",
+          reported_phone:p.reported_phone, first_name:p.first_name, last_name:p.last_name||"",
+          location:p.location||"", monthly_stipend:p.monthly_stipend||"", currency:currency });
+        ok++;
+      }catch(err){}
+    }
+    document.getElementById("form").style.display = "none";
+    document.getElementById("bar").style.display = "none";
+    document.getElementById("doneMsg").textContent = ok + " moun anrejistre. · " + ok + " people saved.";
+    document.getElementById("done").classList.add("show");
+    window.scrollTo(0,0);
+  });
+</script>
+</body>
+</html>
