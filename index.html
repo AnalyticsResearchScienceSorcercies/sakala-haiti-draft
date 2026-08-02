@@ -13,15 +13,58 @@
   <link rel="stylesheet" href="css/konkret.css?v=7">
   <style>
     /* Page-specific overrides */
-    .hero-mission {
+    /* Hero lede: one readable line. Replaced the old all-caps mono .hero-mission
+       block 2026-08-01 so the CTAs clear the fold. */
+    .hero-lede {
+      font-family: 'Lora', serif;
+      font-size: clamp(16px, 2.1vw, 19px);
+      line-height: 1.6;
+      color: rgba(244,239,226,.84);
+      max-width: 540px;
+      margin: 0 0 34px;
+    }
+    /* One-line turn: the problem, stated once, in the dark... then the orange
+       band answers it with the counts. Sits between hero and stat band. */
+    .stat-turn {
+      background: #0c0c0c;
+      border-top: 1px solid #141414;
+      padding: 34px 24px;
+      text-align: center;
+    }
+    .stat-turn p {
+      font-family: 'Lora', serif;
+      font-size: clamp(15px, 2.2vw, 18.5px);
+      line-height: 1.6;
+      color: rgba(244,239,226,.72);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .stat-turn b {
+      font-weight: 400;
+      color: var(--bone);
+    }
+    /* Honest disclosure under the three doors: the purchase/subscription rail
+       does not exist yet, donation is the only live path. */
+    .rail-status {
+      margin: 34px auto 0;
+      max-width: 760px;
+      text-align: center;
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(244,239,226,.55);
+      border-top: 1px solid #1a1a1a;
+      padding-top: 24px;
+    }
+    .rail-status b {
+      font-weight: 400;
       font-family: 'Courier Prime', monospace;
-      font-size: 14px;
-      letter-spacing: 1.5px;
+      font-size: 11px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(244,239,226,.65);
-      max-width: 620px;
-      margin: 0 auto 48px;
-      line-height: 1.75;
+      color: var(--sodium-orange);
+      display: block;
+      margin-bottom: 8px;
     }
     .who-infobox {
       background: #0d0d0d;
@@ -134,13 +177,20 @@
       border-color: var(--sodium-orange);
       color: var(--sodium-orange) !important;
     }
+    /* Desktop fold: top-align the hero copy against the photo instead of letting
+       the 460px-tall visual vertically center it downward. Keeps the CTAs on
+       screen at laptop heights. */
+    @media (min-width: 901px) {
+      .kn-hero.kn-hero-split { padding-top: 44px; }
+      .kn-hero-split .kn-hero-content { align-self: flex-start; }
+    }
     @media (max-width: 820px) {
       .values-grid { grid-template-columns: 1fr !important; }
       /* hero: restore right padding when stacked + let text wrap inside the phone */
       .kn-hero.kn-hero-split { padding: 40px 24px !important; }
       .kn-hero-split .kn-hero-content { max-width: 100% !important; min-width: 0; }
       .kn-hero-content .t-h1 { white-space: normal; overflow-wrap: break-word; }
-      .hero-mission { max-width: 100%; }
+      .hero-lede { max-width: 100%; }
       /* stats: a two-up that actually fits, smaller number + tighter cells */
       .kn-stats-grid { grid-template-columns: 1fr 1fr; }
       .kn-stat-n { font-size: 30px; }
@@ -231,11 +281,8 @@
     <p class="kn-hero-eyebrow">Bayo Travay &nbsp;·&nbsp; KONKRET, since 2019 &nbsp;·&nbsp; Haiti</p>
     <p class="kn-hero-kreyol">Jèn ayisyen yo bezwen travay</p>
     <h1 class="t-h1 mb-24" style="font-size:clamp(52px,13vw,120px); line-height:.92;">Jobs, not aid.</h1>
-    <p class="hero-mission">
-      Just 14 cents of every dollar from large donors reaches Haiti. The diaspora, meanwhile, sends home more than
-      $4 billion a year... and almost all of it gets spent and disappears, building nothing that lasts.
-      Bayo Travay changes that: fund a real Haitian agriculture farm (TapTap), put young people to work on their own soil that has long sat fallow, and
-      receive what they produce. A purchase, not a donation.
+    <p class="hero-lede">
+      Fund a Haitian farm, put young people to work on land that has sat fallow, and see exactly what it grows.
     </p>
     <div class="kn-hero-actions">
       <a href="taptaps.html" class="btn-orange">Sponsor a TapTap</a>
@@ -250,24 +297,32 @@
   </div>
 </section>
 
-<!-- 2. STATS BAND -->
+<!-- 2. THE TURN (the problem, in prose) -->
+<div class="stat-turn">
+  <p><b>$4 billion arrives every year and disappears. Fourteen cents of the aid dollar ever lands.</b> Two numbers, one problem... money that builds nothing.</p>
+</div>
+
+<!-- 2b. STATS BAND (the answer, in counts)
+     Numbers reconciled against network.html 2026-08-01: 10 active + 15 dormant = 25
+     in the network; 160 youth working now of 310 across the network. Do not edit
+     these without updating network.html, nos-actions.html and taptaps.html to match. -->
 <section class="kn-stats">
   <div class="kn-stats-grid">
     <div class="kn-stat">
-      <div class="kn-stat-n">$4B+</div>
-      <div class="kn-stat-l">Diaspora remittances a year, ~22% of GDP</div>
+      <div class="kn-stat-n">10</div>
+      <div class="kn-stat-l">TapTaps working today</div>
     </div>
     <div class="kn-stat">
-      <div class="kn-stat-n">14&cent;</div>
-      <div class="kn-stat-l">Of each dollar from large donors reaches Haiti</div>
+      <div class="kn-stat-n">160</div>
+      <div class="kn-stat-l">Young people working now</div>
     </div>
     <div class="kn-stat">
       <div class="kn-stat-n">25</div>
-      <div class="kn-stat-l">TapTaps across Haiti</div>
+      <div class="kn-stat-l">In the network, 10 departments</div>
     </div>
     <div class="kn-stat">
-      <div class="kn-stat-n">2003</div>
-      <div class="kn-stat-l">SAKALA on the ground</div>
+      <div class="kn-stat-n">23</div>
+      <div class="kn-stat-l">Years on the ground since 2003</div>
     </div>
   </div>
 </section>
@@ -283,7 +338,7 @@
       <div class="kn-audience-card card-partner">
         <span class="t-label">I'm in the diaspora</span>
         <h3 class="t-h3">Sponsor a TapTap</h3>
-        <p class="t-body">Pick a Haitian TapTap, fund it, and receive what it produces... cassava flour, to start. Not a donation: you are buying a product, and most of your money builds up the TapTap that made it. You see exactly what it did.</p>
+        <p class="t-body">Pick a Haitian TapTap and fund it. Most of your money buys the one thing that site is missing... a mill, a pump, a season of wages... and you get reporting on exactly what it grew. The harvest box ships once enough TapTaps can fill it.</p>
         <a href="taptaps.html" class="btn-orange">Browse TapTaps</a>
       </div>
       <div class="kn-audience-card card-employer">
@@ -299,6 +354,7 @@
         <a href="devenir-partenaire.html" class="btn-green">Register</a>
       </div>
     </div>
+    <p class="rail-status"><b>Where the money goes today</b> Funding a TapTap is a tax-deductible donation to SAKALA International. Buying the harvest directly... subscription, the box on your doorstep... is the rail we are building next.</p>
   </div>
 </section>
 
