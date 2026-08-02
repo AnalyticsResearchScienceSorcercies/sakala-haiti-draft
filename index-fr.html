@@ -13,15 +13,58 @@
   <link rel="stylesheet" href="css/konkret.css?v=7">
   <style>
     /* Page-specific overrides */
-    .hero-mission {
+    /* Hero lede: one readable line. Replaced the old all-caps mono .hero-mission
+       block 2026-08-02, mirroring index.html, so the CTAs clear the fold. */
+    .hero-lede {
+      font-family: 'Lora', serif;
+      font-size: clamp(16px, 2.1vw, 19px);
+      line-height: 1.6;
+      color: rgba(244,239,226,.84);
+      max-width: 540px;
+      margin: 0 0 34px;
+    }
+    /* One-line turn: the problem, stated once, in the dark... then the orange
+       band answers it with the counts. Sits between hero and stat band. */
+    .stat-turn {
+      background: #0c0c0c;
+      border-top: 1px solid #141414;
+      padding: 34px 24px;
+      text-align: center;
+    }
+    .stat-turn p {
+      font-family: 'Lora', serif;
+      font-size: clamp(15px, 2.2vw, 18.5px);
+      line-height: 1.6;
+      color: rgba(244,239,226,.72);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .stat-turn b {
+      font-weight: 400;
+      color: var(--bone);
+    }
+    /* Honest disclosure under the three doors: the purchase/subscription rail
+       does not exist yet, donation is the only live path. */
+    .rail-status {
+      margin: 34px auto 0;
+      max-width: 760px;
+      text-align: center;
+      font-family: 'Lora', serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: rgba(244,239,226,.55);
+      border-top: 1px solid #1a1a1a;
+      padding-top: 24px;
+    }
+    .rail-status b {
+      font-weight: 400;
       font-family: 'Courier Prime', monospace;
-      font-size: 14px;
-      letter-spacing: 1.5px;
+      font-size: 11px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(244,239,226,.65);
-      max-width: 620px;
-      margin: 0 auto 48px;
-      line-height: 1.75;
+      color: var(--sodium-orange);
+      display: block;
+      margin-bottom: 8px;
     }
     .who-infobox {
       background: #0d0d0d;
@@ -139,8 +182,26 @@
       transition: border-color .15s;
     }
     .who-link:hover { border-color: var(--sodium-orange); }
+    /* Desktop fold: top-align the hero copy against the photo instead of letting
+       the 460px-tall visual vertically center it downward. Keeps the CTAs on
+       screen at laptop heights. */
+    @media (min-width: 901px) {
+      .kn-hero.kn-hero-split { padding-top: 44px; }
+      .kn-hero-split .kn-hero-content { align-self: flex-start; }
+    }
     @media (max-width: 820px) {
-      .values-grid { grid-template-columns: 1fr !important; }
+      /* hero: restore right padding when stacked + let text wrap inside the phone */
+      .kn-hero.kn-hero-split { padding: 40px 24px !important; }
+      .kn-hero-split .kn-hero-content { max-width: 100% !important; min-width: 0; }
+      .kn-hero-content .t-h1 { white-space: normal; overflow-wrap: break-word; }
+      .hero-lede { max-width: 100%; }
+      /* stats: a two-up that actually fits, smaller number + tighter cells */
+      .kn-stats-grid { grid-template-columns: 1fr 1fr; }
+      .kn-stat-n { font-size: 30px; }
+      .kn-stat { padding: 20px 10px; }
+    }
+    @media (max-width: 460px) {
+      .kn-stats-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -183,16 +244,15 @@
 <!-- 1. HERO -->
 <section class="kn-hero kn-hero-split">
   <div class="kn-hero-content">
-    <p class="kn-hero-eyebrow">Milot, Nord, Haïti &nbsp;·&nbsp; KONKRET, depuis 2011</p>
+    <p class="kn-hero-eyebrow">Bayo Travay &nbsp;·&nbsp; KONKRET, depuis 2011 &nbsp;·&nbsp; Haïti</p>
     <p class="kn-hero-kreyol">Jèn ayisyen yo bezwen travay</p>
-    <h1 class="t-h1 mb-24">Travay Se Libète</h1>
-    <p class="hero-mission">
-      Une solidarité économique entre donateurs d'impact de la diaspora<br>
-      et partenaires locaux pour l'accès à l'emploi des jeunes Haïtiens vulnérables
+    <h1 class="t-h1 mb-24" style="font-size:clamp(40px,9vw,88px); line-height:.94;">Du travail, pas de l'aide.</h1>
+    <p class="hero-lede">
+      Financez une ferme haïtienne, mettez des jeunes au travail sur des terres laissées en friche, et voyez exactement ce qu'elles produisent.
     </p>
     <div class="kn-hero-actions">
-      <a href="je-veux-un-emploi.html" class="btn-green">Je Veux Travailler</a>
-      <a href="employer.html" class="btn-ghost">Employer des Jeunes</a>
+      <a href="taptaps.html" class="btn-orange">Parrainer un TapTap</a>
+      <a href="programs/proof.html" class="btn-green">Voir les Preuves</a>
     </div>
   </div>
   <div class="kn-hero-visual">
@@ -203,7 +263,15 @@
   </div>
 </section>
 
-<!-- 2. STATS BAND -->
+<!-- 2. THE TURN (the problem, in prose) -->
+<div class="stat-turn">
+  <p><b>4 milliards de dollars arrivent chaque année et disparaissent. Quatorze centimes du dollar d'aide touchent réellement le terrain.</b> Deux chiffres, un seul problème... de l'argent qui ne construit rien.</p>
+</div>
+
+<!-- 2b. STATS BAND (the answer, in counts)
+     Numbers reconciled against network.html 2026-08-01: 10 active + 15 dormant = 25
+     in the network; 160 youth working now of 310 across the network. Do not edit
+     these without updating network.html, nos-actions.html and taptaps.html to match. -->
 <section class="kn-stats">
   <div class="kn-stats-grid">
     <div class="kn-stat">
@@ -225,33 +293,34 @@
   </div>
 </section>
 
-<!-- 3. THREE AUDIENCE PATHS -->
+<!-- 3. THE DOORS -->
 <section class="section bg-near">
   <div class="container">
     <div class="kn-section-header text-center">
-      <span class="t-label">Pour Qui</span>
-      <h2 class="t-h2">Trois chemins. Un mouvement.</h2>
+      <span class="t-label">Où Vous Entrez</span>
+      <h2 class="t-h2">Trouvez un TapTap. Financez le travail.</h2>
     </div>
     <div class="kn-audience-grid">
-      <div class="kn-audience-card card-emploi">
-        <span class="t-label">Je suis jeune</span>
-        <h3 class="t-h3">Je Veux Travailler</h3>
-        <p class="t-body">Tu veux un emploi, une formation, un encadrement. Rejoins le Konbit qui te donnera les outils pour construire ta vie.</p>
-        <a href="je-veux-un-emploi.html" class="btn-green">Rejoindre le Konbit</a>
-      </div>
-      <div class="kn-audience-card card-employer">
-        <span class="t-label">J'ai un projet</span>
-        <h3 class="t-h3">Employer des Jeunes</h3>
-        <p class="t-body">Tu as un terrain, un atelier, un commerce. KONKRET te connecte à des jeunes formés, sérieux, prêts à travailler.</p>
-        <a href="employer.html" class="btn-orange">Trouver des Talents</a>
-      </div>
       <div class="kn-audience-card card-partner">
         <span class="t-label">Je suis de la diaspora</span>
-        <h3 class="t-h3">J'Embauche un Jeune</h3>
-        <p class="t-body">Ton argent crée un emploi réel pour un jeune haïtien. 360 dollars. Huit semaines. Une vie qui change de trajectoire.</p>
-        <a href="summer-2026.html" class="btn-ghost">Embaucher</a>
+        <h3 class="t-h3">Parrainer un TapTap</h3>
+        <p class="t-body">Choisissez un TapTap haïtien et financez-le. L'essentiel de votre argent achète la seule chose qui manque à ce site... un moulin, une pompe, une saison de salaires... et vous recevez un rapport sur ce qu'il a produit, exactement. La boîte de récolte partira quand assez de TapTaps pourront la remplir.</p>
+        <a href="taptaps.html" class="btn-orange">Voir les TapTaps</a>
+      </div>
+      <div class="kn-audience-card card-employer">
+        <span class="t-label">Nous sommes un groupe ou une organisation</span>
+        <h3 class="t-h3">Parrainer en Groupe</h3>
+        <p class="t-body">Une église, une association de la diaspora, une entreprise. Financez un TapTap entier et mettez dix jeunes ou plus au travail, avec un rapport que vous pouvez montrer aux vôtres.</p>
+        <a href="taptaps.html" class="btn-ghost">Devenir Parrain de Groupe</a>
+      </div>
+      <div class="kn-audience-card card-emploi">
+        <span class="t-label">Je suis sur le terrain en Haïti</span>
+        <h3 class="t-h3">Accueillir un TapTap</h3>
+        <p class="t-body">Vous avez une terre, du matériel, ou un groupe de jeunes prêts à travailler. Dites-nous ce que vous avez et la seule chose qu'il vous manque... nous faisons la mise en relation.</p>
+        <a href="devenir-partenaire.html" class="btn-green">S'inscrire</a>
       </div>
     </div>
+    <p class="rail-status"><b>Où va l'argent aujourd'hui</b> Financer un TapTap est un don déductible d'impôt à SAKALA International. Acheter la récolte directement... l'abonnement, la boîte livrée chez vous... c'est le circuit que nous construisons ensuite.</p>
   </div>
 </section>
 
@@ -262,12 +331,12 @@
       <!-- Left: text -->
       <div>
         <span class="t-label mb-16" style="display:block;">Qui Sommes-Nous</span>
-        <h2 class="t-h2 mb-24">Une Économie Solidaire Pour Haïti</h2>
+        <h2 class="t-h2 mb-24">Pas une organisation d'aide. Une façon de bâtir une richesse qui reste.</h2>
         <p class="t-body mb-24">
-          SAKALA Haiti est une organisation d'économie solidaire haïtienne. Sa coopérative KONKRET, lancée en 2011 dans le Nord, organise l'emploi des jeunes comme la solution principale aux dérives socio-économiques que connait Haïti. Notre modèle repose sur la coopérative... la formation professionnelle et socio-émotionnelle... et la propriété commune des ressources productives.
+          SAKALA Haiti travaille le Nord depuis 2003; sa coopérative KONKRET organise l'emploi des jeunes depuis 2011. Nous ne sommes pas une organisation d'aide. L'aide est arrivée, a disparu, et n'a presque rien laissé derrière elle... à peine 14 centimes de chaque dollar des grands bailleurs atteignaient Haïti. Livrez ce même dollar directement et 85 centimes touchent le sol. Nous construisons l'inverse: de l'argent qui reste en Haïti, entre les mains de ceux qui font le travail.
         </p>
         <p class="t-body mb-32">
-          Depuis 2011, nous opérons à Milot, Trou-du-Nord et Limonade dans le Nord d'Haïti. Nous croyons que le travail digne est la fondation de toute reconstruction sociale. Chaque emploi créé est un acte de résistance économique.
+          Nous connaissons les TapTaps à travers Haïti... ce qu'ils ont, ce qu'ils pourraient faire, et la seule chose qui manque à chacun pour démarrer. Nous les mettons en relation avec des personnes et des groupes à l'étranger qui achètent ce qu'ils produisent. L'argent ne ruisselle pas, il atterrit... et l'essentiel renforce le TapTap lui-même, pour que le travail continue de payer après la première saison. Chaque emploi créé est un acte de souveraineté économique.
         </p>
         <a href="a-propos.html" class="who-link">En savoir plus sur SAKALA Haiti</a>
       </div>
@@ -307,94 +376,25 @@
   </div>
 </section>
 
-<!-- 5. 4 ACTION POLES -->
-<section class="section bg-near">
-  <div class="container">
-    <div class="kn-section-header">
-      <span class="t-label">Ce que nous faisons</span>
-      <h2 class="t-h2">Nos Pôles d'Action</h2>
-    </div>
-    <div class="grid-4" style="gap:2px;">
-      <div class="kn-card">
-        <span class="pole-num">01 &nbsp;/&nbsp; Emploi</span>
-        <div class="pole-title">Emploi Jeunesse</div>
-        <p class="pole-body">Offres de travail agricole, mise en réseau avec des employeurs locaux, formation et accompagnement individualisé pour chaque jeune intégré. La diaspora peut <a href="summer-2026.html" class="kn-hire">embaucher un jeune</a> directement.</p>
-      </div>
-      <div class="kn-card">
-        <span class="pole-num">02 &nbsp;/&nbsp; Formation</span>
-        <div class="pole-title">Formation Professionnelle</div>
-        <p class="pole-body">Apprentissage des compétences techniques et agricoles adaptées au tissu économique local... avec des formateurs ancrés dans la réalité haïtienne.</p>
-      </div>
-      <div class="kn-card">
-        <span class="pole-num">03 &nbsp;/&nbsp; Socio-Emo</span>
-        <div class="pole-title">Formation Socio-Émotionnelle</div>
-        <p class="pole-body">Développement de la confiance, de la résilience et des aptitudes relationnelles. Parce que le travail digne commence par la dignité intérieure.</p>
-      </div>
-      <div class="kn-card">
-        <span class="pole-num">04 &nbsp;/&nbsp; Propriété</span>
-        <div class="pole-title">Propriété Commune</div>
-        <p class="pole-body">Nourriture pour tous. Les terres, les outils et les récoltes appartiennent à la coopérative. Ce que nous construisons ensemble reste à tous.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- Pôles d'Action removed from homepage 2026-08-02 to mirror index.html (placeholders, to be redone; relocate on request) -->
 
 
-<div class="kn-img-frame" style="max-height:400px;">
-  <img src="photos/arrosoir-detail.jpg" alt="Journée de plantation : le konbit des jeunes, Grand Bassin, Nord d'Haïti" loading="lazy" style="width:100%;object-position:center 42%;">
+<!-- Watering-can image + testimonials removed from homepage 2026-08-02 to mirror index.html and shorten the scroll; testimonials live on the Voices page (temoignages.html) -->
+
+<!-- Values section removed from homepage 2026-08-02 to mirror index.html -->
+
+<!-- HARVEST BOX TEASE -->
+<div style="background:#0c0c0c;text-align:center;padding:32px 24px;border-top:1px solid #141414;">
+  <p style="font-family:'Lora',serif;font-style:italic;font-size:clamp(15px,2.2vw,18px);color:rgba(244,239,226,.72);max-width:660px;margin:0 auto;line-height:1.6;">Un jour, la récolte de chaque TapTap arrivera chez vous dans une seule boîte. Nous construisons encore les TapTaps qui la rempliront. <a href="taptaps.html" style="color:var(--sodium-orange);text-decoration:none;border-bottom:1px solid rgba(255,106,31,.3);">Voir ce qui pousse &rarr;</a></p>
 </div>
-<!-- 6. TESTIMONIALS -->
-<section class="section bg-deep">
-  <div class="container" style="max-width:720px;margin-left:auto;margin-right:auto;">
-    <div class="kn-section-header text-center">
-      <span class="t-label">Témoignages</span>
-      <h2 class="t-h2">Ce que nos membres disent</h2>
-    </div>
-    <div class="kn-quote">
-      <p>"Grâce à KONKRET, j'ai reçu une formation et j'ai enfin un travail utile et respecté."</p>
-      <cite>Jean-Marie &nbsp;·&nbsp; Membre, Milot</cite>
-    </div>
-    <div class="kn-quote">
-      <p>"Mon terrain était abandonné. Aujourd'hui, il nourrit 3 familles. Merci KONKRET!"</p>
-      <cite>Marie-Lourdes &nbsp;·&nbsp; Partenaire agricole, Nord</cite>
-    </div>
-  </div>
-</section>
 
-<!-- 7. VALUES -->
-<section class="section bg-black">
-  <div class="container">
-    <div class="kn-section-header text-center">
-      <span class="t-label">Nos Principes</span>
-      <h2 class="t-h2">Ce que nous croyons</h2>
-    </div>
-    <div class="grid-3 values-grid" style="gap:2px;">
-      <div class="value-col">
-        <span class="value-num">01</span>
-        <div class="value-title">Impact Local Mesurable</div>
-        <p class="value-body">Chaque gourde investie doit produire un résultat visible dans la communauté. Pas de rapport de façade... des vies transformées, des terres cultivées, des familles nourries.</p>
-      </div>
-      <div class="value-col">
-        <span class="value-num">02</span>
-        <div class="value-title">Transparence Coopérative</div>
-        <p class="value-body">Le modèle coopératif n'est pas un slogan. Les comptes sont ouverts, les décisions sont collectives, et les bénéfices reviennent aux membres qui travaillent.</p>
-      </div>
-      <div class="value-col">
-        <span class="value-num">03</span>
-        <div class="value-title">Agriculture Durable</div>
-        <p class="value-body">La terre est la première richesse d'Haïti. Nous cultivons avec respect... en préservant les sols pour les générations qui viendront après nous.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 8. CTA BAND -->
+<!-- 7. CTA BAND -->
 <section class="cta-band">
   <div class="container">
-    <h2 class="t-h2">Rejoins le mouvement KONKRET.</h2>
+    <h2 class="t-h2">Parrainez un TapTap. Mettez des jeunes au travail. Recevez ce qu'ils cultivent.</h2>
     <div class="cta-band-actions">
-      <a href="je-veux-un-emploi.html" class="btn-green">Je Veux Travailler</a>
-      <a href="summer-2026.html" class="btn-ghost">Embaucher un Jeune</a>
+      <a href="taptaps.html" class="btn-orange">Parrainer un TapTap</a>
+      <a href="programs/proof.html" class="btn-green">Voir les Preuves</a>
     </div>
   </div>
 </section>
