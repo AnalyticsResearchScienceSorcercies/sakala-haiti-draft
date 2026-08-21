@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Konkret — Ekip</title>
+<style>
+:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--ok:#1f6f3d;--bad:#8a1c1c;--muted:#6b645c;--card:#fff;--head:#efeae0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:20px 14px 60px}
+.wrap{max-width:940px;margin:0 auto}
+a{color:inherit}
+h1{font-size:22px;margin:0 0 2px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
+ padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:20px;
+ padding-bottom:12px;border-bottom:3px solid var(--ink)}
+.bar h1{flex:1 1 auto}
+.who{font-size:13px;color:var(--muted)}
+.lnk{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;background:0;border:0;padding:0;font-family:inherit}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.mod{display:block;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);
+ border-radius:9px;padding:16px;cursor:pointer;font:inherit;color:inherit}
+.mod:hover{border-color:var(--ink)}
+.mod .t{font-weight:700;font-size:16px;margin-bottom:3px}
+.mod .d{color:var(--muted);font-size:13px}
+.mod[disabled]{opacity:.5;cursor:not-allowed}
+.mod[disabled]:hover{border-color:var(--line)}
+.tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
+ background:var(--head);border-radius:4px;padding:2px 6px;margin-top:8px;color:var(--muted)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.card .n{font-size:30px;font-weight:800;line-height:1.1}
+.card .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);
+ border-radius:8px;overflow:hidden;font-size:14px}
+th{background:var(--head);text-align:left;padding:9px 10px;font-size:12px;
+ text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.pass{color:var(--ok);font-weight:700}.fail{color:var(--bad);font-weight:700}
+.meter{height:8px;background:#e6dfd2;border-radius:4px;overflow:hidden;margin-top:5px}
+.meter span{display:block;height:100%;background:var(--bad)}
+.scroll{overflow-x:auto}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:34px;
+ text-align:center;color:var(--muted)}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
+
+form.login{max-width:330px;margin:60px auto;background:var(--card);border:1px solid var(--line);
+ border-radius:10px;padding:22px}
+label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
+input{width:100%;padding:11px;border:1px solid var(--line);border-radius:6px;
+ font-size:16px;margin-bottom:13px;background:var(--card);color:var(--ink)}
+button.go{width:100%;padding:13px;background:var(--ink);color:var(--paper);border:0;
+ border-radius:7px;font-size:16px;font-weight:700;cursor:pointer}
+.err{color:var(--bad);font-size:13px;font-weight:600;margin:0 0 12px}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){
+ :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e;--card:#1f1c16;--head:#2b271f}
+ button.go{background:#f2ede4;color:#16140f}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<form class="login" id="login">
+  <h1>Konkret — Ekip</h1>
+  <p class="sub">Zòn entèn</p>
+  <p class="err" id="lerr" hidden></p>
+  <label for="u">Non itilizatè</label>
+  <input type="text" id="u" autocomplete="username" required>
+  <label for="p">Modpas</label>
+  <input type="password" id="p" autocomplete="current-password" required>
+  <button class="go" type="submit">Antre</button>
+</form>
+
+<div id="app" hidden></div>
+
+</div>
+
+<script>
+(function () {
+  var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
+  var login = document.getElementById("login");
+  var lerr = document.getElementById("lerr");
+  var app = document.getElementById("app");
+  var TOKEN = null;
+  var ME = null;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function api(route) {
+    return fetch(API + (route ? "/" + route : ""), { headers: { Authorization: "Basic " + TOKEN } })
+      .then(function (r) {
+        if (r.status === 401) throw new Error("Non itilizatè oswa modpas la pa bon.");
+        return r.json().then(function (j) {
+          if (!r.ok) throw new Error(j.error || "Gen yon pwoblèm teknik.");
+          return j;
+        });
+      });
+  }
+
+  function chrome(inner, back) {
+    return '<div class="bar">' +
+      "<h1>Konkret — Ekip</h1>" +
+      '<span class="who">' + esc(ME.user) + "</span>" +
+      (back ? '<button class="lnk" id="back">← Tounen</button>' : "") +
+      '<button class="lnk" id="out">Soti</button>' +
+      "</div>" + inner;
+  }
+
+  function wire(onBack) {
+    var o = document.getElementById("out");
+    if (o) o.onclick = function () { sessionStorage.removeItem("ekip"); location.hash = ""; location.reload(); };
+    var b = document.getElementById("back");
+    if (b) b.onclick = function () { location.hash = ""; };
+  }
+
+  // ---- module renderers. Add one function + one ROUTES entry per module. ----
+
+  function viewHome() {
+    var mods = ME.moduleyo.map(function (m) {
+      return '<button class="mod" data-go="' + m.kle + '"' + (m.pare ? "" : " disabled") + ">" +
+        '<div class="t">' + esc(m.tit) + "</div>" +
+        '<div class="d">' + esc(m.deskripsyon) + "</div>" +
+        (m.pare ? "" : '<div class="tag">poko bati</div>') +
+        "</button>";
+    }).join("");
+    app.innerHTML = chrome('<p class="sub">Zòn entèn · chwazi yon modil</p><div class="grid">' + mods + "</div>", false);
+    wire();
+    Array.prototype.forEach.call(app.querySelectorAll("[data-go]"), function (b) {
+      b.onclick = function () { location.hash = b.getAttribute("data-go"); };
+    });
+  }
+
+  function viewDok(d) {
+    var body = "";
+    Object.keys(d.kategori).forEach(function (k) {
+      body += "<h2>" + esc(k) + "</h2><div class='scroll'><table><thead><tr>" +
+        "<th>Dokiman</th><th>Lang</th><th>Vèsyon</th></tr></thead><tbody>" +
+        d.kategori[k].map(function (r) {
+          return "<tr><td><a href='" + esc(r.url) + "' target='_blank' rel='noopener'><strong>" +
+            esc(r.tit) + "</strong></a>" +
+            (r.deskripsyon ? "<div style='color:var(--muted);font-size:13px'>" + esc(r.deskripsyon) + "</div>" : "") +
+            "</td><td><span class='pill'>" + esc(r.lang) + "</span></td><td>" + esc(r.vesyon || "—") + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    });
+    if (!d.total) body = '<div class="empty">Pa gen dokiman anrejistre.</div>';
+    app.innerHTML = chrome("<h1 style='font-size:19px;margin:0 0 2px'>Dokiman</h1>" +
+      "<p class='sub'>Ki vèsyon ki alajè · " + d.total + " dokiman</p>" + body, true);
+    wire();
+  }
+
+  function viewSend0(d) {
+    if (!d.total) {
+      app.innerHTML = chrome("<p class='sub'>Send 0 — Rezilta</p><div class='empty'>Pa gen okenn repons pou kounye a.</div>", true);
+      wire(); return;
+    }
+    var miss = d.miss.map(function (m) {
+      return "<tr><td>" + esc(m.label) + "<div class='meter'><span style='width:" + m.pct + "%'></span></div></td>" +
+        "<td style='text-align:right;white-space:nowrap'><strong>" + m.wrong + "</strong> / " + d.total +
+        "<br><span style='color:var(--muted);font-size:12px'>" + m.pct + "%</span></td></tr>";
+    }).join("");
+    var subs = d.rows.map(function (r) {
+      return "<tr><td>" + esc(r.non) + "</td><td>" + esc(r.kominote) + "</td><td>" + esc(r.telefon || "—") +
+        "</td><td style='text-align:center'><span class='" + (r.pase ? "pass" : "fail") + "'>" + r.esko +
+        "/5</span></td><td style='text-align:center'>" +
+        (r.pase ? "<span class='pass'>PASE</span>" : "<span class='fail'>PA PASE</span>") +
+        "</td><td style='white-space:nowrap;color:var(--muted);font-size:13px'>" +
+        esc(String(r.created_at).slice(0, 16).replace("T", " ")) + "</td></tr>";
+    }).join("");
+    app.innerHTML = chrome(
+      "<h1 style='font-size:19px;margin:0 0 2px'>Send 0 — Rezilta</h1>" +
+      "<p class='sub'>Pòt konpreyansyon an</p>" +
+      '<div class="cards">' +
+        '<div class="card"><div class="n">' + d.total + '</div><div class="l">Repons</div></div>' +
+        '<div class="card"><div class="n">' + d.passed + '</div><div class="l">Pase</div></div>' +
+        '<div class="card"><div class="n">' + d.rate + '%</div><div class="l">To reyisit</div></div>' +
+        '<div class="card"><div class="n">' + (d.avg == null ? "—" : d.avg) + '</div><div class="l">Eskò mwayen</div></div>' +
+      "</div>" +
+      "<h2>Kesyon moun yo rate plis</h2><div class='scroll'><table><thead><tr><th>Kesyon</th>" +
+      "<th style='text-align:right'>Rate</th></tr></thead><tbody>" + miss + "</tbody></table></div>" +
+      "<h2>Tout repons yo</h2><div class='scroll'><table><thead><tr><th>Non</th><th>Kominote</th>" +
+      "<th>Telefòn</th><th style='text-align:center'>Eskò</th><th style='text-align:center'>Rezilta</th>" +
+      "<th>Dat</th></tr></thead><tbody>" + subs + "</tbody></table></div>", true);
+    wire();
+  }
+
+  function viewTodo(d) {
+    app.innerHTML = chrome('<div class="empty">' + esc(d.mesaj || "Poko bati.") + "</div>", true);
+    wire();
+  }
+
+  var VIEWS = { dok: viewDok, send0: viewSend0, rapo: viewTodo, pewol: viewTodo };
+
+  // ---------------------------------------------------------------------
+
+  function route() {
+    var k = location.hash.replace(/^#/, "");
+    if (!k) { viewHome(); return; }
+    var render = VIEWS[k];
+    if (!render) { location.hash = ""; return; }
+    app.innerHTML = chrome('<div class="empty">N ap chaje…</div>', true);
+    wire();
+    api(k).then(render).catch(function (e) {
+      app.innerHTML = chrome('<div class="empty">' + esc(e.message) + "</div>", true);
+      wire();
+    });
+  }
+
+  function start(token, me) {
+    TOKEN = token; ME = me;
+    login.hidden = true; app.hidden = false;
+    window.onhashchange = route;
+    route();
+  }
+
+  login.addEventListener("submit", function (e) {
+    e.preventDefault();
+    lerr.hidden = true;
+    TOKEN = btoa(document.getElementById("u").value + ":" + document.getElementById("p").value);
+    api("").then(function (me) {
+      sessionStorage.setItem("ekip", TOKEN);
+      start(TOKEN, me);
+    }).catch(function (err) {
+      TOKEN = null;
+      lerr.textContent = err.message; lerr.hidden = false;
+    });
+  });
+
+  var saved = sessionStorage.getItem("ekip");
+  if (saved) {
+    TOKEN = saved;
+    api("").then(function (me) { start(saved, me); })
+      .catch(function () { TOKEN = null; sessionStorage.removeItem("ekip"); });
+  }
+})();
+</script>
+</body>
+</html>
