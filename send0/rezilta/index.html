@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Send 0 — Rezilta</title>
+<style>
+:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--ok:#1f6f3d;--bad:#8a1c1c;--muted:#6b645c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:20px 14px 60px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:22px;margin:0 0 2px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
+ padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px}
+.card .n{font-size:30px;font-weight:800;line-height:1.1}
+.card .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);
+ border-radius:8px;overflow:hidden;font-size:14px}
+th{background:#efeae0;text-align:left;padding:9px 10px;font-size:12px;
+ text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 10px;border-top:1px solid var(--line)}
+.pass{color:var(--ok);font-weight:700}.fail{color:var(--bad);font-weight:700}
+.bar{height:8px;background:#e6dfd2;border-radius:4px;overflow:hidden;margin-top:5px}
+.bar span{display:block;height:100%;background:var(--bad)}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:8px;padding:34px;
+ text-align:center;color:var(--muted)}
+.scroll{overflow-x:auto}
+form.login{max-width:320px;margin:60px auto;background:#fff;border:1px solid var(--line);
+ border-radius:10px;padding:22px}
+form.login h1{font-size:19px;margin-bottom:16px}
+label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
+input{width:100%;padding:11px;border:1px solid var(--line);border-radius:6px;
+ font-size:16px;margin-bottom:13px;background:#fff;color:var(--ink)}
+button{width:100%;padding:13px;background:var(--ink);color:#fbf9f5;border:0;
+ border-radius:7px;font-size:16px;font-weight:700;cursor:pointer}
+.err{color:var(--bad);font-size:13px;font-weight:600;margin:0 0 12px}
+.out{float:right;font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){
+ :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e}
+ .card,table,.empty,form.login,input{background:#1f1c16}th{background:#2b271f}
+ button{background:#f2ede4;color:#16140f}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<form class="login" id="login">
+  <h1>Send 0 — Rezilta</h1>
+  <p class="err" id="lerr" hidden></p>
+  <label for="u">Non itilizatè</label>
+  <input type="text" id="u" autocomplete="username" required>
+  <label for="p">Modpas</label>
+  <input type="password" id="p" autocomplete="current-password" required>
+  <button type="submit">Antre</button>
+</form>
+
+<div id="app" hidden></div>
+
+</div>
+
+<script>
+(function () {
+  var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/send0-rezilta";
+  var login = document.getElementById("login");
+  var lerr = document.getElementById("lerr");
+  var app = document.getElementById("app");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function load(token) {
+    return fetch(API, { headers: { Authorization: "Basic " + token } })
+      .then(function (r) {
+        if (r.status === 401) throw new Error("Non itilizatè oswa modpas la pa bon.");
+        if (!r.ok) throw new Error("Gen yon pwoblèm teknik.");
+        return r.json();
+      });
+  }
+
+  function render(d) {
+    login.hidden = true;
+    app.hidden = false;
+
+    if (!d.total) {
+      app.innerHTML =
+        '<span class="out" id="out">Soti</span>' +
+        "<h1>Send 0 — Rezilta</h1>" +
+        '<p class="sub">Kondisyon yo · pòt konpreyansyon an</p>' +
+        '<div class="empty">Pa gen okenn repons pou kounye a.</div>';
+      wireOut();
+      return;
+    }
+
+    var miss = d.miss.map(function (m) {
+      return "<tr><td>" + esc(m.label) +
+        '<div class="bar"><span style="width:' + m.pct + '%"></span></div></td>' +
+        '<td style="text-align:right;white-space:nowrap"><strong>' + m.wrong + "</strong> / " + d.total +
+        '<br><span style="color:var(--muted);font-size:12px">' + m.pct + "%</span></td></tr>";
+    }).join("");
+
+    var subs = d.rows.map(function (r) {
+      return "<tr><td>" + esc(r.non) + "</td><td>" + esc(r.kominote) + "</td><td>" +
+        esc(r.telefon || "—") + '</td><td style="text-align:center"><span class="' +
+        (r.pase ? "pass" : "fail") + '">' + r.esko + '/5</span></td><td style="text-align:center">' +
+        (r.pase ? '<span class="pass">PASE</span>' : '<span class="fail">PA PASE</span>') +
+        '</td><td style="white-space:nowrap;color:var(--muted);font-size:13px">' +
+        esc(String(r.created_at).slice(0, 16).replace("T", " ")) + "</td></tr>";
+    }).join("");
+
+    app.innerHTML =
+      '<span class="out" id="out">Soti</span>' +
+      "<h1>Send 0 — Rezilta</h1>" +
+      '<p class="sub">Kondisyon yo · pòt konpreyansyon an</p>' +
+      '<div class="cards">' +
+        '<div class="card"><div class="n">' + d.total + '</div><div class="l">Repons</div></div>' +
+        '<div class="card"><div class="n">' + d.passed + '</div><div class="l">Pase</div></div>' +
+        '<div class="card"><div class="n">' + d.rate + '%</div><div class="l">To reyisit</div></div>' +
+        '<div class="card"><div class="n">' + (d.avg == null ? "—" : d.avg) + '</div><div class="l">Eskò mwayen</div></div>' +
+      "</div>" +
+      "<h2>Kesyon moun yo rate plis</h2>" +
+      '<div class="scroll"><table><thead><tr><th>Kesyon</th><th style="text-align:right">Rate</th></tr></thead><tbody>' +
+      miss + "</tbody></table></div>" +
+      "<h2>Tout repons yo</h2>" +
+      '<div class="scroll"><table><thead><tr><th>Non</th><th>Kominote</th><th>Telefòn</th>' +
+      '<th style="text-align:center">Eskò</th><th style="text-align:center">Rezilta</th><th>Dat</th>' +
+      "</tr></thead><tbody>" + subs + "</tbody></table></div>";
+    wireOut();
+  }
+
+  function wireOut() {
+    var o = document.getElementById("out");
+    if (o) o.onclick = function () { sessionStorage.removeItem("s0"); location.reload(); };
+  }
+
+  login.addEventListener("submit", function (e) {
+    e.preventDefault();
+    lerr.hidden = true;
+    var token = btoa(document.getElementById("u").value + ":" + document.getElementById("p").value);
+    load(token)
+      .then(function (d) { sessionStorage.setItem("s0", token); render(d); })
+      .catch(function (err) { lerr.textContent = err.message; lerr.hidden = false; });
+  });
+
+  var saved = sessionStorage.getItem("s0");
+  if (saved) {
+    load(saved).then(render).catch(function () { sessionStorage.removeItem("s0"); });
+  }
+})();
+</script>
+</body>
+</html>
