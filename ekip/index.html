@@ -72,6 +72,7 @@ button.go{padding:11px 18px;background:var(--ink);color:var(--paper);border:0;bo
 button.alt{padding:9px 14px;background:var(--card);color:var(--ink);border:1px solid var(--line);
  border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 button.alt:hover{border-color:var(--ink)}
+button.alt.file{padding:4px 9px;font-size:12px}
 button.danger{color:var(--bad);border-color:var(--bad)}
 button[disabled]{opacity:.5;cursor:not-allowed}
 .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -175,6 +176,7 @@ form.login button{width:100%}
     ["text","Short text"], ["textarea","Long text"], ["number","Number"],
     ["date","Date"], ["time","Time"], ["tel","Phone"], ["email","Email"],
     ["currency","Money (HTG)"], ["rating","Rating 1-5"], ["signature","Signature"],
+    ["file","File / photo"],
     ["select","Dropdown"], ["radio","Choose one"], ["checkbox","Choose many"]
   ];
   var CHOICE = { select:1, radio:1, checkbox:1 };
@@ -199,6 +201,62 @@ form.login button{width:100%}
     });
   }
 
+  // ---- files -------------------------------------------------------------
+  // A file answer is {path, non, kalite, gwose} — a receipt, not the bytes.
+  // The bucket is private, so every view resolves a path into a 120-second
+  // signed URL through the ekip function. The browser holds no storage key,
+  // and a URL that leaks is dead in two minutes.
+  function isFile(v) {
+    return !!v && typeof v === "object" && !Array.isArray(v) && !!v.path;
+  }
+
+  // POST with the path in the body, never GET with the path in the URL.
+  // Learned the hard way: a path ending in ".jpg" made Cloudflare treat the
+  // route as a static asset, cache it, and serve one user's signed URL to
+  // another with the function never running and nothing logged.
+  function fileUrl(path) {
+    return api("fichye", { base: API, method: "POST", body: { path: path } });
+  }
+
+  function fileChip(v) {
+    var img = /^image\//.test(v.kalite || "");
+    return '<button class="alt file" data-file="' + esc(v.path) + '">' +
+      (img ? "View photo" : "Open PDF") + "</button>" +
+      (v.non ? '<div style="color:var(--muted);font-size:12px;margin-top:3px">' +
+        esc(v.non) + "</div>" : "");
+  }
+
+  // Open the tab synchronously or the popup blocker eats it, then point it at
+  // the signed URL once it arrives.
+  function wireFileLinks() {
+    Array.prototype.forEach.call(app.querySelectorAll("[data-file]"), function (b) {
+      b.onclick = function () {
+        var w = window.open("", "_blank");
+        fileUrl(b.getAttribute("data-file")).then(function (j) {
+          if (w) w.location = j.url; else window.location = j.url;
+        }).catch(function (e) {
+          if (w) w.close();
+          note("err", esc(e.message));
+        });
+      };
+    });
+  }
+
+  // One request per image, and only ever on a single-response screen. Doing
+  // this on a 500-row table would be 500 round trips and hundreds of MB.
+  function wireThumbs() {
+    Array.prototype.forEach.call(app.querySelectorAll("[data-thumb]"), function (el) {
+      fileUrl(el.getAttribute("data-thumb")).then(function (j) {
+        var im = new Image();
+        im.className = "sigimg";
+        im.alt = "uploaded file";
+        im.onerror = function () { el.textContent = "(cannot preview this format)"; };
+        im.onload = function () { el.innerHTML = ""; el.appendChild(im); };
+        im.src = j.url;
+      }).catch(function () { el.textContent = "(could not load)"; });
+    });
+  }
+
   function chrome(inner, back) {
     return '<div class="bar"><h1>Konkret — Team</h1>' +
       '<span class="who">' + esc(ME.user) + "</span>" +
@@ -220,14 +278,7 @@ form.login button{width:100%}
 
   // =================================================== home
   function viewHome() {
-    // Approvals is added here rather than in the API's module list, so the
-    // large admin function did not have to be redeployed to ship this screen.
-    var mods0 = ME.moduleyo.slice();
-    if (!mods0.some(function (m) { return m.kle === "apwobasyon"; })) {
-      mods0.splice(1, 0, { kle: "apwobasyon", tit: "Approvals",
-        deskripsyon: "Two signatures before money moves", pare: true });
-    }
-    var mods = mods0.map(function (m) {
+    var mods = ME.moduleyo.map(function (m) {
       return '<button class="mod" data-go="' + m.kle + '"' + (m.pare?"":" disabled") + ">" +
         '<div class="t">' + esc(m.tit) + "</div><div class=\"d\">" + esc(m.deskripsyon) + "</div>" +
         (m.pare ? "" : '<div style="margin-top:8px"><span class="pill">not built yet</span></div>') +
@@ -355,6 +406,28 @@ form.login button{width:100%}
             : "") +
           (f.type === "signature"
             ? '<p class="mini">Drawn with a finger on the phone. Stored as an image on the response.</p>'
+            : "") +
+          (f.type === "file"
+            ? '<div class="row"><div><label>What may be uploaded</label>' +
+                '<select data-acc="' + si + "," + fi + '">' +
+                ['<option value="photo">Photos only</option>',
+                 '<option value="pdf">PDF only</option>',
+                 '<option value="any">Photos or PDF</option>'].join("")
+                  .replace('value="' + (f.accept || "any") + '"',
+                           'value="' + (f.accept || "any") + '" selected') +
+                "</select></div>" +
+              '<div><label>Size limit (MB, max 8)</label>' +
+                '<input type="number" min="1" max="8" data-mb="' + si + "," + fi +
+                '" value="' + (f.max_mb == null ? 5 : esc(f.max_mb)) + '"></div></div>' +
+              '<label class="inline" style="margin-bottom:12px"><input type="checkbox" data-cam="' +
+                si + "," + fi + '"' + (f.camera ? " checked" : "") +
+                "><span>Open the camera directly (no gallery)</span></label>" +
+              '<p class="mini">Uploaded straight from the phone into private storage. ' +
+                'Photos are shrunk to 1600px before sending, so a 4 MB phone photo goes over ' +
+                'the wire at about 300 KB. Nothing is stored on the phone.</p>' +
+              '<p class="mini" style="color:var(--bad)"><strong>Do not use this to collect a ' +
+                'photo of a national ID card. Identity documents are checked in person at ' +
+                'enrolment and are not stored here. Receipts and documents only.</strong></p>'
             : "") +
           (isChoice
             ? '<div style="margin-bottom:12px"><label>Options — one per line</label>' +
@@ -499,6 +572,16 @@ form.login button{width:100%}
     on("[data-cur]","oninput",function(el){
       var p = pair(el,"data-cur"); s.sections[p[0]].fields[p[1]].currency = el.value; });
 
+    // None of these re-render: they do not change the editor's shape, and a
+    // re-render on every keystroke of the MB box would fight the caret.
+    on("[data-acc]","onchange",function(el){
+      var p = pair(el,"data-acc"); s.sections[p[0]].fields[p[1]].accept = el.value; });
+    on("[data-mb]","oninput",function(el){
+      var p = pair(el,"data-mb");
+      s.sections[p[0]].fields[p[1]].max_mb = el.value === "" ? undefined : Number(el.value); });
+    on("[data-cam]","onchange",function(el){
+      var p = pair(el,"data-cam"); s.sections[p[0]].fields[p[1]].camera = el.checked; });
+
     // these change the shape, so they re-render
     on("[data-t]","onchange",function(el){
       var p = pair(el,"data-t"), f = s.sections[p[0]].fields[p[1]];
@@ -564,6 +647,8 @@ form.login button{width:100%}
         if (f.type !== "rating") { delete f.min; delete f.max; delete f.low; delete f.high; }
         else { if (!f.low) delete f.low; if (!f.high) delete f.high; }
         if (f.type !== "currency") delete f.currency;
+        if (f.type !== "file") { delete f.accept; delete f.max_mb; delete f.camera; }
+        else if (!f.camera) delete f.camera;
       });
     });
     if (clean.pass_mark == null) { delete clean.pass_mark; delete clean.pass_message; delete clean.fail_message; }
@@ -590,6 +675,8 @@ form.login button{width:100%}
     var rows = d.rows.map(function (r) {
       return "<tr>" + cols.map(function (c) {
         var v = r.repons[c.key];
+        // Without this an uploaded file renders as "[object Object]".
+        if (isFile(v)) return "<td>" + fileChip(v) + "</td>";
         if (Array.isArray(v)) v = v.join(", ");
         return "<td>" + esc(v === "" || v == null ? "—" : v) + "</td>";
       }).join("") +
@@ -608,15 +695,25 @@ form.login button{width:100%}
         ? '<div class="acts" style="margin-bottom:14px"><button class="alt" id="csv">Download CSV</button></div>' +
           '<div class="scroll"><table><thead><tr>' + head +
           (scored ? "<th>Score</th>" : "") + "<th>When</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
-          (d.fields.length > 8 ? '<p class="mini">Showing the first 8 fields. The CSV has all of them.</p>' : "")
+          (d.fields.length > 8 ? '<p class="mini">Showing the first 8 fields. The CSV has all of them.</p>' : "") +
+          (d.fields.some(function(f){ return f.type === "file"; })
+            ? '<p class="mini">Upload columns hold the storage path, not the file. ' +
+              'Use the buttons above to open one.</p>' : "")
         : '<div class="empty">No responses yet.</div>'), true);
     wire();
+    wireFileLinks();
     var c = document.getElementById("csv");
     if (c) c.onclick = function(){ downloadCsv(d); };
   }
 
   function downloadCsv(d) {
     function cell(v) {
+      // A file becomes its storage path. Not a signed URL — those die in 120
+      // seconds and a spreadsheet full of dead links is worse than none. Not a
+      // public URL either; that would undo the private bucket. The path is the
+      // stable identifier: paste it into the file route or the Storage
+      // browser and you have the file.
+      if (v && typeof v === "object" && !Array.isArray(v) && v.path) v = v.path;
       if (Array.isArray(v)) v = v.join("; ");
       v = v == null ? "" : String(v);
       return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
@@ -724,12 +821,23 @@ form.login button{width:100%}
 
   function viewSign(it) {
     var r = it.repons || {}, lab = it.etikt || {};
+    // This is the screen where a treasurer looks at a receipt before releasing
+    // money, so this one shows the actual image rather than a chip.
     var rows = Object.keys(r).map(function (k) {
       var v = r[k];
       if (v === "" || v == null) return "";
-      var shown = typeof v === "string" && v.indexOf("data:image/") === 0
-        ? '<img class="sigimg" src="' + esc(v) + '" alt="signature">'
-        : esc(Array.isArray(v) ? v.join(", ") : v);
+      var shown;
+      if (isFile(v)) {
+        shown = (/^image\//.test(v.kalite || "")
+          ? '<div data-thumb="' + esc(v.path) + '" style="color:var(--muted);font-size:13px">' +
+            "loading…</div>"
+          : "") +
+          '<div style="margin-top:6px">' + fileChip(v) + "</div>";
+      } else if (typeof v === "string" && v.indexOf("data:image/") === 0) {
+        shown = '<img class="sigimg" src="' + esc(v) + '" alt="signature">';
+      } else {
+        shown = esc(Array.isArray(v) ? v.join(", ") : v);
+      }
       return "<tr><th>" + esc(lab[k] || k) + "</th><td>" + shown + "</td></tr>";
     }).join("");
 
@@ -754,6 +862,8 @@ form.login button{width:100%}
         '<button class="alt danger" id="no">Reject</button>' +
         '<button class="alt" id="cancel" style="margin-left:auto">Cancel</button></div>', true);
     wire();
+    wireFileLinks();
+    wireThumbs();
 
     var pad = signaturePad(document.getElementById("pad"),
       document.getElementById("padwrap"), document.getElementById("padclear"));
