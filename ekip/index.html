@@ -85,6 +85,43 @@ button[disabled]{opacity:.5;cursor:not-allowed}
 .fldhead .n{font-size:12px;color:var(--muted);flex:1}
 .mini{font-size:12px;color:var(--muted);margin:-6px 0 10px}
 
+/* ---- approvals ---- */
+.item{background:var(--card);border:1px solid var(--line);border-radius:9px;
+ padding:15px;margin-bottom:12px}
+.item.mine{border-left:4px solid var(--ink)}
+.item h3{margin:0 0 3px;font-size:16px}
+.item .meta{color:var(--muted);font-size:13px;margin:0 0 10px}
+.facts{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 12px}
+.facts div{font-size:13px}
+.facts .k{color:var(--muted);display:block;font-size:11px;
+ text-transform:uppercase;letter-spacing:.04em}
+.facts .v{font-weight:700;font-size:15px}
+.chain{display:flex;gap:0;flex-wrap:wrap;margin:0 0 12px}
+.step{display:flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--line);
+ font-size:13px;background:var(--paper)}
+.step:first-child{border-radius:6px 0 0 6px}
+.step:last-child{border-radius:0 6px 6px 0}
+.step+.step{border-left:0}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.step.ok .dot{background:var(--ok)}
+.step.no .dot{background:var(--bad)}
+.step.now{border-color:var(--ink);font-weight:700;background:var(--card)}
+.step.now .dot{background:var(--warn)}
+.blocked{color:var(--muted);font-size:13px;font-style:italic}
+.sigpad{border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.sigpad.drawn{border-color:var(--ink)}
+canvas.pad{display:block;width:100%;height:140px;touch-action:none;cursor:crosshair}
+.padbar{display:flex;align-items:center;gap:10px;padding:7px 10px;
+ border-top:1px solid var(--line);background:var(--paper)}
+.padbar .lbl{flex:1;font-size:12px;color:var(--muted)}
+.kv{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px}
+.kv th{width:34%;text-align:left;padding:7px 10px 7px 0;font-weight:600;
+ background:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--muted);
+ vertical-align:top}
+.kv td{padding:7px 0;border-top:1px solid var(--line)}
+.kv th{border-top:1px solid var(--line)}
+.sigimg{max-width:220px;border:1px solid var(--line);border-radius:4px;background:#fff}
+
 .note{border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
 .note.err{background:#fdecec;border:1px solid var(--bad);color:var(--bad)}
 .note.ok{background:#e9f5ed;border:1px solid var(--ok);color:var(--ok)}
@@ -126,11 +163,12 @@ form.login button{width:100%}
 <script>
 (function () {
   var API  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
+  var APW  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/apwobasyon";
   var FORM = "https://konkret-haiti.com/f/?s=";
   var login = document.getElementById("login");
   var lerr  = document.getElementById("lerr");
   var app   = document.getElementById("app");
-  var TOKEN = null, ME = null, DRAFT = null;
+  var TOKEN = null, ME = null, DRAFT = null, APWDATA = null;
 
   // Ordered by how often the 25 Konkret Drive form specs actually use them.
   var TYPES = [
@@ -148,7 +186,8 @@ form.login button{width:100%}
     opts = opts || {};
     var h = { Authorization: "Basic " + TOKEN };
     if (opts.body) h["Content-Type"] = "application/json";
-    return fetch(API + (route ? "/" + route : ""), {
+    var base = opts.base || API;
+    return fetch(base + (route ? "/" + route : ""), {
       method: opts.method || "GET", headers: h,
       body: opts.body ? JSON.stringify(opts.body) : undefined
     }).then(function (r) {
@@ -181,7 +220,14 @@ form.login button{width:100%}
 
   // =================================================== home
   function viewHome() {
-    var mods = ME.moduleyo.map(function (m) {
+    // Approvals is added here rather than in the API's module list, so the
+    // large admin function did not have to be redeployed to ship this screen.
+    var mods0 = ME.moduleyo.slice();
+    if (!mods0.some(function (m) { return m.kle === "apwobasyon"; })) {
+      mods0.splice(1, 0, { kle: "apwobasyon", tit: "Approvals",
+        deskripsyon: "Two signatures before money moves", pare: true });
+    }
+    var mods = mods0.map(function (m) {
       return '<button class="mod" data-go="' + m.kle + '"' + (m.pare?"":" disabled") + ">" +
         '<div class="t">' + esc(m.tit) + "</div><div class=\"d\">" + esc(m.deskripsyon) + "</div>" +
         (m.pare ? "" : '<div style="margin-top:8px"><span class="pill">not built yet</span></div>') +
@@ -591,6 +637,192 @@ form.login button{width:100%}
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
 
+  // =================================================== approvals
+  // Two-signature control. The rules (sequence, separation of persons,
+  // finality) are enforced in Postgres — this screen only shows state and
+  // collects a signature. It cannot grant an approval the database refuses.
+
+  function money(v) {
+    if (v === "" || v == null) return null;
+    var n = Number(v);
+    return isNaN(n) ? String(v) : n.toLocaleString("en-US");
+  }
+
+  // Pull two or three headline facts out of an arbitrary response so the
+  // queue is readable without opening every item.
+  function headline(it) {
+    var r = it.repons || {}, out = [];
+    var name = r.non || r.non_jen || r.non_moun;
+    if (name) out.push(["Who", esc(name)]);
+    var amt = r.total_mande || r.montan_net || r.goud_touche;
+    if (amt != null && amt !== "") out.push(["Amount", money(amt) + " HTG"]);
+    var place = r.lokalite || r.sit || r.oganizasyon;
+    if (place) out.push(["Site", esc(place)]);
+    return out;
+  }
+
+  function chainHtml(it) {
+    return '<div class="chain">' + it.chenn.map(function (s) {
+      var cls = s.desizyon === "apwouve" ? "ok"
+              : s.desizyon === "refize" ? "no"
+              : (it.kounye && it.kounye.etap === s.etap ? "now" : "");
+      var by = s.desizyon === "tann" ? "waiting"
+             : (s.non || s.pa_ki_moun) + (s.desizyon === "refize" ? " · rejected" : "");
+      return '<div class="step ' + cls + '"><span class="dot"></span><span>' +
+        esc(s.tit) + '<br><span style="color:var(--muted);font-size:12px">' + esc(by) +
+        "</span></span></div>";
+    }).join("") + "</div>";
+  }
+
+  function itemCard(it, actionable) {
+    var facts = headline(it).map(function (f) {
+      return '<div><span class="k">' + f[0] + '</span><span class="v">' + f[1] + "</span></div>";
+    }).join("");
+    return '<div class="item' + (actionable ? " mine" : "") + '">' +
+      "<h3>" + esc(it.fom_tit) + "</h3>" +
+      '<p class="meta">' + esc(String(it.created_at).slice(0, 16).replace("T", " ")) + "</p>" +
+      (facts ? '<div class="facts">' + facts + "</div>" : "") +
+      chainHtml(it) +
+      (actionable
+        ? '<button class="go" data-sign="' + esc(it.repons_id) + '">Review &amp; sign</button>'
+        : it.poukisa_non
+          ? '<p class="blocked">' + esc(it.poukisa_non) + "</p>"
+          : "") +
+      "</div>";
+  }
+
+  function viewApw(d) {
+    APWDATA = d;
+    var mine = d.tann.filter(function (x) { return x.mwen_ka_siyen; });
+    var other = d.tann.filter(function (x) { return !x.mwen_ka_siyen; });
+
+    var body = '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">Approvals</h1>' +
+      '<p class="sub">Signed in as ' + esc(d.mwen.non) + " · roles: " +
+      (d.mwen.wol.length ? esc(d.mwen.wol.join(", ")) : "<em>none</em>") + "</p>";
+
+    body += "<h2>Waiting on you (" + mine.length + ")</h2>";
+    body += mine.length
+      ? mine.map(function (x) { return itemCard(x, true); }).join("")
+      : '<div class="empty">Nothing needs your signature.</div>';
+
+    if (other.length) {
+      body += "<h2>Waiting on someone else (" + other.length + ")</h2>";
+      body += other.map(function (x) { return itemCard(x, false); }).join("");
+    }
+    if (d.fini.length) {
+      body += "<h2>Decided (" + d.fini.length + ")</h2>";
+      body += d.fini.map(function (x) { return itemCard(x, false); }).join("");
+    }
+
+    app.innerHTML = chrome(body, true);
+    wire();
+    Array.prototype.forEach.call(app.querySelectorAll("[data-sign]"), function (b) {
+      b.onclick = function () { location.hash = "siyen/" + b.getAttribute("data-sign"); };
+    });
+  }
+
+  function viewSign(it) {
+    var r = it.repons || {}, lab = it.etikt || {};
+    var rows = Object.keys(r).map(function (k) {
+      var v = r[k];
+      if (v === "" || v == null) return "";
+      var shown = typeof v === "string" && v.indexOf("data:image/") === 0
+        ? '<img class="sigimg" src="' + esc(v) + '" alt="signature">'
+        : esc(Array.isArray(v) ? v.join(", ") : v);
+      return "<tr><th>" + esc(lab[k] || k) + "</th><td>" + shown + "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + esc(it.fom_tit) + "</h1>" +
+      '<p class="sub">Submitted ' + esc(String(it.created_at).slice(0, 16).replace("T", " ")) + "</p>" +
+      chainHtml(it) +
+      "<h2>What was submitted</h2><div class='scroll'><table class='kv'>" + rows + "</table></div>" +
+      "<h2>" + esc(it.kounye ? it.kounye.tit : "Sign") + "</h2>" +
+      '<div class="sec">' +
+        '<div class="row"><div><label for="s-non">Your name as it should appear</label>' +
+        '<input id="s-non" value="' + esc(APWDATA.mwen.non) + '"></div></div>' +
+        '<label>Signature</label>' +
+        '<div class="sigpad" id="padwrap"><canvas class="pad" id="pad"></canvas>' +
+        '<div class="padbar"><span class="lbl">Sign in the box</span>' +
+        '<button class="alt" type="button" id="padclear">Clear</button></div></div>' +
+        '<div class="row" style="margin-top:14px"><div><label for="s-not">Note (required if you reject)</label>' +
+        '<textarea id="s-not" rows="2"></textarea></div></div>' +
+      "</div>" +
+      '<div class="sticky"><button class="go" id="ok">Approve &amp; sign</button>' +
+        '<button class="alt danger" id="no">Reject</button>' +
+        '<button class="alt" id="cancel" style="margin-left:auto">Cancel</button></div>', true);
+    wire();
+
+    var pad = signaturePad(document.getElementById("pad"),
+      document.getElementById("padwrap"), document.getElementById("padclear"));
+
+    function act(desizyon) {
+      var sig = pad.value();
+      if (!sig) { note("err", "A signature is required."); return; }
+      var nt = document.getElementById("s-not").value.trim();
+      if (desizyon === "refize" && !nt) { note("err", "Say why you are rejecting it."); return; }
+      var ok = document.getElementById("ok"), no = document.getElementById("no");
+      ok.disabled = no.disabled = true;
+      ok.textContent = "Signing…";
+      api(it.repons_id, {
+        base: APW, method: "POST",
+        body: { desizyon: desizyon, non: document.getElementById("s-non").value.trim(),
+                siyati: sig, not_yo: nt }
+      }).then(function (res) {
+        sessionStorage.setItem("ekipmsg",
+          res.eta === "apwouve" ? "Approved. The chain is complete."
+          : res.eta === "refize" ? "Rejected. The chain is closed."
+          : "Signed. " + res.rete + " signature still needed.");
+        location.hash = "apwobasyon";
+      }).catch(function (e) {
+        ok.disabled = no.disabled = false;
+        ok.textContent = "Approve & sign";
+        note("err", esc(e.message));
+      });
+    }
+    document.getElementById("ok").onclick = function () { act("apwouve"); };
+    document.getElementById("no").onclick = function () { act("refize"); };
+    document.getElementById("cancel").onclick = function () { location.hash = "apwobasyon"; };
+  }
+
+  // small signature pad, same approach as the public form renderer
+  function signaturePad(cv, wrap, clearBtn) {
+    var ctx, drawing = false, dirty = false, val = "";
+    function size() {
+      var r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+      cv.width = Math.max(1, Math.round(r.width * dpr));
+      cv.height = Math.max(1, Math.round(r.height * dpr));
+      ctx = cv.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.strokeStyle = getComputedStyle(cv).color || "#12100e";
+    }
+    size();
+    function pt(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    cv.addEventListener("pointerdown", function (e) {
+      drawing = true; cv.setPointerCapture(e.pointerId);
+      var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault();
+    });
+    cv.addEventListener("pointermove", function (e) {
+      if (!drawing) return;
+      var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+      if (!dirty) { dirty = true; wrap.classList.add("drawn"); }
+      e.preventDefault();
+    });
+    function stop() { if (drawing) { drawing = false; if (dirty) val = cv.toDataURL("image/png"); } }
+    cv.addEventListener("pointerup", stop);
+    cv.addEventListener("pointercancel", stop);
+    cv.addEventListener("pointerleave", stop);
+    if (clearBtn) clearBtn.onclick = function () {
+      var r = cv.getBoundingClientRect();
+      ctx.clearRect(0, 0, r.width, r.height);
+      dirty = false; val = ""; wrap.classList.remove("drawn");
+    };
+    return { value: function () { return val; } };
+  }
+
   // =================================================== other modules
   function viewDok(d) {
     var body = "";
@@ -692,6 +924,30 @@ form.login button{width:100%}
     if (k === "repons" && arg) {
       loading();
       return api("repons/" + encodeURIComponent(arg)).then(viewRepons).catch(oops);
+    }
+    if (k === "apwobasyon") {
+      loading();
+      return api("", { base: APW }).then(function (d) {
+        viewApw(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "siyen" && arg) {
+      loading();
+      return api("", { base: APW }).then(function (d) {
+        APWDATA = d;
+        var all = d.tann.concat(d.fini);
+        var it = null;
+        for (var j = 0; j < all.length; j++) if (all[j].repons_id === arg) it = all[j];
+        if (!it) { location.hash = "apwobasyon"; return; }
+        if (!it.mwen_ka_siyen) {
+          note("err", it.poukisa_non || "You cannot sign this one.");
+          viewApw(d);
+          return;
+        }
+        viewSign(it);
+      }).catch(oops);
     }
 
     var V = { dok:viewDok, send0:viewSend0, pewol:viewTodo };
