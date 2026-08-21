@@ -1,26 +1,30 @@
 <!doctype html>
-<html lang="ht">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Konkret — Ekip</title>
+<title>Konkret — Team</title>
 <style>
-:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--ok:#1f6f3d;--bad:#8a1c1c;--muted:#6b645c;--card:#fff;--head:#efeae0}
+/* Admin is English. Forms the field sees stay Kreyòl. */
+:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--ok:#1f6f3d;--bad:#8a1c1c;
+ --warn:#7a5610;--muted:#6b645c;--card:#fff;--head:#efeae0}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
- font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:20px 14px 60px}
-.wrap{max-width:940px;margin:0 auto}
+ font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:20px 14px 80px}
+.wrap{max-width:1000px;margin:0 auto}
 a{color:inherit}
 h1{font-size:22px;margin:0 0 2px}
+h3{font-size:15px;margin:0 0 10px}
 .sub{color:var(--muted);font-size:13px;margin:0 0 22px}
-h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
  padding-bottom:6px;border-bottom:2px solid var(--ink)}
-.bar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:20px;
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;
  padding-bottom:12px;border-bottom:3px solid var(--ink)}
-.bar h1{flex:1 1 auto}
+.bar h1{flex:1 1 auto;font-size:20px}
 .who{font-size:13px;color:var(--muted)}
-.lnk{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;background:0;border:0;padding:0;font-family:inherit}
+.lnk{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;
+ background:0;border:0;padding:0;font-family:inherit}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
 .mod{display:block;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);
@@ -30,8 +34,6 @@ h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10
 .mod .d{color:var(--muted);font-size:13px}
 .mod[disabled]{opacity:.5;cursor:not-allowed}
 .mod[disabled]:hover{border-color:var(--line)}
-.tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;
- background:var(--head);border-radius:4px;padding:2px 6px;margin-top:8px;color:var(--muted)}
 
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
@@ -41,7 +43,7 @@ h2{font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10
 table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);
  border-radius:8px;overflow:hidden;font-size:14px}
 th{background:var(--head);text-align:left;padding:9px 10px;font-size:12px;
- text-transform:uppercase;letter-spacing:.04em}
+ text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
 .pass{color:var(--ok);font-weight:700}.fail{color:var(--bad);font-weight:700}
 .meter{height:8px;background:#e6dfd2;border-radius:4px;overflow:hidden;margin-top:5px}
@@ -49,34 +51,72 @@ td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
 .scroll{overflow-x:auto}
 .empty{background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:34px;
  text-align:center;color:var(--muted)}
-.pill{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--muted);
+ white-space:nowrap}
+.pill.live{border-color:var(--ok);color:var(--ok);font-weight:700}
+.pill.bouyon{border-color:var(--warn);color:var(--warn);font-weight:700}
+.pill.feme{opacity:.7}
+
+label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;
+ font-size:15px;font-family:inherit;background:var(--card);color:var(--ink)}
+textarea{resize:vertical;min-height:70px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.row>div{flex:1 1 190px}
+.row.tight>div{flex:0 0 auto}
+.inline{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
+.inline input{width:17px;height:17px;accent-color:var(--ink);margin:0}
+
+button.go{padding:11px 18px;background:var(--ink);color:var(--paper);border:0;border-radius:7px;
+ font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+button.alt{padding:9px 14px;background:var(--card);color:var(--ink);border:1px solid var(--line);
+ border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+button.alt:hover{border-color:var(--ink)}
+button.danger{color:var(--bad);border-color:var(--bad)}
+button[disabled]{opacity:.5;cursor:not-allowed}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.sec{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px;margin-bottom:14px}
+.sechead{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.sechead .n{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);flex:1}
+.fld{border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:6px;
+ padding:12px;margin-bottom:10px;background:var(--paper)}
+.fldhead{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.fldhead .n{font-size:12px;color:var(--muted);flex:1}
+.mini{font-size:12px;color:var(--muted);margin:-6px 0 10px}
+
+.note{border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
+.note.err{background:#fdecec;border:1px solid var(--bad);color:var(--bad)}
+.note.ok{background:#e9f5ed;border:1px solid var(--ok);color:var(--ok)}
+.note.warn{background:#fff6e0;border:1px solid var(--warn);color:var(--warn)}
+.sticky{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);
+ padding:12px 0;margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:13px}
 
 form.login{max-width:330px;margin:60px auto;background:var(--card);border:1px solid var(--line);
  border-radius:10px;padding:22px}
-label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
-input{width:100%;padding:11px;border:1px solid var(--line);border-radius:6px;
- font-size:16px;margin-bottom:13px;background:var(--card);color:var(--ink)}
-button.go{width:100%;padding:13px;background:var(--ink);color:var(--paper);border:0;
- border-radius:7px;font-size:16px;font-weight:700;cursor:pointer}
-.err{color:var(--bad);font-size:13px;font-weight:600;margin:0 0 12px}
+form.login input{margin-bottom:13px}
+form.login button{width:100%}
 [hidden]{display:none!important}
 @media(prefers-color-scheme:dark){
  :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e;--card:#1f1c16;--head:#2b271f}
- button.go{background:#f2ede4;color:#16140f}}
+ .fld{background:#16140f}
+ button.go{background:#f2ede4;color:#16140f}
+ .note.err{background:#2e1a1a}.note.ok{background:#16261b}.note.warn{background:#2b2312}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <form class="login" id="login">
-  <h1>Konkret — Ekip</h1>
-  <p class="sub">Zòn entèn</p>
-  <p class="err" id="lerr" hidden></p>
-  <label for="u">Non itilizatè</label>
+  <h1>Konkret — Team</h1>
+  <p class="sub">Internal area</p>
+  <p class="note err" id="lerr" hidden></p>
+  <label for="u">Username</label>
   <input type="text" id="u" autocomplete="username" required>
-  <label for="p">Modpas</label>
+  <label for="p">Password</label>
   <input type="password" id="p" autocomplete="current-password" required>
-  <button class="go" type="submit">Antre</button>
+  <button class="go" type="submit">Sign in</button>
 </form>
 
 <div id="app" hidden></div>
@@ -85,84 +125,451 @@ button.go{width:100%;padding:13px;background:var(--ink);color:var(--paper);borde
 
 <script>
 (function () {
-  var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
+  var API  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
+  var FORM = "https://konkret-haiti.com/f/?s=";
   var login = document.getElementById("login");
-  var lerr = document.getElementById("lerr");
-  var app = document.getElementById("app");
-  var TOKEN = null;
-  var ME = null;
+  var lerr  = document.getElementById("lerr");
+  var app   = document.getElementById("app");
+  var TOKEN = null, ME = null, DRAFT = null;
 
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
+  var TYPES = [
+    ["text","Short text"], ["textarea","Long text"], ["number","Number"],
+    ["date","Date"], ["tel","Phone"], ["select","Dropdown"],
+    ["radio","Choose one"], ["checkbox","Choose many"]
+  ];
+  var CHOICE = { select:1, radio:1, checkbox:1 };
 
-  function api(route) {
-    return fetch(API + (route ? "/" + route : ""), { headers: { Authorization: "Basic " + TOKEN } })
-      .then(function (r) {
-        if (r.status === 401) throw new Error("Non itilizatè oswa modpas la pa bon.");
-        return r.json().then(function (j) {
-          if (!r.ok) throw new Error(j.error || "Gen yon pwoblèm teknik.");
-          return j;
-        });
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function api(route, opts) {
+    opts = opts || {};
+    var h = { Authorization: "Basic " + TOKEN };
+    if (opts.body) h["Content-Type"] = "application/json";
+    return fetch(API + (route ? "/" + route : ""), {
+      method: opts.method || "GET", headers: h,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (r) {
+      if (r.status === 401) throw new Error("Wrong username or password.");
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j.error || "Something went wrong.");
+        return j;
       });
+    });
   }
 
   function chrome(inner, back) {
-    return '<div class="bar">' +
-      "<h1>Konkret — Ekip</h1>" +
+    return '<div class="bar"><h1>Konkret — Team</h1>' +
       '<span class="who">' + esc(ME.user) + "</span>" +
-      (back ? '<button class="lnk" id="back">← Tounen</button>' : "") +
-      '<button class="lnk" id="out">Soti</button>' +
-      "</div>" + inner;
+      (back ? '<button class="lnk" id="back">← Back</button>' : "") +
+      '<button class="lnk" id="out">Sign out</button></div>' + inner;
   }
-
-  function wire(onBack) {
+  function wire() {
     var o = document.getElementById("out");
-    if (o) o.onclick = function () { sessionStorage.removeItem("ekip"); location.hash = ""; location.reload(); };
+    if (o) o.onclick = function(){ sessionStorage.removeItem("ekip"); location.hash=""; location.reload(); };
     var b = document.getElementById("back");
-    if (b) b.onclick = function () { location.hash = ""; };
+    if (b) b.onclick = function(){ history.length > 1 ? history.back() : (location.hash = ""); };
+  }
+  function note(cls, msg) {
+    var n = document.getElementById("note");
+    if (!n) return;
+    n.className = "note " + cls; n.innerHTML = msg; n.hidden = false;
+    window.scrollTo(0,0);
   }
 
-  // ---- module renderers. Add one function + one ROUTES entry per module. ----
-
+  // =================================================== home
   function viewHome() {
     var mods = ME.moduleyo.map(function (m) {
-      return '<button class="mod" data-go="' + m.kle + '"' + (m.pare ? "" : " disabled") + ">" +
-        '<div class="t">' + esc(m.tit) + "</div>" +
-        '<div class="d">' + esc(m.deskripsyon) + "</div>" +
-        (m.pare ? "" : '<div class="tag">poko bati</div>') +
+      return '<button class="mod" data-go="' + m.kle + '"' + (m.pare?"":" disabled") + ">" +
+        '<div class="t">' + esc(m.tit) + "</div><div class=\"d\">" + esc(m.deskripsyon) + "</div>" +
+        (m.pare ? "" : '<div style="margin-top:8px"><span class="pill">not built yet</span></div>') +
         "</button>";
     }).join("");
-    app.innerHTML = chrome('<p class="sub">Zòn entèn · chwazi yon modil</p><div class="grid">' + mods + "</div>", false);
+    app.innerHTML = chrome('<p class="sub">Pick a module</p><div class="grid">' + mods + "</div>", false);
     wire();
     Array.prototype.forEach.call(app.querySelectorAll("[data-go]"), function (b) {
-      b.onclick = function () { location.hash = b.getAttribute("data-go"); };
+      b.onclick = function(){ location.hash = b.getAttribute("data-go"); };
     });
   }
 
+  // =================================================== forms list
+  function viewFomList(d) {
+    var rows = d.fom.map(function (f) {
+      return "<tr><td><strong>" + esc(f.tit) + "</strong>" +
+        (f.deskripsyon ? '<div style="color:var(--muted);font-size:13px">' + esc(f.deskripsyon) + "</div>" : "") +
+        '<div style="margin-top:4px"><code>' + esc(f.slug) + "</code></div></td>" +
+        '<td><span class="pill ' + esc(f.eta) + '">' + ({bouyon:"DRAFT",live:"LIVE",feme:"CLOSED"}[f.eta]||f.eta) + "</span></td>" +
+        "<td>" + f.seksyon + " / " + f.chan + "</td>" +
+        "<td><strong>" + f.repons + "</strong></td>" +
+        '<td class="acts">' +
+          '<button class="alt" data-edit="' + esc(f.slug) + '">Edit</button>' +
+          '<button class="alt" data-resp="' + esc(f.slug) + '">Responses</button>' +
+          '<a class="alt" style="text-decoration:none" href="' + FORM + esc(f.slug) + '" target="_blank" rel="noopener">Open</a>' +
+        "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<div class="acts" style="margin-bottom:16px"><h1 style="flex:1;font-size:19px;margin:0">Forms</h1>' +
+      '<button class="go" id="new">+ New form</button></div>' +
+      (d.fom.length
+        ? '<div class="scroll"><table><thead><tr><th>Form</th><th>Status</th><th>Sec / fields</th>' +
+          "<th>Responses</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        : '<div class="empty">No forms yet. Create the first one.</div>'), true);
+    wire();
+    document.getElementById("new").onclick = function(){ location.hash = "fom/new"; };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-edit]"), function (b) {
+      b.onclick = function(){ location.hash = "fom/" + b.getAttribute("data-edit"); };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-resp]"), function (b) {
+      b.onclick = function(){ location.hash = "repons/" + b.getAttribute("data-resp"); };
+    });
+  }
+
+  // =================================================== the builder
+  function blankField(){ return { key:"", type:"text", label:"", required:false, options:[] }; }
+  function blankSection(){ return { legend:"", hint:"", fields:[blankField()] }; }
+
+  function slugify(s) {
+    return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+      .replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,40) || "";
+  }
+  function optsToText(o) {
+    return (o||[]).map(function(x){ return x.v + "|" + x.t; }).join("\n");
+  }
+  // One option per line. "value|text", or just text and we assign a,b,c…
+  function textToOpts(t) {
+    var letters = "abcdefghijklmnopqrstuvwxyz";
+    return String(t||"").split("\n").map(function(l){ return l.trim(); }).filter(Boolean)
+      .map(function (l, i) {
+        var p = l.indexOf("|");
+        if (p > 0) return { v: l.slice(0,p).trim(), t: l.slice(p+1).trim() };
+        return { v: letters[i] || ("o" + i), t: l };
+      });
+  }
+
+  function viewBuilder() {
+    var d = DRAFT;
+    var s = d.schema;
+    var scored = 0;
+    s.sections.forEach(function(sec){ sec.fields.forEach(function(f){ if (f.answer !== undefined) scored++; }); });
+
+    var secHtml = s.sections.map(function (sec, si) {
+      var fields = sec.fields.map(function (f, fi) {
+        var isChoice = !!CHOICE[f.type];
+        var ans = "";
+        if (isChoice) {
+          if (f.type === "checkbox") {
+            ans = '<div style="margin-bottom:12px"><label>Correct answers (leave all unticked for no scoring)</label>' +
+              (f.options||[]).map(function (o) {
+                var on = Array.isArray(f.answer) && f.answer.indexOf(o.v) >= 0;
+                return '<label class="inline" style="margin-bottom:5px"><input type="checkbox" data-ans="' +
+                  si + "," + fi + '" value="' + esc(o.v) + '"' + (on?" checked":"") + "><span>" +
+                  esc(o.t) + "</span></label>";
+              }).join("") + "</div>";
+          } else {
+            ans = '<div style="margin-bottom:12px"><label>Correct answer</label><select data-ans="' + si + "," + fi + '">' +
+              '<option value="">— no scoring —</option>' +
+              (f.options||[]).map(function (o) {
+                return '<option value="' + esc(o.v) + '"' + (f.answer === o.v ? " selected":"") + ">" +
+                  esc(o.t) + "</option>"; }).join("") + "</select></div>";
+          }
+        }
+        return '<div class="fld">' +
+          '<div class="fldhead"><span class="n">Field ' + (fi+1) + "</span>" +
+            '<button class="alt" data-fup="' + si + "," + fi + '"' + (fi===0?" disabled":"") + ">↑</button>" +
+            '<button class="alt" data-fdn="' + si + "," + fi + '"' + (fi===sec.fields.length-1?" disabled":"") + ">↓</button>" +
+            '<button class="alt danger" data-fdel="' + si + "," + fi + '">Remove</button></div>' +
+          '<div class="row"><div><label>Type</label><select data-t="' + si + "," + fi + '">' +
+            TYPES.map(function(t){ return '<option value="'+t[0]+'"'+(f.type===t[0]?" selected":"")+">"+t[1]+"</option>"; }).join("") +
+          "</select></div>" +
+          '<div><label>Label</label><input data-l="' + si + "," + fi + '" value="' + esc(f.label) + '"></div>' +
+          '<div><label>Key (column name)</label><input data-k="' + si + "," + fi + '" value="' + esc(f.key) + '"></div>' +
+          "</div>" +
+          '<label class="inline" style="margin-bottom:12px"><input type="checkbox" data-r="' + si + "," + fi + '"' +
+            (f.required?" checked":"") + "><span>Required</span></label>" +
+          (isChoice
+            ? '<div style="margin-bottom:12px"><label>Options — one per line</label>' +
+              '<p class="mini">Plain text gets values a, b, c… Use <code>value|text</code> to set your own.</p>' +
+              '<textarea data-o="' + si + "," + fi + '" rows="' + Math.max(3,(f.options||[]).length) + '">' +
+              esc(optsToText(f.options)) + "</textarea></div>" + ans
+            : "") +
+        "</div>";
+      }).join("");
+
+      return '<div class="sec"><div class="sechead"><span class="n">Section ' + (si+1) + "</span>" +
+        '<button class="alt" data-sup="' + si + '"' + (si===0?" disabled":"") + ">↑</button>" +
+        '<button class="alt" data-sdn="' + si + '"' + (si===s.sections.length-1?" disabled":"") + ">↓</button>" +
+        '<button class="alt danger" data-sdel="' + si + '">Remove section</button></div>' +
+        '<div class="row"><div><label>Heading</label><input data-sl="' + si + '" value="' + esc(sec.legend||"") + '"></div>' +
+        '<div><label>Hint (optional)</label><input data-sh="' + si + '" value="' + esc(sec.hint||"") + '"></div></div>' +
+        fields +
+        '<button class="alt" data-fadd="' + si + '">+ Add field</button></div>';
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + (d.isNew ? "New form" : "Edit form") + "</h1>" +
+      '<p class="sub">' + (d.isNew ? "Nothing is saved until you press Save." :
+        'Live at <code>' + FORM + esc(d.slug) + "</code>") + "</p>" +
+
+      '<div class="sec"><h3>Basics</h3>' +
+        '<div class="row"><div><label>Title (shown to the person filling it in)</label>' +
+          '<input id="m-tit" value="' + esc(d.tit) + '"></div>' +
+        '<div><label>URL slug</label><input id="m-slug" value="' + esc(d.slug) + '">' +
+          '<p class="mini">konkret-haiti.com/f/?s=<span id="slugecho">' + esc(d.slug) + "</span></p></div></div>" +
+        '<div class="row"><div><label>Internal note (team only)</label>' +
+          '<input id="m-desc" value="' + esc(d.deskripsyon||"") + '"></div>' +
+        '<div><label>Status</label><select id="m-eta">' +
+          ['<option value="bouyon">Draft — nobody can submit</option>',
+           '<option value="live">Live — accepting responses</option>',
+           '<option value="feme">Closed — keeps its data</option>'].join("").replace('value="'+d.eta+'"','value="'+d.eta+'" selected') +
+        "</select></div></div>" +
+        '<div class="row"><div><label>Subtitle under the title (optional)</label>' +
+          '<input id="m-sub" value="' + esc(s.subtitle||"") + '"></div>' +
+        '<div><label>Submit button text</label><input id="m-btn" value="' + esc(s.submit_label||"Voye") + '"></div></div>' +
+      "</div>" +
+
+      "<h2>Questions</h2>" + secHtml +
+      '<button class="alt" id="secadd">+ Add section</button>' +
+
+      '<h2>Scoring</h2><div class="sec">' +
+        (scored
+          ? '<div class="row"><div><label>Pass mark (out of ' + scored + ' scored question' + (scored===1?"":"s") + ')</label>' +
+            '<input type="number" id="m-pass" min="0" max="' + scored + '" value="' +
+              (s.pass_mark == null ? "" : s.pass_mark) + '"><p class="mini">Leave empty for no scoring.</p></div></div>' +
+            '<div class="row"><div><label>Message when they pass</label><input id="m-passmsg" value="' + esc(s.pass_message||"") + '"></div>' +
+            '<div><label>Message when they fail</label><input id="m-failmsg" value="' + esc(s.fail_message||"") + '"></div></div>'
+          : '<p class="mini" style="margin:0">No question has a correct answer set, so this form is not scored. ' +
+            "Set a correct answer on a Choose one / Choose many question to enable scoring.</p>") +
+        '<div class="row" style="margin-top:12px"><div><label>Thank-you message (unscored forms)</label>' +
+          '<input id="m-okmsg" value="' + esc(s.success_message||"") + '"></div></div>' +
+      "</div>" +
+
+      '<div class="sticky"><button class="go" id="save">Save</button>' +
+        '<button class="alt" id="cancel">Cancel</button>' +
+        (d.isNew ? "" : '<a class="alt" style="text-decoration:none;margin-left:auto" href="' +
+          FORM + esc(d.slug) + '" target="_blank" rel="noopener">Preview →</a>') +
+      "</div>", true);
+    wire();
+    bindBuilder();
+  }
+
+  function pair(el, at) { return el.getAttribute(at).split(",").map(Number); }
+
+  function bindBuilder() {
+    var s = DRAFT.schema;
+    function on(sel, ev, fn) {
+      Array.prototype.forEach.call(app.querySelectorAll(sel), function (el) { el[ev] = function(){ fn(el); }; });
+    }
+    // meta
+    var slugIn = document.getElementById("m-slug");
+    document.getElementById("m-tit").oninput = function (e) {
+      DRAFT.tit = e.target.value;
+      if (DRAFT.isNew && !DRAFT.slugTouched) {
+        DRAFT.slug = slugify(e.target.value).replace(/_/g,"-");
+        slugIn.value = DRAFT.slug;
+        document.getElementById("slugecho").textContent = DRAFT.slug;
+      }
+    };
+    slugIn.oninput = function (e) {
+      DRAFT.slugTouched = true;
+      DRAFT.slug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"-");
+      e.target.value = DRAFT.slug;
+      document.getElementById("slugecho").textContent = DRAFT.slug;
+    };
+    document.getElementById("m-desc").oninput = function(e){ DRAFT.deskripsyon = e.target.value; };
+    document.getElementById("m-eta").onchange  = function(e){ DRAFT.eta = e.target.value; };
+    document.getElementById("m-sub").oninput   = function(e){ s.subtitle = e.target.value; };
+    document.getElementById("m-btn").oninput   = function(e){ s.submit_label = e.target.value; };
+    var okm = document.getElementById("m-okmsg");
+    if (okm) okm.oninput = function(e){ s.success_message = e.target.value; };
+    var pm = document.getElementById("m-pass");
+    if (pm) pm.oninput = function(e){ s.pass_mark = e.target.value === "" ? undefined : Number(e.target.value); };
+    var pmsg = document.getElementById("m-passmsg");
+    if (pmsg) pmsg.oninput = function(e){ s.pass_message = e.target.value; };
+    var fmsg = document.getElementById("m-failmsg");
+    if (fmsg) fmsg.oninput = function(e){ s.fail_message = e.target.value; };
+
+    // section text
+    on("[data-sl]","oninput",function(el){ s.sections[+el.getAttribute("data-sl")].legend = el.value; });
+    on("[data-sh]","oninput",function(el){ s.sections[+el.getAttribute("data-sh")].hint = el.value; });
+
+    // field text — no re-render on keystroke, or the caret jumps
+    on("[data-l]","oninput",function(el){
+      var p = pair(el,"data-l"), f = s.sections[p[0]].fields[p[1]];
+      f.label = el.value;
+      if (!f.keyTouched && !f.key) {
+        f.key = slugify(el.value);
+        var k = app.querySelector('[data-k="'+p[0]+","+p[1]+'"]');
+        if (k) k.value = f.key;
+      }
+    });
+    on("[data-k]","oninput",function(el){
+      var p = pair(el,"data-k"), f = s.sections[p[0]].fields[p[1]];
+      f.keyTouched = true;
+      f.key = el.value.toLowerCase().replace(/[^a-z0-9_]/g,"_");
+      el.value = f.key;
+    });
+    on("[data-r]","onchange",function(el){
+      var p = pair(el,"data-r"); s.sections[p[0]].fields[p[1]].required = el.checked; });
+    on("[data-o]","oninput",function(el){
+      var p = pair(el,"data-o"); s.sections[p[0]].fields[p[1]].options = textToOpts(el.value); });
+
+    // these change the shape, so they re-render
+    on("[data-t]","onchange",function(el){
+      var p = pair(el,"data-t"), f = s.sections[p[0]].fields[p[1]];
+      f.type = el.value;
+      if (!CHOICE[f.type]) { f.options = []; delete f.answer; }
+      else if (f.type === "checkbox" && f.answer !== undefined && !Array.isArray(f.answer)) f.answer = [f.answer];
+      else if (f.type !== "checkbox" && Array.isArray(f.answer)) f.answer = f.answer[0];
+      viewBuilder();
+    });
+    on("[data-ans]","onchange",function(el){
+      var p = pair(el,"data-ans"), f = s.sections[p[0]].fields[p[1]];
+      if (f.type === "checkbox") {
+        var picked = [];
+        Array.prototype.forEach.call(app.querySelectorAll('[data-ans="'+p[0]+","+p[1]+'"]'), function (c) {
+          if (c.checked) picked.push(c.value);
+        });
+        if (picked.length) f.answer = picked; else delete f.answer;
+      } else {
+        if (el.value) f.answer = el.value; else delete f.answer;
+      }
+      viewBuilder();
+    });
+
+    on("[data-fadd]","onclick",function(el){
+      s.sections[+el.getAttribute("data-fadd")].fields.push(blankField()); viewBuilder(); });
+    on("[data-fdel]","onclick",function(el){
+      var p = pair(el,"data-fdel"), sec = s.sections[p[0]];
+      if (sec.fields.length === 1) { note("err","A section needs at least one field."); return; }
+      sec.fields.splice(p[1],1); viewBuilder(); });
+    on("[data-fup]","onclick",function(el){
+      var p = pair(el,"data-fup"), a = s.sections[p[0]].fields;
+      a.splice(p[1]-1,0,a.splice(p[1],1)[0]); viewBuilder(); });
+    on("[data-fdn]","onclick",function(el){
+      var p = pair(el,"data-fdn"), a = s.sections[p[0]].fields;
+      a.splice(p[1]+1,0,a.splice(p[1],1)[0]); viewBuilder(); });
+
+    on("[data-sdel]","onclick",function(el){
+      if (s.sections.length === 1) { note("err","A form needs at least one section."); return; }
+      s.sections.splice(+el.getAttribute("data-sdel"),1); viewBuilder(); });
+    on("[data-sup]","onclick",function(el){
+      var i = +el.getAttribute("data-sup");
+      s.sections.splice(i-1,0,s.sections.splice(i,1)[0]); viewBuilder(); });
+    on("[data-sdn]","onclick",function(el){
+      var i = +el.getAttribute("data-sdn");
+      s.sections.splice(i+1,0,s.sections.splice(i,1)[0]); viewBuilder(); });
+
+    document.getElementById("secadd").onclick = function(){ s.sections.push(blankSection()); viewBuilder(); };
+    document.getElementById("cancel").onclick = function(){ location.hash = "fom"; };
+    document.getElementById("save").onclick = save;
+  }
+
+  function save() {
+    var btn = document.getElementById("save");
+    btn.disabled = true; btn.textContent = "Saving…";
+    var d = DRAFT;
+    var clean = JSON.parse(JSON.stringify(d.schema));
+    clean.sections.forEach(function (sec) {
+      if (!sec.hint) delete sec.hint;
+      sec.fields.forEach(function (f) { delete f.keyTouched; if (!f.required) delete f.required; });
+    });
+    if (clean.pass_mark == null) { delete clean.pass_mark; delete clean.pass_message; delete clean.fail_message; }
+
+    var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, eta:d.eta, schema:clean };
+    api(d.isNew ? "fom" : "fom/" + d.originalSlug, { method: d.isNew ? "POST" : "PUT", body: body })
+      .then(function () {
+        sessionStorage.setItem("ekipmsg", "Saved. " +
+          (d.eta === "live" ? "The form is live at " + FORM + d.slug : "Still a draft — nobody can submit yet."));
+        location.hash = "fom";
+        if ((location.hash || "") === "#fom") route();
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.textContent = "Save";
+        note("err", esc(e.message));
+      });
+  }
+
+  // =================================================== responses
+  function viewRepons(d) {
+    var cols = d.fields.slice(0, 8);
+    var scored = d.rows.length && d.rows[0].esko != null;
+    var head = cols.map(function(c){ return "<th>" + esc(c.label) + "</th>"; }).join("");
+    var rows = d.rows.map(function (r) {
+      return "<tr>" + cols.map(function (c) {
+        var v = r.repons[c.key];
+        if (Array.isArray(v)) v = v.join(", ");
+        return "<td>" + esc(v === "" || v == null ? "—" : v) + "</td>";
+      }).join("") +
+      (scored ? '<td style="text-align:center"><span class="' + (r.pase?"pass":"fail") + '">' +
+        r.esko + "/" + r.total + "</span></td>" : "") +
+      '<td style="white-space:nowrap;color:var(--muted);font-size:13px">' +
+        esc(String(r.created_at).slice(0,16).replace("T"," ")) + "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + esc(d.tit) + "</h1>" +
+      '<p class="sub">' + d.rows.length + " response" + (d.rows.length===1?"":"s") +
+        ' · <code>' + esc(d.slug) + "</code></p>" +
+      (d.rows.length
+        ? '<div class="acts" style="margin-bottom:14px"><button class="alt" id="csv">Download CSV</button></div>' +
+          '<div class="scroll"><table><thead><tr>' + head +
+          (scored ? "<th>Score</th>" : "") + "<th>When</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+          (d.fields.length > 8 ? '<p class="mini">Showing the first 8 fields. The CSV has all of them.</p>' : "")
+        : '<div class="empty">No responses yet.</div>'), true);
+    wire();
+    var c = document.getElementById("csv");
+    if (c) c.onclick = function(){ downloadCsv(d); };
+  }
+
+  function downloadCsv(d) {
+    function cell(v) {
+      if (Array.isArray(v)) v = v.join("; ");
+      v = v == null ? "" : String(v);
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+    }
+    var head = d.fields.map(function(f){ return cell(f.label); });
+    head.push("score","passed","when");
+    var lines = [head.join(",")];
+    d.rows.forEach(function (r) {
+      var line = d.fields.map(function(f){ return cell(r.repons[f.key]); });
+      line.push(cell(r.esko), cell(r.pase), cell(r.created_at));
+      lines.push(line.join(","));
+    });
+    var blob = new Blob(["﻿" + lines.join("\r\n")], { type:"text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = d.slug + "-responses.csv";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  // =================================================== other modules
   function viewDok(d) {
     var body = "";
     Object.keys(d.kategori).forEach(function (k) {
       body += "<h2>" + esc(k) + "</h2><div class='scroll'><table><thead><tr>" +
-        "<th>Dokiman</th><th>Lang</th><th>Vèsyon</th></tr></thead><tbody>" +
+        "<th>Document</th><th>Lang</th><th>Version</th></tr></thead><tbody>" +
         d.kategori[k].map(function (r) {
           return "<tr><td><a href='" + esc(r.url) + "' target='_blank' rel='noopener'><strong>" +
             esc(r.tit) + "</strong></a>" +
             (r.deskripsyon ? "<div style='color:var(--muted);font-size:13px'>" + esc(r.deskripsyon) + "</div>" : "") +
-            "</td><td><span class='pill'>" + esc(r.lang) + "</span></td><td>" + esc(r.vesyon || "—") + "</td></tr>";
+            "</td><td><span class='pill'>" + esc(r.lang) + "</span></td><td>" + esc(r.vesyon||"—") + "</td></tr>";
         }).join("") + "</tbody></table></div>";
     });
-    if (!d.total) body = '<div class="empty">Pa gen dokiman anrejistre.</div>';
-    app.innerHTML = chrome("<h1 style='font-size:19px;margin:0 0 2px'>Dokiman</h1>" +
-      "<p class='sub'>Ki vèsyon ki alajè · " + d.total + " dokiman</p>" + body, true);
+    if (!d.total) body = '<div class="empty">No documents registered.</div>';
+    app.innerHTML = chrome('<h1 style="font-size:19px;margin:0 0 2px">Documents</h1>' +
+      '<p class="sub">Which version is current · ' + d.total + " document" + (d.total===1?"":"s") + "</p>" + body, true);
     wire();
   }
 
   function viewSend0(d) {
     if (!d.total) {
-      app.innerHTML = chrome("<p class='sub'>Send 0 — Rezilta</p><div class='empty'>Pa gen okenn repons pou kounye a.</div>", true);
+      app.innerHTML = chrome("<h1 style='font-size:19px'>Send 0 results</h1>" +
+        "<div class='empty'>No responses yet.</div>", true);
       wire(); return;
     }
     var miss = d.miss.map(function (m) {
@@ -171,50 +578,82 @@ button.go{width:100%;padding:13px;background:var(--ink);color:var(--paper);borde
         "<br><span style='color:var(--muted);font-size:12px'>" + m.pct + "%</span></td></tr>";
     }).join("");
     var subs = d.rows.map(function (r) {
-      return "<tr><td>" + esc(r.non) + "</td><td>" + esc(r.kominote) + "</td><td>" + esc(r.telefon || "—") +
-        "</td><td style='text-align:center'><span class='" + (r.pase ? "pass" : "fail") + "'>" + r.esko +
+      return "<tr><td>" + esc(r.non) + "</td><td>" + esc(r.kominote) + "</td><td>" + esc(r.telefon||"—") +
+        "</td><td style='text-align:center'><span class='" + (r.pase?"pass":"fail") + "'>" + r.esko +
         "/5</span></td><td style='text-align:center'>" +
-        (r.pase ? "<span class='pass'>PASE</span>" : "<span class='fail'>PA PASE</span>") +
+        (r.pase ? "<span class='pass'>PASSED</span>" : "<span class='fail'>FAILED</span>") +
         "</td><td style='white-space:nowrap;color:var(--muted);font-size:13px'>" +
-        esc(String(r.created_at).slice(0, 16).replace("T", " ")) + "</td></tr>";
+        esc(String(r.created_at).slice(0,16).replace("T"," ")) + "</td></tr>";
     }).join("");
     app.innerHTML = chrome(
-      "<h1 style='font-size:19px;margin:0 0 2px'>Send 0 — Rezilta</h1>" +
-      "<p class='sub'>Pòt konpreyansyon an</p>" +
+      "<h1 style='font-size:19px;margin:0 0 2px'>Send 0 results</h1>" +
+      "<p class='sub'>The comprehension gate</p>" +
       '<div class="cards">' +
-        '<div class="card"><div class="n">' + d.total + '</div><div class="l">Repons</div></div>' +
-        '<div class="card"><div class="n">' + d.passed + '</div><div class="l">Pase</div></div>' +
-        '<div class="card"><div class="n">' + d.rate + '%</div><div class="l">To reyisit</div></div>' +
-        '<div class="card"><div class="n">' + (d.avg == null ? "—" : d.avg) + '</div><div class="l">Eskò mwayen</div></div>' +
-      "</div>" +
-      "<h2>Kesyon moun yo rate plis</h2><div class='scroll'><table><thead><tr><th>Kesyon</th>" +
-      "<th style='text-align:right'>Rate</th></tr></thead><tbody>" + miss + "</tbody></table></div>" +
-      "<h2>Tout repons yo</h2><div class='scroll'><table><thead><tr><th>Non</th><th>Kominote</th>" +
-      "<th>Telefòn</th><th style='text-align:center'>Eskò</th><th style='text-align:center'>Rezilta</th>" +
-      "<th>Dat</th></tr></thead><tbody>" + subs + "</tbody></table></div>", true);
+        '<div class="card"><div class="n">' + d.total + '</div><div class="l">Responses</div></div>' +
+        '<div class="card"><div class="n">' + d.passed + '</div><div class="l">Passed</div></div>' +
+        '<div class="card"><div class="n">' + d.rate + '%</div><div class="l">Pass rate</div></div>' +
+        '<div class="card"><div class="n">' + (d.avg==null?"—":d.avg) + '</div><div class="l">Average</div></div>' +
+      "</div><h2>Most missed questions</h2><div class='scroll'><table><thead><tr><th>Question</th>" +
+      "<th style='text-align:right'>Missed</th></tr></thead><tbody>" + miss + "</tbody></table></div>" +
+      "<h2>All responses</h2><div class='scroll'><table><thead><tr><th>Name</th><th>Community</th>" +
+      "<th>Phone</th><th style='text-align:center'>Score</th><th style='text-align:center'>Result</th>" +
+      "<th>When</th></tr></thead><tbody>" + subs + "</tbody></table></div>", true);
     wire();
   }
 
   function viewTodo(d) {
-    app.innerHTML = chrome('<div class="empty">' + esc(d.mesaj || "Poko bati.") + "</div>", true);
+    app.innerHTML = chrome('<div class="empty">' + esc(d.mesaj||"Not built yet.") + "</div>", true);
     wire();
   }
 
-  var VIEWS = { dok: viewDok, send0: viewSend0, rapo: viewTodo, pewol: viewTodo };
-
-  // ---------------------------------------------------------------------
+  // =================================================== routing
+  function loading() {
+    app.innerHTML = chrome('<div class="empty">Loading…</div>', true); wire();
+  }
+  function oops(e) {
+    app.innerHTML = chrome('<div id="note" hidden></div><div class="empty">' + esc(e.message) + "</div>", true);
+    wire();
+  }
 
   function route() {
-    var k = location.hash.replace(/^#/, "");
-    if (!k) { viewHome(); return; }
-    var render = VIEWS[k];
-    if (!render) { location.hash = ""; return; }
-    app.innerHTML = chrome('<div class="empty">N ap chaje…</div>', true);
-    wire();
-    api(k).then(render).catch(function (e) {
-      app.innerHTML = chrome('<div class="empty">' + esc(e.message) + "</div>", true);
-      wire();
-    });
+    var h = location.hash.replace(/^#/,"");
+    var parts = h.split("/");
+    var k = parts[0], arg = parts[1];
+
+    if (!k) return viewHome();
+
+    if (k === "fom" && arg === "new") {
+      DRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"", eta:"bouyon",
+                schema:{ subtitle:"", submit_label:"Voye", sections:[blankSection()] } };
+      return viewBuilder();
+    }
+    if (k === "fom" && arg) {
+      loading();
+      return api("fom/" + encodeURIComponent(arg)).then(function (f) {
+        DRAFT = { isNew:false, slug:f.slug, originalSlug:f.slug, tit:f.tit,
+                  deskripsyon:f.deskripsyon||"", eta:f.eta, slugTouched:true,
+                  schema: Object.assign({ sections:[blankSection()] }, f.schema) };
+        DRAFT.schema.sections.forEach(function(s){ s.fields.forEach(function(x){ x.options = x.options||[]; }); });
+        viewBuilder();
+      }).catch(oops);
+    }
+    if (k === "fom") {
+      loading();
+      return api("fom").then(function (d) {
+        viewFomList(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "repons" && arg) {
+      loading();
+      return api("repons/" + encodeURIComponent(arg)).then(viewRepons).catch(oops);
+    }
+
+    var V = { dok:viewDok, send0:viewSend0, pewol:viewTodo };
+    if (!V[k]) { location.hash = ""; return; }
+    loading();
+    api(k).then(V[k]).catch(oops);
   }
 
   function start(token, me) {
@@ -228,20 +667,15 @@ button.go{width:100%;padding:13px;background:var(--ink);color:var(--paper);borde
     e.preventDefault();
     lerr.hidden = true;
     TOKEN = btoa(document.getElementById("u").value + ":" + document.getElementById("p").value);
-    api("").then(function (me) {
-      sessionStorage.setItem("ekip", TOKEN);
-      start(TOKEN, me);
-    }).catch(function (err) {
-      TOKEN = null;
-      lerr.textContent = err.message; lerr.hidden = false;
-    });
+    api("").then(function (me) { sessionStorage.setItem("ekip", TOKEN); start(TOKEN, me); })
+      .catch(function (err) { TOKEN = null; lerr.textContent = err.message; lerr.hidden = false; });
   });
 
   var saved = sessionStorage.getItem("ekip");
   if (saved) {
     TOKEN = saved;
-    api("").then(function (me) { start(saved, me); })
-      .catch(function () { TOKEN = null; sessionStorage.removeItem("ekip"); });
+    api("").then(function (me){ start(saved, me); })
+      .catch(function(){ TOKEN = null; sessionStorage.removeItem("ekip"); });
   }
 })();
 </script>
