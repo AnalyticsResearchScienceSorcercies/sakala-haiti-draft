@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Konkret — Fòm</title>
+<style>
+/* ============================================================
+   THE FORM STYLE. Written once, inherited by every form ever
+   created. Nobody using the builder touches CSS, so nobody can
+   make an ugly form. Change it here, every form changes.
+   ============================================================ */
+:root{
+  --ink:#12100e; --paper:#fbf9f5; --line:#d9d2c6; --card:#fff;
+  --accent:#8a1c1c; --ok:#1f6f3d; --warn:#7a5610; --muted:#6b645c;
+  --r:8px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+ padding:20px 16px 64px}
+.wrap{max-width:640px;margin:0 auto}
+
+header{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:24px}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;margin:0}
+
+fieldset{border:1px solid var(--line);border-radius:var(--r);background:var(--card);
+ padding:16px;margin:0 0 18px}
+legend{font-weight:700;font-size:15px;padding:0 8px}
+.hint{color:var(--muted);font-size:13px;margin:-4px 0 12px}
+
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;
+ border:1px solid var(--line);border-radius:6px;margin-bottom:7px;cursor:pointer;
+ background:var(--card)}
+label.opt:has(input:checked){border-color:var(--ink);background:#f3efe7;font-weight:600}
+input[type=radio],input[type=checkbox]{margin-top:4px;flex:none;
+ width:18px;height:18px;accent-color:var(--ink)}
+
+label.fld{display:block;font-weight:600;font-size:14px;margin:0 0 6px}
+.req{color:var(--accent)}
+.fldwrap{margin-bottom:14px}
+.fldwrap:last-child{margin-bottom:0}
+input[type=text],input[type=tel],input[type=number],input[type=date],select,textarea{
+ width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;
+ font-size:16px;font-family:inherit;background:var(--card);color:var(--ink)}
+textarea{resize:vertical;min-height:80px}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+ background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;
+ background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+
+button.go{width:100%;padding:15px;background:var(--ink);color:var(--paper);border:0;
+ border-radius:var(--r);font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+button.go:active{transform:translateY(1px)}
+button.go[disabled]{opacity:.55;cursor:progress}
+
+.hp{position:absolute;left:-9999px}
+.note{border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
+.note.err{background:#fdecec;border:1px solid var(--accent);color:var(--accent)}
+.note.warn{background:#fff6e0;border:1px solid var(--warn);color:var(--warn)}
+
+.res{text-align:center;padding:36px 20px;background:var(--card);
+ border:1px solid var(--line);border-radius:10px}
+.big{font-size:52px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
+.pass{color:var(--ok)}.fail{color:var(--accent)}
+.msg{font-size:17px;margin:10px 0 0}
+.again{display:inline-block;margin-top:22px;color:var(--ink);font-size:15px}
+.center{text-align:center;color:var(--muted);padding:50px 20px}
+[hidden]{display:none!important}
+
+@media(prefers-color-scheme:dark){
+ :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--card:#1f1c16;--muted:#a49b8e;--warn:#e8c877}
+ label.opt:has(input:checked){background:#2b271f}
+ button.go{background:#f2ede4;color:#16140f}
+ .note.err{background:#2e1a1a}
+ .note.warn{background:#2b2312;border-color:#7a5610}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="center" id="boot">N ap chaje…</div>
+</div>
+
+<script>
+(function () {
+  var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/f";
+  var slug = new URLSearchParams(location.search).get("s") || "";
+  var wrap = document.getElementById("wrap");
+  var QKEY = "fom_kew_" + slug;
+  var DEF = null;
+
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function(){});
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c];
+    });
+  }
+  function attr(o, k) { return o[k] ? " " + k + '="' + esc(o[k]) + '"' : ""; }
+
+  // ---------- queue: localStorage survives the tab being closed ----------
+  function qread(){ try { return JSON.parse(localStorage.getItem(QKEY)||"[]"); } catch(e){ return []; } }
+  function qwrite(a){ try { localStorage.setItem(QKEY, JSON.stringify(a)); return true; } catch(e){ return false; } }
+  function qpush(p){ var a=qread(); a.push(p); return qwrite(a); }
+
+  function post(payload) {
+    return fetch(API + "/" + encodeURIComponent(slug), {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+    }).then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j}; }); });
+  }
+
+  function flush() {
+    var a = qread();
+    if (!a.length) return Promise.resolve();
+    return post(a[0]).then(function (o) {
+      // 4xx means the server rejected it on the merits; drop it rather than
+      // wedge every later response behind one bad row.
+      if (o.ok || (o.j && o.j.error)) { qwrite(qread().slice(1)); return flush(); }
+    }).catch(function(){ /* still offline */ });
+  }
+
+  // ---------------------- field renderers ----------------------
+  var FIELD = {
+    text:     function(f){ return input(f,"text"); },
+    tel:      function(f){ return input(f,"tel"); },
+    number:   function(f){ return input(f,"number"); },
+    date:     function(f){ return input(f,"date"); },
+    textarea: function(f){
+      return wrapFld(f, '<textarea name="'+esc(f.key)+'"'+(f.required?" required":"")+
+        attr(f,"placeholder")+' rows="'+(f.rows||3)+'"></textarea>'); },
+    select:   function(f){
+      var o = '<option value="">—</option>' + (f.options||[]).map(function(x){
+        return '<option value="'+esc(x.v)+'">'+esc(x.t)+"</option>"; }).join("");
+      return wrapFld(f, '<select name="'+esc(f.key)+'"'+(f.required?" required":"")+">"+o+"</select>"); },
+    radio:    function(f){ return choice(f,"radio"); },
+    checkbox: function(f){ return choice(f,"checkbox"); }
+  };
+
+  function wrapFld(f, control) {
+    return '<div class="fldwrap">' +
+      (f.label ? '<label class="fld">'+esc(f.label)+(f.required?' <span class="req">*</span>':"")+"</label>" : "") +
+      control + "</div>";
+  }
+  function input(f, type) {
+    return wrapFld(f, '<input type="'+type+'" name="'+esc(f.key)+'"'+
+      (f.required?" required":"") + attr(f,"placeholder") + attr(f,"autocomplete") +
+      (f.min!=null?' min="'+esc(f.min)+'"':"") + (f.max!=null?' max="'+esc(f.max)+'"':"") +
+      (f.step!=null?' step="'+esc(f.step)+'"':"") +
+      (type==="tel"?' inputmode="tel"':"") + ">");
+  }
+  function choice(f, type) {
+    return (f.options||[]).map(function (x, i) {
+      return '<label class="opt"><input type="'+type+'" name="'+esc(f.key)+'" value="'+esc(x.v)+'"'+
+        (f.required && type==="radio" && i===0 ? " required":"") + "><span>"+esc(x.t)+"</span></label>";
+    }).join("");
+  }
+
+  // ---------------------- page renderers ----------------------
+  function renderForm(d) {
+    var s = d.schema || {};
+    var body = (s.sections||[]).map(function (sec) {
+      var inner = (sec.fields||[]).map(function (f) {
+        var r = FIELD[f.type];
+        return r ? r(f) : '<div class="note err">Kalite chan «'+esc(f.type)+'» pa rekonèt.</div>';
+      }).join("");
+      return "<fieldset>" + (sec.legend?"<legend>"+esc(sec.legend)+"</legend>":"") +
+        (sec.hint?'<p class="hint">'+esc(sec.hint)+"</p>":"") + inner + "</fieldset>";
+    }).join("");
+
+    wrap.innerHTML =
+      "<header><h1>"+esc(d.tit)+"</h1>" +
+      (s.subtitle?'<p class="sub">'+esc(s.subtitle)+"</p>":"") + "</header>" +
+      '<div id="note" hidden></div>' +
+      '<form id="f"><input class="hp" name="website" tabindex="-1" autocomplete="off">' +
+      body + '<button class="go" id="btn" type="submit">'+esc(s.submit_label||"Voye")+"</button></form>" +
+      '<div id="res" class="res" hidden></div>';
+
+    document.getElementById("f").addEventListener("submit", submit);
+    showQueue();
+  }
+
+  function note(cls, msg) {
+    var n = document.getElementById("note");
+    if (!n) return;
+    n.className = "note " + cls; n.textContent = msg; n.hidden = false;
+    window.scrollTo(0,0);
+  }
+  function showQueue() {
+    var n = qread().length;
+    if (n) note("warn", n===1
+      ? "Gen 1 repons ki sove sou telefòn nan. N ap voye l lè entènèt la tounen."
+      : "Gen "+n+" repons ki sove sou telefòn nan. N ap voye yo lè entènèt la tounen.");
+  }
+
+  function collect() {
+    var f = document.getElementById("f");
+    var fd = new FormData(f);
+    var out = { website: fd.get("website") || "" };
+    (DEF.schema.sections||[]).forEach(function (sec) {
+      (sec.fields||[]).forEach(function (fl) {
+        out[fl.key] = fl.type === "checkbox" ? fd.getAll(fl.key) : (fd.get(fl.key) || "");
+      });
+    });
+    return out;
+  }
+
+  function done(o) {
+    document.getElementById("f").hidden = true;
+    var res = document.getElementById("res");
+    res.hidden = false;
+    var head = o.esko == null ? "✓"
+      : '<span class="'+(o.pase?"pass":"fail")+'">'+o.esko+"/"+o.total+"</span>";
+    res.innerHTML = '<p class="big">'+head+"</p>" +
+      '<p class="msg">'+esc(o.msg)+"</p>" +
+      '<a class="again" href="">← Reponn ankò</a>';
+    window.scrollTo(0,0);
+  }
+
+  function banked() {
+    document.getElementById("f").hidden = true;
+    var res = document.getElementById("res");
+    res.hidden = false;
+    res.innerHTML = '<p class="big">✓</p><p class="msg">Repons ou sove sou telefòn nan.<br>' +
+      "N ap voye l otomatikman lè entènèt la tounen.</p>" +
+      '<a class="again" href="">← Reponn pou yon lòt moun</a>';
+    window.scrollTo(0,0);
+  }
+
+  function submit(e) {
+    e.preventDefault();
+    var btn = document.getElementById("btn");
+    document.getElementById("note").hidden = true;
+    btn.disabled = true; btn.textContent = "N ap voye…";
+    var payload = collect();
+
+    function reset(){ btn.disabled=false; btn.textContent = DEF.schema.submit_label||"Voye"; }
+
+    if (navigator.onLine === false) {
+      if (qpush(payload)) banked(); else { note("err","Pa gen plas pou sove repons lan."); reset(); }
+      return;
+    }
+    post(payload).then(function (o) {
+      if (!o.ok) { note("err", o.j.error || "Gen yon pwoblèm."); reset(); return; }
+      done(o.j);
+    }).catch(function () {
+      if (qpush(payload)) banked(); else { note("err","Koneksyon an pa mache."); reset(); }
+    });
+  }
+
+  // ---------------------------- boot ----------------------------
+  if (!slug) { wrap.innerHTML = '<div class="center">Pa gen fòm ki chwazi.</div>'; return; }
+
+  window.addEventListener("online", flush);
+  flush();
+
+  fetch(API + "/" + encodeURIComponent(slug))
+    .then(function (r) { return r.json().then(function (j) { return {ok:r.ok, j:j}; }); })
+    .then(function (o) {
+      if (!o.ok) { wrap.innerHTML = '<div class="center">'+esc(o.j.error)+"</div>"; return; }
+      DEF = o.j;
+      if (DEF.eta === "feme") { wrap.innerHTML = '<div class="center">Fòm sa a fèmen.</div>'; return; }
+      renderForm(DEF);
+      if (DEF.eta === "bouyon") note("warn", "BOUYON — fòm sa a poko louvri. Repons yo p ap anrejistre.");
+    })
+    .catch(function () {
+      wrap.innerHTML = '<div class="center">Koneksyon an pa mache. Tcheke entènèt ou.</div>';
+    });
+})();
+</script>
+</body>
+</html>
