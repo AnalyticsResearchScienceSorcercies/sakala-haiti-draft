@@ -1,17 +1,22 @@
 // Public form API. Serves any form definition and accepts its responses.
 //
-//   GET  /f/<slug>  -> schema with every answer key STRIPPED
-//   POST /f/<slug>  -> validate, score server-side, store
+//   GET  /f/<slug>          -> schema with every answer key STRIPPED
+//   POST /f/<slug>/upload   -> mint one signed upload URL for one file field
+//   POST /f/<slug>          -> validate, score server-side, store
 //
-// Public by design: trainees scan a QR, they have no credentials.
-// verify_jwt off for that reason. Writes go through the service-role key
-// server-side; the browser never holds a key and the tables have RLS with
-// no policies.
+// Public by design: trainees scan a QR, they have no credentials. verify_jwt
+// off for that reason. Writes go through the service-role key server-side; the
+// browser never holds a key and the tables have RLS with no policies.
+//
+// Split into two modules on purpose: as one file the deploy payload was large
+// enough to truncate. Same failure the ekip function has, same fix.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { Field, initUploads, issueUpload, spendUploads, takeFile } from "./upload.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+initUploads(SUPABASE_URL, SERVICE_KEY);
 
 const ALLOWED = new Set([
   "https://konkret-haiti.com",
@@ -42,15 +47,13 @@ function slugOf(url: string): string {
   return new URL(url).searchParams.get("s") ?? "";
 }
 
-type Field = {
-  key: string;
-  type: string;
-  label?: string;
-  required?: boolean;
-  answer?: unknown;
-  options?: { v: string; t: string }[];
-  [k: string]: unknown;
-};
+// /f/<slug>/upload -> "upload"
+function subOf(url: string): string {
+  const parts = new URL(url).pathname.split("/").filter(Boolean);
+  const i = parts.lastIndexOf("f");
+  const rest = i >= 0 ? parts.slice(i + 1) : parts;
+  return rest.length > 1 ? rest[1] : "";
+}
 
 // THE important function. Anything returned to a browser goes through here.
 // If an answer key ever leaks, the gate is decorative.
@@ -93,27 +96,20 @@ Deno.serve(async (req: Request) => {
 
   const slug = slugOf(req.url);
   if (!slug) return bad("Ki fòm?", 400);
+  const sub = subOf(req.url);
 
   const { data: fom, error } = await sb()
-    .from("ekip_fom")
-    .select("id,slug,tit,deskripsyon,schema,eta")
-    .eq("slug", slug)
-    .maybeSingle();
+    .from("ekip_fom").select("id,slug,tit,deskripsyon,schema,eta")
+    .eq("slug", slug).maybeSingle();
 
-  if (error) {
-    console.error("lookup failed", error);
-    return bad("Gen yon pwoblèm teknik.", 500);
-  }
+  if (error) { console.error("lookup failed", error); return bad("Gen yon pwoblèm teknik.", 500); }
   if (!fom) return bad(`Fòm "${slug}" pa egziste.`, 404);
 
   // ------------------------------------------------------------- GET
   if (req.method === "GET") {
     return new Response(JSON.stringify({
-      slug: fom.slug,
-      tit: fom.tit,
-      deskripsyon: fom.deskripsyon,
-      eta: fom.eta,
-      schema: strip(fom.schema),
+      slug: fom.slug, tit: fom.tit, deskripsyon: fom.deskripsyon,
+      eta: fom.eta, schema: strip(fom.schema),
     }), { headers: json });
   }
 
@@ -121,9 +117,16 @@ Deno.serve(async (req: Request) => {
 
   // ------------------------------------------------------------ POST
   if (fom.eta !== "live") {
-    return bad(fom.eta === "bouyon"
-      ? "Fòm sa a poko louvri."
-      : "Fòm sa a fèmen.", 409);
+    return bad(fom.eta === "bouyon" ? "Fòm sa a poko louvri." : "Fòm sa a fèmen.", 409);
+  }
+
+  const fields = fieldsOf(fom.schema);
+
+  // After the live gate on purpose: no uploads into a draft or closed form, so
+  // a stale QR cannot be used as free storage.
+  if (sub === "upload") {
+    const r = await issueUpload(req, fom, fields);
+    return new Response(JSON.stringify(r.body), { status: r.status, headers: json });
   }
 
   let body: Record<string, unknown>;
@@ -133,9 +136,9 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ ok: true, msg: "Mèsi." }), { headers: json });
   }
 
-  const fields = fieldsOf(fom.schema);
   const repons: Record<string, unknown> = {};
   const manke: string[] = [];
+  const attach: string[] = [];
 
   for (const f of fields) {
     let v = body[f.key];
@@ -146,16 +149,17 @@ Deno.serve(async (req: Request) => {
       v = v === "" || v == null ? null : Number(v);
       if (v !== null && Number.isNaN(v)) v = null;
     } else if (f.type === "signature") {
-      // A data URL, not prose: do not trim to death, but keep it bounded
-      // and refuse anything that is not actually an image.
       const s = v == null ? "" : String(v);
       if (s && !/^data:image\/(png|jpeg);base64,/.test(s)) {
         return bad(`Siyati "${f.label ?? f.key}" pa bon.`);
       }
-      if (s.length > SIG_MAX) {
-        return bad(`Siyati "${f.label ?? f.key}" twè gwo.`);
-      }
+      if (s.length > SIG_MAX) return bad(`Siyati "${f.label ?? f.key}" twò gwo.`);
       v = s;
+    } else if (f.type === "file") {
+      const r = await takeFile(v, fom, f);
+      if (!r.ok) return bad(r.msg, r.status);
+      v = r.val;
+      if (r.path) attach.push(r.path);
     } else {
       v = v == null ? "" : String(v).trim().slice(0, TEXT_MAX);
     }
@@ -167,9 +171,7 @@ Deno.serve(async (req: Request) => {
     repons[f.key] = v;
   }
 
-  if (manke.length) {
-    return bad("Chan sa yo obligatwa: " + manke.join(", "));
-  }
+  if (manke.length) return bad("Chan sa yo obligatwa: " + manke.join(", "));
 
   // scoring, only if the form declares a pass mark
   const passMark = (fom.schema as Record<string, unknown>).pass_mark;
@@ -191,36 +193,29 @@ Deno.serve(async (req: Request) => {
     pase = esko >= passMark;
   }
 
-  // select() back so we can read the reference the trigger generated
+  // select() back for the id (to spend uploads) and the reference the trigger
+  // generated (to show the person)
   const { data: saved, error: insErr } = await sb().from("ekip_repons").insert({
-    fom_id: fom.id,
-    fom_slug: fom.slug,
-    repons,
-    esko,
-    total,
-    pase,
+    fom_id: fom.id, fom_slug: fom.slug, repons, esko, total, pase,
     meta: { ua: (req.headers.get("user-agent") ?? "").slice(0, 300) },
-  }).select("referans").maybeSingle();
+  }).select("id,referans").maybeSingle();
 
   if (insErr) {
     console.error("insert failed", insErr);
     return bad("Gen yon pwoblèm teknik. Tanpri eseye ankò.", 500);
   }
 
+  // Spend the uploads only now. Had the insert failed, the paths stay
+  // redeemable and the queued retry works instead of losing the photo.
+  if (saved?.id) await spendUploads(attach, saved.id);
+
   const referans = saved?.referans ?? null;
   const sch = fom.schema as Record<string, string>;
   const raw = pase === null
     ? (sch.success_message ?? "Mèsi. Repons ou anrejistre.")
-    : pase
-      ? (sch.pass_message ?? "Ou pase.")
-      : (sch.fail_message ?? "Ou pa pase fwa sa a.");
+    : pase ? (sch.pass_message ?? "Ou pase.") : (sch.fail_message ?? "Ou pa pase fwa sa a.");
 
   return new Response(JSON.stringify({
-    ok: true,
-    esko,
-    total,
-    pase,
-    referans,
-    msg: fill(raw, referans),
+    ok: true, esko, total, pase, referans, msg: fill(raw, referans),
   }), { headers: json });
 });

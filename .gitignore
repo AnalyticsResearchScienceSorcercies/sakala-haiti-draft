@@ -6,3 +6,7 @@ _serve_nocache.py
 _SITEMAP_REVIEW.html
 *.pyc
 __pycache__/
+
+# Agent working notes, not part of the deployed site
+_agent_upload/
+_agent_groups/
