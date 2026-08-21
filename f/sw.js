@@ -3,7 +3,7 @@
 // itself lives in localStorage in the page, not here, because a person may
 // close the tab long before connectivity returns.
 
-const CACHE = "fom-v1";
+const CACHE = "fom-v2";
 const SHELL = ["./", "./index.html"];
 
 self.addEventListener("install", (e) => {
