@@ -399,7 +399,9 @@ form.login button{width:100%}
     on("[data-l]","oninput",function(el){
       var p = pair(el,"data-l"), f = s.sections[p[0]].fields[p[1]];
       f.label = el.value;
-      if (!f.keyTouched && !f.key) {
+      // Re-derive on every keystroke until someone edits the key by hand.
+      // Guarding on !f.key froze it after the first character.
+      if (!f.keyTouched) {
         f.key = slugify(el.value);
         var k = app.querySelector('[data-k="'+p[0]+","+p[1]+'"]');
         if (k) k.value = f.key;
