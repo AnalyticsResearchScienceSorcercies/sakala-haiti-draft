@@ -60,6 +60,31 @@ button.go[disabled]{opacity:.55;cursor:progress}
 .note.err{background:#fdecec;border:1px solid var(--accent);color:var(--accent)}
 .note.warn{background:#fff6e0;border:1px solid var(--warn);color:var(--warn)}
 
+/* signature: a box you draw in with a finger */
+.sigwrap{border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.sigwrap.drawn{border-color:var(--ink)}
+canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair}
+.sigbar{display:flex;align-items:center;gap:10px;padding:7px 10px;border-top:1px solid var(--line);
+ background:var(--paper)}
+.sigbar .lbl{flex:1;font-size:12px;color:var(--muted)}
+.sigbar button{background:0;border:1px solid var(--line);border-radius:5px;padding:5px 12px;
+ font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+
+/* rating: tap a number */
+.rate{display:flex;gap:7px;flex-wrap:wrap}
+.rate button{flex:1 1 auto;min-width:46px;padding:12px 6px;border:1px solid var(--line);
+ border-radius:6px;background:var(--card);color:var(--ink);font:inherit;font-weight:700;
+ font-size:17px;cursor:pointer}
+.rate button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.rateends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:5px}
+
+/* currency: unit sits inside the box */
+.cur{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+ background:var(--card)}
+.cur .unit{display:flex;align-items:center;padding:0 12px;background:var(--paper);
+ border-right:1px solid var(--line);font-weight:700;font-size:14px;color:var(--muted)}
+.cur input{border:0;border-radius:0}
+
 .res{text-align:center;padding:36px 20px;background:var(--card);
  border:1px solid var(--line);border-radius:10px}
 .big{font-size:52px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
@@ -126,6 +151,30 @@ button.go[disabled]{opacity:.55;cursor:progress}
     tel:      function(f){ return input(f,"tel"); },
     number:   function(f){ return input(f,"number"); },
     date:     function(f){ return input(f,"date"); },
+    time:     function(f){ return input(f,"time"); },
+    email:    function(f){ return input(f,"email"); },
+    currency: function(f){
+      return wrapFld(f, '<div class="cur"><span class="unit">' + esc(f.currency || "HTG") + "</span>" +
+        '<input type="number" name="'+esc(f.key)+'"'+(f.required?" required":"") +
+        ' inputmode="decimal" min="'+(f.min!=null?esc(f.min):"0")+'" step="'+esc(f.step||"0.01")+'"></div>'); },
+    rating:   function(f){
+      var lo = f.min == null ? 1 : +f.min, hi = f.max == null ? 5 : +f.max, b = "";
+      for (var i = lo; i <= hi; i++) {
+        b += '<button type="button" class="rate-b" data-rate="'+esc(f.key)+'" value="'+i+'">'+i+"</button>";
+      }
+      return wrapFld(f, '<div class="rate" data-ratefor="'+esc(f.key)+'">'+b+"</div>" +
+        '<input type="hidden" name="'+esc(f.key)+'"'+(f.required?" required":"")+">" +
+        (f.low || f.high
+          ? '<div class="rateends"><span>'+esc(f.low||"")+"</span><span>"+esc(f.high||"")+"</span></div>"
+          : "")); },
+    signature: function(f){
+      // Drawn with a finger, stored as a PNG data URL. The anti-shadow-payroll
+      // rule in the specs is literally a signature, so this is load-bearing.
+      return wrapFld(f, '<div class="sigwrap" data-sigwrap="'+esc(f.key)+'">' +
+        '<canvas class="sig" data-sig="'+esc(f.key)+'"></canvas>' +
+        '<div class="sigbar"><span class="lbl">Siyen ak dwèt ou nan bwat la</span>' +
+        '<button type="button" data-sigclear="'+esc(f.key)+'">Efase</button></div></div>' +
+        '<input type="hidden" name="'+esc(f.key)+'"'+(f.required?" required":"")+">"); },
     textarea: function(f){
       return wrapFld(f, '<textarea name="'+esc(f.key)+'"'+(f.required?" required":"")+
         attr(f,"placeholder")+' rows="'+(f.rows||3)+'"></textarea>'); },
@@ -177,7 +226,82 @@ button.go[disabled]{opacity:.55;cursor:progress}
       '<div id="res" class="res" hidden></div>';
 
     document.getElementById("f").addEventListener("submit", submit);
+    wireRatings();
+    wireSignatures();
     showQueue();
+  }
+
+  function wireRatings() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rate]"), function (b) {
+      b.onclick = function () {
+        var key = b.getAttribute("data-rate");
+        var box = document.querySelector('[data-ratefor="' + key + '"]');
+        Array.prototype.forEach.call(box.querySelectorAll("button"), function (x) {
+          x.classList.remove("on");
+        });
+        b.classList.add("on");
+        document.querySelector('input[name="' + key + '"]').value = b.value;
+      };
+    });
+  }
+
+  function wireSignatures() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-sig]"), function (cv) {
+      var key = cv.getAttribute("data-sig");
+      var hidden = document.querySelector('input[name="' + key + '"]');
+      var wrap = document.querySelector('[data-sigwrap="' + key + '"]');
+      var ctx, drawing = false, dirty = false;
+
+      // Match the backing store to the CSS size so strokes are not blurry
+      // and land under the finger on a high-DPI phone.
+      function size() {
+        var r = cv.getBoundingClientRect();
+        var dpr = window.devicePixelRatio || 1;
+        var data = dirty ? cv.toDataURL() : null;
+        cv.width = Math.max(1, Math.round(r.width * dpr));
+        cv.height = Math.max(1, Math.round(r.height * dpr));
+        ctx = cv.getContext("2d");
+        ctx.scale(dpr, dpr);
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = getComputedStyle(cv).color || "#12100e";
+        if (data) { var img = new Image(); img.onload = function(){ ctx.drawImage(img,0,0,r.width,r.height); }; img.src = data; }
+      }
+      size();
+      window.addEventListener("resize", size);
+
+      function pt(e) {
+        var r = cv.getBoundingClientRect();
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      }
+      cv.addEventListener("pointerdown", function (e) {
+        drawing = true; cv.setPointerCapture(e.pointerId);
+        var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+        e.preventDefault();
+      });
+      cv.addEventListener("pointermove", function (e) {
+        if (!drawing) return;
+        var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+        if (!dirty) { dirty = true; wrap.classList.add("drawn"); }
+        e.preventDefault();
+      });
+      function stop() {
+        if (!drawing) return;
+        drawing = false;
+        if (dirty) hidden.value = cv.toDataURL("image/png");
+      }
+      cv.addEventListener("pointerup", stop);
+      cv.addEventListener("pointercancel", stop);
+      cv.addEventListener("pointerleave", stop);
+
+      var clear = document.querySelector('[data-sigclear="' + key + '"]');
+      if (clear) clear.onclick = function () {
+        var r = cv.getBoundingClientRect();
+        ctx.clearRect(0, 0, r.width, r.height);
+        dirty = false; hidden.value = ""; wrap.classList.remove("drawn");
+      };
+    });
   }
 
   function note(cls, msg) {
@@ -227,10 +351,33 @@ button.go[disabled]{opacity:.55;cursor:progress}
     window.scrollTo(0,0);
   }
 
+  // Browsers skip constraint validation on hidden inputs, so a required
+  // signature or rating never triggers the native "please fill this in".
+  // Check them here or the person only finds out after a round trip.
+  function missingHidden() {
+    var out = [];
+    (DEF.schema.sections || []).forEach(function (sec) {
+      (sec.fields || []).forEach(function (f) {
+        if (!f.required) return;
+        if (f.type !== "signature" && f.type !== "rating") return;
+        var el = document.querySelector('input[name="' + f.key + '"]');
+        if (!el || !el.value) out.push(f.label || f.key);
+      });
+    });
+    return out;
+  }
+
   function submit(e) {
     e.preventDefault();
     var btn = document.getElementById("btn");
     document.getElementById("note").hidden = true;
+
+    var manke = missingHidden();
+    if (manke.length) {
+      note("err", "Ou bezwen ranpli: " + manke.join(", "));
+      return;
+    }
+
     btn.disabled = true; btn.textContent = "N ap voye…";
     var payload = collect();
 

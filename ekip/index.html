@@ -132,10 +132,12 @@ form.login button{width:100%}
   var app   = document.getElementById("app");
   var TOKEN = null, ME = null, DRAFT = null;
 
+  // Ordered by how often the 25 Konkret Drive form specs actually use them.
   var TYPES = [
     ["text","Short text"], ["textarea","Long text"], ["number","Number"],
-    ["date","Date"], ["tel","Phone"], ["select","Dropdown"],
-    ["radio","Choose one"], ["checkbox","Choose many"]
+    ["date","Date"], ["time","Time"], ["tel","Phone"], ["email","Email"],
+    ["currency","Money (HTG)"], ["rating","Rating 1-5"], ["signature","Signature"],
+    ["select","Dropdown"], ["radio","Choose one"], ["checkbox","Choose many"]
   ];
   var CHOICE = { select:1, radio:1, checkbox:1 };
 
@@ -291,6 +293,23 @@ form.login button{width:100%}
           "</div>" +
           '<label class="inline" style="margin-bottom:12px"><input type="checkbox" data-r="' + si + "," + fi + '"' +
             (f.required?" checked":"") + "><span>Required</span></label>" +
+          (f.type === "rating"
+            ? '<div class="row"><div><label>Low</label><input type="number" data-min="' + si + "," + fi +
+                '" value="' + (f.min == null ? 1 : esc(f.min)) + '"></div>' +
+              '<div><label>High</label><input type="number" data-max="' + si + "," + fi +
+                '" value="' + (f.max == null ? 5 : esc(f.max)) + '"></div>' +
+              '<div><label>Label at the low end</label><input data-low="' + si + "," + fi +
+                '" value="' + esc(f.low||"") + '"></div>' +
+              '<div><label>Label at the high end</label><input data-high="' + si + "," + fi +
+                '" value="' + esc(f.high||"") + '"></div></div>'
+            : "") +
+          (f.type === "currency"
+            ? '<div class="row"><div><label>Currency shown</label><input data-cur="' + si + "," + fi +
+                '" value="' + esc(f.currency||"HTG") + '"></div></div>'
+            : "") +
+          (f.type === "signature"
+            ? '<p class="mini">Drawn with a finger on the phone. Stored as an image on the response.</p>'
+            : "") +
           (isChoice
             ? '<div style="margin-bottom:12px"><label>Options — one per line</label>' +
               '<p class="mini">Plain text gets values a, b, c… Use <code>value|text</code> to set your own.</p>' +
@@ -422,6 +441,18 @@ form.login button{width:100%}
     on("[data-o]","oninput",function(el){
       var p = pair(el,"data-o"); s.sections[p[0]].fields[p[1]].options = textToOpts(el.value); });
 
+    // rating range + end labels, currency unit
+    on("[data-min]","oninput",function(el){
+      var p = pair(el,"data-min"); s.sections[p[0]].fields[p[1]].min = el.value === "" ? undefined : Number(el.value); });
+    on("[data-max]","oninput",function(el){
+      var p = pair(el,"data-max"); s.sections[p[0]].fields[p[1]].max = el.value === "" ? undefined : Number(el.value); });
+    on("[data-low]","oninput",function(el){
+      var p = pair(el,"data-low"); s.sections[p[0]].fields[p[1]].low = el.value; });
+    on("[data-high]","oninput",function(el){
+      var p = pair(el,"data-high"); s.sections[p[0]].fields[p[1]].high = el.value; });
+    on("[data-cur]","oninput",function(el){
+      var p = pair(el,"data-cur"); s.sections[p[0]].fields[p[1]].currency = el.value; });
+
     // these change the shape, so they re-render
     on("[data-t]","onchange",function(el){
       var p = pair(el,"data-t"), f = s.sections[p[0]].fields[p[1]];
@@ -480,7 +511,14 @@ form.login button{width:100%}
     var clean = JSON.parse(JSON.stringify(d.schema));
     clean.sections.forEach(function (sec) {
       if (!sec.hint) delete sec.hint;
-      sec.fields.forEach(function (f) { delete f.keyTouched; if (!f.required) delete f.required; });
+      sec.fields.forEach(function (f) {
+        delete f.keyTouched;
+        if (!f.required) delete f.required;
+        if (!CHOICE[f.type]) delete f.options;
+        if (f.type !== "rating") { delete f.min; delete f.max; delete f.low; delete f.high; }
+        else { if (!f.low) delete f.low; if (!f.high) delete f.high; }
+        if (f.type !== "currency") delete f.currency;
+      });
     });
     if (clean.pass_mark == null) { delete clean.pass_mark; delete clean.pass_message; delete clean.fail_message; }
 
