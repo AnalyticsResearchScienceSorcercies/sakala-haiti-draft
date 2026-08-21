@@ -33,6 +33,8 @@ button[disabled]{opacity:.55;cursor:progress}
 .hp{position:absolute;left:-9999px}
 .err{background:#fdecec;border:1px solid var(--accent);color:var(--accent);
  border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
+.queued{background:#fff6e0;border:1px solid #b07d1a;color:#7a5610;
+ border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
 .res{text-align:center;padding:36px 20px;background:#fff;border:1px solid var(--line);border-radius:10px}
 .big{font-size:52px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
 .pass{color:var(--ok)}.fail{color:var(--accent)}
@@ -44,7 +46,8 @@ button[disabled]{opacity:.55;cursor:progress}
  fieldset,label.opt,input[type=text],.res{background:#1f1c16}
  label.opt:has(input:checked){background:#2b271f}
  button{background:#f2ede4;color:#16140f}
- .err{background:#2e1a1a}}
+ .err{background:#2e1a1a}
+ .queued{background:#2b2312;color:#e8c877;border-color:#7a5610}}
 </style>
 </head>
 <body>
@@ -56,6 +59,7 @@ button[disabled]{opacity:.55;cursor:progress}
 </header>
 
 <div id="err" class="err" hidden></div>
+<div id="q" class="queued" hidden></div>
 
 <form id="f">
   <input class="hp" name="website" tabindex="-1" autocomplete="off">
@@ -117,16 +121,79 @@ button[disabled]{opacity:.55;cursor:progress}
 <script>
 (function () {
   var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/send0";
+  var QKEY = "send0_kew";
   var f = document.getElementById("f");
   var btn = document.getElementById("btn");
   var res = document.getElementById("res");
   var err = document.getElementById("err");
+  var qbox = document.getElementById("q");
+
+  // Cache the page so it opens with no signal at all.
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  }
+
+  // ---- the queue. localStorage, not memory: a trainee may close the tab
+  // ---- long before signal comes back.
+  function qread() {
+    try { return JSON.parse(localStorage.getItem(QKEY) || "[]"); } catch (e) { return []; }
+  }
+  function qwrite(a) {
+    try { localStorage.setItem(QKEY, JSON.stringify(a)); return true; } catch (e) { return false; }
+  }
+  function qpush(p) { var a = qread(); a.push(p); return qwrite(a); }
+
+  function qshow() {
+    var n = qread().length;
+    if (!n) { qbox.hidden = true; return; }
+    qbox.textContent = n === 1
+      ? "Gen 1 repons ki sove sou telefòn nan. N ap voye l otomatikman lè entènèt la tounen."
+      : "Gen " + n + " repons ki sove sou telefòn nan. N ap voye yo otomatikman lè entènèt la tounen.";
+    qbox.hidden = false;
+  }
+
+  function send(payload) {
+    return fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    });
+  }
+
+  // Drain the queue one at a time. A 4xx means the server rejected it on the
+  // merits, so drop it - retrying forever would wedge the queue behind one
+  // bad row. A network failure leaves it in place for the next attempt.
+  function flush() {
+    var a = qread();
+    if (!a.length) { qshow(); return Promise.resolve(); }
+    var item = a[0];
+    return send(item).then(function (o) {
+      if (o.ok || (o.j && o.j.error)) {
+        qwrite(qread().slice(1));
+        qshow();
+        return flush();
+      }
+    }).catch(function () { /* still offline, leave it queued */ });
+  }
 
   function fail(m) {
     err.textContent = m;
     err.hidden = false;
     btn.disabled = false;
     btn.textContent = "Voye repons yo";
+    window.scrollTo(0, 0);
+  }
+
+  function saved() {
+    f.hidden = true;
+    res.hidden = false;
+    res.innerHTML =
+      '<p class="big">✓</p>' +
+      '<p class="msg">Repons ou sove sou telefòn nan.<br>N ap voye l otomatikman lè entènèt la tounen. ' +
+      "Ou pa bezwen fè anyen ankò.</p>" +
+      '<a class="again" href="">← Reponn pou yon lòt moun</a>';
     window.scrollTo(0, 0);
   }
 
@@ -149,14 +216,14 @@ button[disabled]{opacity:.55;cursor:progress}
       q5: d.getAll("q5")
     };
 
-    fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(function (r) {
-        return r.json().then(function (j) { return { ok: r.ok, j: j }; });
-      })
+    // Known-offline: do not even try, just bank it.
+    if (navigator.onLine === false) {
+      if (qpush(payload)) { saved(); qshow(); }
+      else fail("Pa gen plas pou sove repons lan. Tcheke entènèt ou epi eseye ankò.");
+      return;
+    }
+
+    send(payload)
       .then(function (o) {
         if (!o.ok) { fail(o.j.error || "Gen yon pwoblèm. Tanpri eseye ankò."); return; }
         f.hidden = true;
@@ -168,9 +235,15 @@ button[disabled]{opacity:.55;cursor:progress}
         window.scrollTo(0, 0);
       })
       .catch(function () {
-        fail("Koneksyon an pa mache. Tcheke entènèt ou epi eseye ankò.");
+        // Network died mid-request. Bank it rather than lose the answers.
+        if (qpush(payload)) { saved(); qshow(); }
+        else fail("Koneksyon an pa mache. Tcheke entènèt ou epi eseye ankò.");
       });
   });
+
+  window.addEventListener("online", flush);
+  qshow();
+  flush();
 })();
 </script>
 </body>
