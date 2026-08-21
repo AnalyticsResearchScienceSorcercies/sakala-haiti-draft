@@ -249,6 +249,9 @@ form.login button{width:100%}
   }
 
   function viewBuilder() {
+    // Adding or reordering a field re-renders the whole editor. Without this
+    // the page jumps to the top every time and you lose your place.
+    var keepScroll = window.scrollY;
     var d = DRAFT;
     var s = d.schema;
     var scored = 0;
@@ -353,6 +356,7 @@ form.login button{width:100%}
       "</div>", true);
     wire();
     bindBuilder();
+    if (keepScroll) window.scrollTo(0, keepScroll);
   }
 
   function pair(el, at) { return el.getAttribute(at).split(",").map(Number); }
