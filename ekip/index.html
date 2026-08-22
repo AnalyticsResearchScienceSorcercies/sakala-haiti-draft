@@ -644,8 +644,15 @@ form.login button{width:100%}
         delete f.keyTouched;
         if (!f.required) delete f.required;
         if (!CHOICE[f.type]) delete f.options;
-        if (f.type !== "rating") { delete f.min; delete f.max; delete f.low; delete f.high; }
-        else { if (!f.low) delete f.low; if (!f.high) delete f.high; }
+        // min and max mean three different things depending on type: a
+        // rating's button range, a number's value range, and a GROUP'S ROW
+        // COUNTS. Stripping them for anything that was not a rating wiped a
+        // correct group's row counts on its first save, silently, and the
+        // only thing standing between that and a corrupted schema was
+        // validate() refusing type "group" at all.
+        if (f.type === "rating") { if (!f.low) delete f.low; if (!f.high) delete f.high; }
+        else if (f.type === "group") { delete f.low; delete f.high; }
+        else { delete f.min; delete f.max; delete f.low; delete f.high; }
         if (f.type !== "currency") delete f.currency;
         if (f.type !== "file") { delete f.accept; delete f.max_mb; delete f.camera; }
         else if (!f.camera) delete f.camera;

@@ -176,13 +176,17 @@ export async function reponsGet(slug: string) {
     .eq("fom_slug", slug).order("created_at", { ascending: false }).limit(500);
   if (error) throw new Fail(error.message, 500);
 
-  const fields: { key: string; label: string; type: string }[] = [];
+  const fields: { key: string; label: string; type: string; fields?: unknown }[] = [];
   for (const sec of (fom.schema?.sections ?? []) as Record<string, unknown>[]) {
     for (const f of (sec.fields ?? []) as Record<string, unknown>[]) {
       fields.push({
         key: String(f.key),
         label: String(f.label ?? sec.legend ?? f.key),
         type: String(f.type),
+        // Carried so the admin screen can label the columns of a repeatable
+        // group and build the items CSV. Absent for every other type, so the
+        // payload does not change for any existing form.
+        ...(f.type === "group" ? { fields: f.fields } : {}),
       });
     }
   }

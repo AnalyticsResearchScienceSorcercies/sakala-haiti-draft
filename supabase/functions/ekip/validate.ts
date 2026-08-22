@@ -3,14 +3,40 @@
 // Reject a malformed schema at the door: a form that renders wrong in the
 // field costs far more than a save that fails here. Messages are English --
 // they surface in the builder, which Wesley, Dan and Jethro read.
+//
+// A group multiplies that argument. One bad group definition is not one bad
+// question, it is a table that draws wrong fifty times, on a phone, in Limbé,
+// while somebody is accounting for money they have already spent.
+//
+// MERGE NOTE 2026-08-22: the group rules come from _agent_groups/
+// ekip_validate_snippet.ts, which was written against ekip version 6 and
+// predates the file-upload work in version 8. It was layered onto this file
+// rather than replacing it -- taking it wholesale would have silently deleted
+// every file-upload rule, because its TYPES set has no "file" in it.
 
 // Derived from the 25 Job Power form specs. signature appears in 26 of 28 and
 // is load-bearing: "no line pays without the youth's own signature that day."
 export const TYPES = new Set([
   "text", "textarea", "number", "date", "time", "tel", "email",
   "currency", "rating", "signature", "select", "radio", "checkbox", "file",
+  "group",
 ]);
 export const CHOICE = new Set(["select", "radio", "checkbox"]);
+
+// What may appear inside a repeated row. See GROUPS.md for why signature,
+// rating, checkbox and group are all excluded -- three of the four are hard
+// bugs in the renderer's global-by-name wiring, not taste. file is excluded
+// for the same reason plus quota: six uploads is the whole-form ceiling.
+export const ROW_TYPES = new Set([
+  "text", "textarea", "number", "currency",
+  "date", "time", "tel", "email", "select", "radio",
+]);
+
+// Numeric cells: the only things a product or a sum may point at.
+const NUMERIC = new Set(["number", "currency"]);
+
+const GROUP_MAX_ROWS = 50;    // must match ROW_MAX in the `f` function
+const GROUP_MAX_COLS = 12;    // past this a card is a wall and nobody fills it
 
 // Must match HARD_MAX_MB in the `f` function. If these drift the builder will
 // happily save a 20 MB field the public API then refuses at 8.
@@ -32,6 +58,27 @@ export function validate(schema: unknown): string[] {
   let scored = 0;
   let files = 0;
 
+  // GROUP -- pass 0. Index every group and the type of each of its columns, so
+  // a sum_of written anywhere in the form can be resolved against it. Without
+  // this a total could point at a column that does not exist and would be
+  // discovered only by a person in the field getting a zero.
+  const groups = new Map<string, Map<string, string>>();
+  for (const secRaw of secs) {
+    const sec = secRaw as Record<string, unknown>;
+    for (const fRaw of (Array.isArray(sec.fields) ? sec.fields : [])) {
+      const f = fRaw as Record<string, unknown>;
+      if (String(f.type ?? "") !== "group") continue;
+      const gk = String(f.key ?? "");
+      if (!gk) continue;
+      const cols = new Map<string, string>();
+      for (const cRaw of (Array.isArray(f.fields) ? f.fields : [])) {
+        const c = cRaw as Record<string, unknown>;
+        cols.set(String(c.key ?? ""), String(c.type ?? ""));
+      }
+      groups.set(gk, cols);
+    }
+  }
+
   secs.forEach((secRaw, si) => {
     const sec = secRaw as Record<string, unknown>;
     const fields = sec.fields;
@@ -51,6 +98,29 @@ export function validate(schema: unknown): string[] {
 
       const type = String(f.type ?? "");
       if (!TYPES.has(type)) { errs.push(`${where}: unknown field type "${type}".`); return; }
+
+      // ------------------------------------------------------------- GROUP
+      if (type === "group") {
+        errs.push(...validateGroup(f, where, groups));
+        if (f.answer !== undefined) {
+          errs.push(`${where}: a repeatable group cannot have an answer key.`);
+        }
+        if (!String(f.label ?? "")) errs.push(`${where}: missing label.`);
+        return;   // nothing below applies to a group
+      }
+
+      // GROUP -- sum_of on an ordinary field, i.e. a computed total.
+      if (f.sum_of !== undefined) {
+        errs.push(...validateSumOf(f, type, where, groups));
+      }
+      // GROUP -- product_of only means anything inside a row.
+      if (f.product_of !== undefined) {
+        errs.push(`${where}: only a column inside a repeatable group can be calculated by multiplying.`);
+      }
+      // GROUP -- a stray fields array on a non-group is a half-finished edit.
+      if (f.fields !== undefined) {
+        errs.push(`${where}: only a repeatable group can have columns.`);
+      }
 
       if (CHOICE.has(type)) {
         const opts = f.options;
@@ -132,6 +202,221 @@ export function validate(schema: unknown): string[] {
     if (typeof pm !== "number" || pm < 0) errs.push("Pass mark is not a number.");
     else if (!scored) errs.push("There is a pass mark but no field has an answer key.");
     else if (pm > scored) errs.push(`Pass mark (${pm}) is higher than the number of scored fields (${scored}).`);
+  }
+  return errs;
+}
+
+// ---------------------------------------------------------------------------
+// Repeatable groups.
+// ---------------------------------------------------------------------------
+
+function validateGroup(
+  f: Record<string, unknown>,
+  where: string,
+  groups: Map<string, Map<string, string>>,
+): string[] {
+  const errs: string[] = [];
+  const gk = String(f.key ?? "");
+
+  // ---- the columns exist at all
+  const cols = f.fields;
+  if (!Array.isArray(cols) || !cols.length) {
+    errs.push(`${where}: a repeatable group needs at least one column.`);
+    return errs;
+  }
+  if (cols.length > GROUP_MAX_COLS) {
+    errs.push(`${where}: ${cols.length} columns is too many (max ${GROUP_MAX_COLS}). ` +
+      `A row has to fit on a phone.`);
+  }
+
+  // ---- min / max row counts
+  //
+  // NOTE, and it matters when reading a schema: on a group, min and max are
+  // ROW COUNTS. On a rating they are the button range; on a number they are
+  // the value range. Same two words, three meanings, decided by `type`.
+  const hasMin = f.min !== undefined && f.min !== null && f.min !== "";
+  const hasMax = f.max !== undefined && f.max !== null && f.max !== "";
+  const min = hasMin ? Number(f.min) : 0;
+  const max = hasMax ? Number(f.max) : GROUP_MAX_ROWS;
+
+  if (hasMin && (!Number.isInteger(min) || min < 0)) {
+    errs.push(`${where}: minimum rows must be a whole number, 0 or more.`);
+  }
+  if (hasMax && (!Number.isInteger(max) || max < 1)) {
+    errs.push(`${where}: maximum rows must be a whole number, 1 or more.`);
+  }
+  if (Number.isFinite(min) && Number.isFinite(max) && max < min) {
+    errs.push(`${where}: maximum rows (${max}) is below minimum rows (${min}).`);
+  }
+  if (Number.isFinite(max) && max > GROUP_MAX_ROWS) {
+    errs.push(`${where}: maximum rows (${max}) is above the ceiling of ${GROUP_MAX_ROWS}.`);
+  }
+  if (Number.isFinite(min) && min > GROUP_MAX_ROWS) {
+    errs.push(`${where}: minimum rows (${min}) is above the ceiling of ${GROUP_MAX_ROWS}.`);
+  }
+
+  // ---- `required` on the group itself is a trap: the `f` function's
+  // emptiness test is (v === "" || v === null), and an array is neither, so a
+  // required empty group would sail through. Say so instead of ignoring it.
+  if (f.required) {
+    errs.push(`${where}: a repeatable group is not "required" — set minimum rows to 1 instead.`);
+  }
+
+  // ---- the columns themselves
+  const colKeys = new Set<string>();
+  const numericCols = new Set<string>();
+  const productCols = new Set<string>();
+
+  cols.forEach((cRaw, ci) => {
+    const c = cRaw as Record<string, unknown>;
+    const cw = `${where}, column ${ci + 1}`;
+    const ck = String(c.key ?? "");
+    const ctype = String(c.type ?? "");
+
+    // key shape and DUPLICATE KEYS INSIDE THE GROUP.
+    // Column keys live in the group's own namespace, not the form's: a column
+    // called `total` and a top-level field called `total` never collide,
+    // because one lives inside the array. So they are checked against each
+    // other and nothing else.
+    if (!/^[a-z][a-z0-9_]{0,40}$/.test(ck)) {
+      errs.push(`${cw}: key "${ck}" is invalid (lowercase letters, digits, underscore).`);
+    } else if (colKeys.has(ck)) {
+      errs.push(`${cw}: key "${ck}" is used twice in this group.`);
+    } else colKeys.add(ck);
+
+    // NESTED GROUPS. Called out by name rather than folded into the generic
+    // type error, because someone will try it and deserves to know why not.
+    if (ctype === "group") {
+      errs.push(`${cw}: a repeatable group cannot contain another repeatable group. ` +
+        `One level only.`);
+      return;
+    }
+    // A TYPE THAT MAKES NO SENSE INSIDE A ROW.
+    if (!ROW_TYPES.has(ctype)) {
+      const why = ctype === "signature"
+        ? "a signature belongs to the whole form, not to one line"
+        : ctype === "rating"
+        ? "a rating strip does not fit in a row"
+        : ctype === "checkbox"
+        ? 'a "choose many" column would put a list inside a list; use "choose one"'
+        : ctype === "file"
+        ? "an upload belongs to the whole form, not to one line"
+        : `"${ctype}" is not a field type`;
+      errs.push(`${cw}: cannot be used inside a repeatable group — ${why}.`);
+      return;
+    }
+
+    if (!String(c.label ?? "")) errs.push(`${cw}: missing label.`);
+
+    if (c.answer !== undefined) {
+      errs.push(`${cw}: a column inside a repeatable group cannot be scored.`);
+    }
+    if (c.sum_of !== undefined) {
+      errs.push(`${cw}: a total cannot live inside the rows it adds up. ` +
+        `Put it in a field after the group.`);
+    }
+    if (c.fields !== undefined) {
+      errs.push(`${cw}: a column cannot have columns of its own.`);
+    }
+
+    if (CHOICE.has(ctype)) {
+      const opts = c.options;
+      if (!Array.isArray(opts) || !opts.length) {
+        errs.push(`${cw}: needs at least one option.`);
+      } else {
+        const vals = new Set<string>();
+        opts.forEach((oRaw, oi) => {
+          const o = oRaw as Record<string, unknown>;
+          const v = String(o.v ?? "");
+          if (!v) errs.push(`${cw}, option ${oi + 1}: missing value.`);
+          else if (vals.has(v)) errs.push(`${cw}: option value "${v}" is used twice.`);
+          else vals.add(v);
+          if (!String(o.t ?? "")) errs.push(`${cw}, option ${oi + 1}: missing text.`);
+        });
+      }
+    }
+
+    if (NUMERIC.has(ctype)) numericCols.add(ck);
+    if (c.product_of !== undefined) productCols.add(ck);
+  });
+
+  // ---- product_of, second pass so every sibling key is known
+  cols.forEach((cRaw, ci) => {
+    const c = cRaw as Record<string, unknown>;
+    if (c.product_of === undefined) return;
+    const cw = `${where}, column ${ci + 1}`;
+    const ck = String(c.key ?? "");
+    const ctype = String(c.type ?? "");
+
+    if (!NUMERIC.has(ctype)) {
+      errs.push(`${cw}: only a number or money column can be calculated.`);
+      return;
+    }
+    const factors = c.product_of;
+    if (!Array.isArray(factors) || factors.length < 2) {
+      errs.push(`${cw}: a calculated column must multiply at least two other columns.`);
+      return;
+    }
+    const usedFactors = new Set<string>();
+    for (const raw of factors) {
+      const k = String(raw);
+      if (k === ck) { errs.push(`${cw}: a column cannot multiply itself.`); continue; }
+      if (usedFactors.has(k)) { errs.push(`${cw}: column "${k}" is listed twice.`); continue; }
+      usedFactors.add(k);
+      if (!colKeys.has(k)) { errs.push(`${cw}: there is no column "${k}" in this group.`); continue; }
+      if (!numericCols.has(k)) { errs.push(`${cw}: column "${k}" is not a number, so it cannot be multiplied.`); continue; }
+      // No chains. A product of a product is a dependency order problem for
+      // no benefit anyone has asked for.
+      if (productCols.has(k)) {
+        errs.push(`${cw}: column "${k}" is itself calculated. A calculated column ` +
+          `can only multiply columns that are typed in.`);
+      }
+    }
+  });
+
+  // keep the index honest for sum_of resolution even if this group had errors
+  if (gk) groups.set(gk, new Map([...colKeys].map((k) => [k, "?"])));
+
+  return errs;
+}
+
+function validateSumOf(
+  f: Record<string, unknown>,
+  type: string,
+  where: string,
+  groups: Map<string, Map<string, string>>,
+): string[] {
+  const errs: string[] = [];
+  const ref = f.sum_of;
+
+  if (typeof ref !== "string" || !ref) {
+    errs.push(`${where}: the total to add up is not set properly.`);
+    return errs;
+  }
+  if (!NUMERIC.has(type)) {
+    errs.push(`${where}: only a number or money field can be a computed total.`);
+    return errs;
+  }
+  const dot = ref.indexOf(".");
+  if (dot <= 0 || dot === ref.length - 1 || ref.indexOf(".", dot + 1) >= 0) {
+    errs.push(`${where}: a total must point at "group.column", not "${ref}".`);
+    return errs;
+  }
+  const gk = ref.slice(0, dot);
+  const ck = ref.slice(dot + 1);
+
+  const cols = groups.get(gk);
+  if (!cols) {
+    errs.push(`${where}: there is no repeatable group called "${gk}" in this form.`);
+    return errs;
+  }
+  if (!cols.has(ck)) {
+    errs.push(`${where}: the group "${gk}" has no column called "${ck}".`);
+    return errs;
+  }
+  const ctype = cols.get(ck)!;
+  if (ctype !== "?" && !NUMERIC.has(ctype)) {
+    errs.push(`${where}: column "${ck}" is not a number, so it cannot be added up.`);
   }
   return errs;
 }
