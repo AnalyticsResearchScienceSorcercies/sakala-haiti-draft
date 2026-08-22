@@ -20,20 +20,26 @@ type Moun = { pass: string; non: string; wol: string[] };
 // EKIP_USERS accepts either shape per user:
 //   "wbertil": "password"
 //   "dtillias": {"pass":"...","non":"Daniel Tillias","wol":["trezorye"]}
+//
+// FAILS CLOSED, 2026-08-22. This function used to carry a hardcoded fallback
+// pair of logins for when EKIP_USERS was unset or unparseable. Those values
+// were committed to this repo, which is public, on 2026-08-21 -- so any typo
+// in the secret silently restored two published credentials against the API
+// that releases money. There is no fallback now: no secret, no logins.
 function users(): Record<string, Moun> {
-  let src: Record<string, unknown> | null = null;
   const raw = Deno.env.get("EKIP_USERS");
-  if (raw) {
-    try {
-      const p = JSON.parse(raw);
-      if (p && typeof p === "object") src = p as Record<string, unknown>;
-    } catch (e) { console.error("EKIP_USERS not valid JSON:", e); }
+  if (!raw) {
+    console.error("EKIP_USERS is not set. Refusing every login.");
+    return {};
   }
-  if (!src) {
-    src = {
-      wbertil: { pass: "Sleven12", non: "Wesley Bertil", wol: ["trezorye", "manadje_asosye"] },
-      dtillias: { pass: "jjtw-apcs-fvkm", non: "Daniel Tillias", wol: ["trezorye", "manadje_asosye"] },
-    };
+  let src: Record<string, unknown>;
+  try {
+    const p = JSON.parse(raw);
+    if (!p || typeof p !== "object" || Array.isArray(p)) throw new Error("not an object");
+    src = p as Record<string, unknown>;
+  } catch (e) {
+    console.error("EKIP_USERS is not valid JSON. Refusing every login:", e);
+    return {};
   }
   const out: Record<string, Moun> = {};
   for (const [k, v] of Object.entries(src)) {
