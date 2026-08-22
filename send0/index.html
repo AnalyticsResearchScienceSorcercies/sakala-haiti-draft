@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Job Power — Send 0</title>
+<link rel="canonical" href="https://konkret-haiti.com/f/?s=send0">
 <style>
-:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--accent:#8a1c1c;--ok:#1f6f3d;--muted:#6b645c}
+:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--accent:#8a1c1c;--muted:#6b645c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);
  font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -15,235 +16,102 @@ body{margin:0;background:var(--paper);color:var(--ink);
 header{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:24px}
 h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:14px;margin:0}
-fieldset{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px;margin:0 0 18px}
-legend{font-weight:700;font-size:15px;padding:0 8px}
-.hint{color:var(--muted);font-size:13px;margin:-4px 0 12px}
-label.opt{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;
- border:1px solid var(--line);border-radius:6px;margin-bottom:7px;cursor:pointer;background:#fff}
-label.opt:has(input:checked){border-color:var(--ink);background:#f3efe7;font-weight:600}
-input[type=radio],input[type=checkbox]{margin-top:4px;flex:none;width:18px;height:18px;accent-color:var(--ink)}
-input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--line);
- border-radius:6px;font-size:16px;background:#fff;color:var(--ink)}
-label.fld{display:block;font-weight:600;font-size:14px;margin:0 0 6px}
-.fldwrap{margin-bottom:14px}
-button{width:100%;padding:15px;background:var(--ink);color:#fbf9f5;border:0;
- border-radius:8px;font-size:17px;font-weight:700;cursor:pointer}
-button:active{transform:translateY(1px)}
-button[disabled]{opacity:.55;cursor:progress}
-.hp{position:absolute;left:-9999px}
-.err{background:#fdecec;border:1px solid var(--accent);color:var(--accent);
- border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 20px;text-align:center}
+a.go{display:block;padding:15px;background:var(--ink);color:#fbf9f5;text-decoration:none;
+ border-radius:8px;font-size:17px;font-weight:700;margin-top:18px}
 .queued{background:#fff6e0;border:1px solid #b07d1a;color:#7a5610;
  border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
-.res{text-align:center;padding:36px 20px;background:#fff;border:1px solid var(--line);border-radius:10px}
-.big{font-size:52px;font-weight:800;margin:0 0 4px;letter-spacing:-.02em}
-.pass{color:var(--ok)}.fail{color:var(--accent)}
-.msg{font-size:17px;margin:10px 0 0}
-.again{display:inline-block;margin-top:22px;color:var(--ink);font-size:15px}
-[hidden]{display:none!important}
-@media(prefers-color-scheme:dark){
- :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e}
- fieldset,label.opt,input[type=text],.res{background:#1f1c16}
- label.opt:has(input:checked){background:#2b271f}
- button{background:#f2ede4;color:#16140f}
- .err{background:#2e1a1a}
- .queued{background:#2b2312;color:#e8c877;border-color:#7a5610}}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <header>
+    <h1>Job Power — Send 0</h1>
+    <p class="sub">Kondisyon yo · senk kesyon anvan w kontinye</p>
+  </header>
 
-<header>
-  <h1>Job Power — Send 0</h1>
-  <p class="sub">Kondisyon yo · senk kesyon anvan w kontinye</p>
-</header>
+  <div id="q" class="queued" hidden></div>
 
-<div id="err" class="err" hidden></div>
-<div id="q" class="queued" hidden></div>
-
-<form id="f">
-  <input class="hp" name="website" tabindex="-1" autocomplete="off">
-
-  <fieldset>
-    <legend>Ki moun ou ye</legend>
-    <div class="fldwrap"><label class="fld" for="non">Non w konplè</label>
-      <input type="text" id="non" name="non" required autocomplete="name"></div>
-    <div class="fldwrap"><label class="fld" for="kominote">Kominote w</label>
-      <input type="text" id="kominote" name="kominote" required></div>
-    <div class="fldwrap"><label class="fld" for="telefon">Telefòn (si w genyen)</label>
-      <input type="text" id="telefon" name="telefon" inputmode="tel" autocomplete="tel"></div>
-  </fieldset>
-
-  <fieldset><legend>1. Konbyen fòmasyon an peye pa èdtan?</legend>
-    <label class="opt"><input type="radio" name="q1" value="a" required><span>1 dola</span></label>
-    <label class="opt"><input type="radio" name="q1" value="b"><span>2 dola</span></label>
-    <label class="opt"><input type="radio" name="q1" value="c"><span>3 dola</span></label>
-    <label class="opt"><input type="radio" name="q1" value="d"><span>Yo pa peye fòmasyon an</span></label>
-  </fieldset>
-
-  <fieldset><legend>2. Yon stajyè kòmanse fòmasyon an men li pa fini l. Èske l ap touche?</legend>
-    <label class="opt"><input type="radio" name="q2" value="a" required><span>Wi, y ap peye l pou èdtan li te fè yo</span></label>
-    <label class="opt"><input type="radio" name="q2" value="b"><span>Non, li p ap touche</span></label>
-    <label class="opt"><input type="radio" name="q2" value="c"><span>Y ap peye l mwatye</span></label>
-  </fieldset>
-
-  <fieldset><legend>3. Ki sa Nivo 2 — SÈTIFYE vle di egzakteman?</legend>
-    <label class="opt"><input type="radio" name="q3" value="a" required><span>Ou gen yon sit epi w ap dirije l</span></label>
-    <label class="opt"><input type="radio" name="q3" value="b"><span>Ou pase egzamen an epi ou kenbe kalifikasyon an, kit gen yon sit ki ouvè kit pa genyen</span></label>
-    <label class="opt"><input type="radio" name="q3" value="c"><span>W ap toujou aprann, èdtan w yo ap konte</span></label>
-  </fieldset>
-
-  <fieldset><legend>4. Chwazi TOUT bagay yo p ap janm itilize kont ou.</legend>
-    <p class="hint">Plizyè repons.</p>
-    <label class="opt"><input type="checkbox" name="q4" value="a"><span>Yon move rekòt ou rapòte onètman</span></label>
-    <label class="opt"><input type="checkbox" name="q4" value="b"><span>Di w pa konnen yon chif olye w devine l</span></label>
-    <label class="opt"><input type="checkbox" name="q4" value="c"><span>Rapòte yon chif ou pa mezire</span></label>
-    <label class="opt"><input type="checkbox" name="q4" value="d"><span>Yon blokaj Vijilans sou sit ou</span></label>
-    <label class="opt"><input type="checkbox" name="q4" value="e"><span>Yon pwoblèm ou leve bonè</span></label>
-  </fieldset>
-
-  <fieldset><legend>5. Chwazi TOUT bagay ki fini l.</legend>
-    <p class="hint">Plizyè repons.</p>
-    <label class="opt"><input type="checkbox" name="q5" value="a"><span>Peye tèt ou anvan gwoup la li chif yo byen fò</span></label>
-    <label class="opt"><input type="checkbox" name="q5" value="b"><span>Fè Sèk Vandredi san w pa mande Vijilans lan</span></label>
-    <label class="opt"><input type="checkbox" name="q5" value="c"><span>Yon move rekòt ou rapòte onètman</span></label>
-    <label class="opt"><input type="checkbox" name="q5" value="d"><span>Pwomèt yon fanmi yon chif total sou konbyen l ap touche</span></label>
-    <label class="opt"><input type="checkbox" name="q5" value="e"><span>Bay yon fanmi yon plas devan yon moun ki pi wo sou lis priyorite a</span></label>
-  </fieldset>
-
-  <button id="btn" type="submit">Voye repons yo</button>
-</form>
-
-<div id="res" class="res" hidden></div>
-
+  <div class="card">
+    <p id="msg">N ap mennen w sou fòm nan…</p>
+    <a class="go" id="go" href="/f/?s=send0">Klike la a pou kontinye</a>
+  </div>
 </div>
 
 <script>
+// ==========================================================================
+// This page used to BE the Send 0 form. As of 2026-08-22 the form is a row in
+// the database, drawn by the shared renderer at /f/?s=send0, the same way
+// every other form works. This URL stays alive forever because it is printed
+// inside the manual and encoded in the QR code, so it must never 404.
+//
+// No meta refresh here on purpose. A refresh fires on a timer and would cut
+// off the queue flush below, which is the one thing on this page that can
+// lose somebody's submission. JS does the redirect once the queue is clear,
+// and the button underneath is the no-JS path.
+// ==========================================================================
 (function () {
-  var API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/send0";
+  var DEST = "/f/?s=send0";
+  var OLD_API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/send0";
   var QKEY = "send0_kew";
-  var f = document.getElementById("f");
-  var btn = document.getElementById("btn");
-  var res = document.getElementById("res");
-  var err = document.getElementById("err");
   var qbox = document.getElementById("q");
+  var msg = document.getElementById("msg");
 
-  // Cache the page so it opens with no signal at all.
+  // Retire the old service worker and its cache. Without this a returning
+  // phone can serve the cached copy of the previous form out of send0-v1 and
+  // sit there answering questions that no longer match the manual.
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
+    navigator.serviceWorker.getRegistrations()
+      .then(function (rs) {
+        rs.forEach(function (r) {
+          if (r.scope.indexOf("/send0/") !== -1) r.unregister();
+        });
+      })
+      .catch(function () {});
   }
+  if (window.caches && caches.delete) caches.delete("send0-v1").catch(function () {});
 
-  // ---- the queue. localStorage, not memory: a trainee may close the tab
-  // ---- long before signal comes back.
   function qread() {
     try { return JSON.parse(localStorage.getItem(QKEY) || "[]"); } catch (e) { return []; }
   }
   function qwrite(a) {
     try { localStorage.setItem(QKEY, JSON.stringify(a)); return true; } catch (e) { return false; }
   }
-  function qpush(p) { var a = qread(); a.push(p); return qwrite(a); }
 
-  function qshow() {
-    var n = qread().length;
-    if (!n) { qbox.hidden = true; return; }
-    qbox.textContent = n === 1
-      ? "Gen 1 repons ki sove sou telefòn nan. N ap voye l otomatikman lè entènèt la tounen."
-      : "Gen " + n + " repons ki sove sou telefòn nan. N ap voye yo otomatikman lè entènèt la tounen.";
-    qbox.hidden = false;
-  }
-
-  function send(payload) {
-    return fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(function (r) {
-      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
-    });
-  }
-
-  // Drain the queue one at a time. A 4xx means the server rejected it on the
-  // merits, so drop it - retrying forever would wedge the queue behind one
-  // bad row. A network failure leaves it in place for the next attempt.
+  // Anything still sitting in the old offline queue was answered against the
+  // old form, so it goes to the old endpoint that scored it. That function is
+  // still deployed for exactly this. Same drain rule as before: a 4xx is a
+  // decision on the merits and gets dropped, a network failure stays queued.
   function flush() {
     var a = qread();
-    if (!a.length) { qshow(); return Promise.resolve(); }
-    var item = a[0];
-    return send(item).then(function (o) {
-      if (o.ok || (o.j && o.j.error)) {
-        qwrite(qread().slice(1));
-        qshow();
-        return flush();
-      }
-    }).catch(function () { /* still offline, leave it queued */ });
+    if (!a.length) return Promise.resolve(true);
+    return fetch(OLD_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(a[0])
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    }).then(function (o) {
+      if (o.ok || (o.j && o.j.error)) { qwrite(qread().slice(1)); return flush(); }
+      return false;
+    }).catch(function () { return false; });
   }
 
-  function fail(m) {
-    err.textContent = m;
-    err.hidden = false;
-    btn.disabled = false;
-    btn.textContent = "Voye repons yo";
-    window.scrollTo(0, 0);
-  }
+  function leave() { location.replace(DEST); }
 
-  function saved() {
-    f.hidden = true;
-    res.hidden = false;
-    res.innerHTML =
-      '<p class="big">✓</p>' +
-      '<p class="msg">Repons ou sove sou telefòn nan.<br>N ap voye l otomatikman lè entènèt la tounen. ' +
-      "Ou pa bezwen fè anyen ankò.</p>" +
-      '<a class="again" href="">← Reponn pou yon lòt moun</a>';
-    window.scrollTo(0, 0);
-  }
+  if (!qread().length) return leave();
 
-  f.addEventListener("submit", function (e) {
-    e.preventDefault();
-    err.hidden = true;
-    btn.disabled = true;
-    btn.textContent = "N ap voye…";
+  // Something is queued. Say so in Kreyòl and do not redirect until it is
+  // either sent or we know we are offline, because leaving early orphans it.
+  qbox.textContent = "Gen repons ki sove sou telefòn nan. N ap voye yo anvan nou kontinye…";
+  qbox.hidden = false;
 
-    var d = new FormData(f);
-    var payload = {
-      website: d.get("website") || "",
-      non: d.get("non") || "",
-      kominote: d.get("kominote") || "",
-      telefon: d.get("telefon") || "",
-      q1: d.get("q1") || "",
-      q2: d.get("q2") || "",
-      q3: d.get("q3") || "",
-      q4: d.getAll("q4"),
-      q5: d.getAll("q5")
-    };
-
-    // Known-offline: do not even try, just bank it.
-    if (navigator.onLine === false) {
-      if (qpush(payload)) { saved(); qshow(); }
-      else fail("Pa gen plas pou sove repons lan. Tcheke entènèt ou epi eseye ankò.");
-      return;
-    }
-
-    send(payload)
-      .then(function (o) {
-        if (!o.ok) { fail(o.j.error || "Gen yon pwoblèm. Tanpri eseye ankò."); return; }
-        f.hidden = true;
-        res.hidden = false;
-        res.innerHTML =
-          '<p class="big ' + (o.j.pase ? "pass" : "fail") + '">' + o.j.esko + "/5</p>" +
-          '<p class="msg">' + o.j.msg + "</p>" +
-          '<a class="again" href="">← Reponn ankò</a>';
-        window.scrollTo(0, 0);
-      })
-      .catch(function () {
-        // Network died mid-request. Bank it rather than lose the answers.
-        if (qpush(payload)) { saved(); qshow(); }
-        else fail("Koneksyon an pa mache. Tcheke entènèt ou epi eseye ankò.");
-      });
+  flush().then(function (done) {
+    if (done) return leave();
+    qbox.textContent = "Pa gen entènèt. Repons ki sove a ap rete sou telefòn nan. " +
+      "Louvri paj sa a ankò lè entènèt la tounen.";
+    msg.textContent = "Ou ka kontinye sou fòm nan kanmenm.";
   });
-
-  window.addEventListener("online", flush);
-  qshow();
-  flush();
 })();
 </script>
 </body>
