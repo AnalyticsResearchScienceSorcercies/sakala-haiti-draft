@@ -136,6 +136,40 @@ nav button:active:not(:disabled){transform:translateY(1px)}
 .msg p{color:var(--muted);margin:0}
 .draft{background:#fff6e0;border-bottom:1px solid #b07d1a;color:#7a5610;
  padding:8px 16px;font-size:13px;font-weight:700;text-align:center;flex:none}
+
+/* ---------------------------------------------------------- script mode
+   ?mod=eskript lays the whole deck out vertically at reading size, for the
+   person standing in front of the camera. It is the same deck, not a second
+   document -- the thing that gets filmed and the thing the trainee opens can
+   never drift, because they are one row in one table. */
+body.eskript{display:block;padding:0 0 80px}
+body.eskript nav,body.eskript .bar,body.eskript header{display:none}
+body.eskript main{overflow:visible}
+.sk{max-width:760px;margin:0 auto;padding:24px 22px}
+.sk h1{font-size:27px;margin:0 0 4px;letter-spacing:-.02em}
+.sk .meta{color:var(--muted);font-size:14px;margin:0 0 4px}
+.sk .card{border:1px solid var(--line);border-radius:var(--r);background:var(--card);
+ padding:20px 22px;margin:0 0 16px}
+.sk .card > .no{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+ color:var(--muted);margin:0 0 10px;display:flex;gap:10px;align-items:baseline}
+.sk .card > .no b{color:var(--accent)}
+.sk .say{font-size:21px;line-height:1.5}
+.sk .say h2{font-size:23px;margin:0 0 12px}
+.sk .say ul.pwen li{font-size:20px}
+.sk .kam{margin:14px 0 0;padding:11px 14px;border-left:4px solid var(--ok);
+ background:#f1f7f2;border-radius:0 var(--r) var(--r) 0;font-size:15px;color:#1b4a2c}
+.sk .kam b{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+ margin-bottom:3px}
+.sk .tools{display:flex;gap:10px;margin:0 0 20px;flex-wrap:wrap}
+.sk .tools a{display:inline-block;padding:10px 16px;border:1px solid var(--ink);
+ border-radius:var(--r);text-decoration:none;color:var(--ink);font-weight:700;font-size:15px}
+.sk .tools a.pri{background:var(--ink);color:var(--paper)}
+@media print{
+  .sk .tools,.draft{display:none}
+  .sk .card{break-inside:avoid;border-color:#bbb}
+  .sk .kam{break-inside:avoid}
+  body{background:#fff}
+}
 </style>
 </head>
 <body>
@@ -164,6 +198,7 @@ nav button:active:not(:disabled){transform:translateY(1px)}
   var qs = new URLSearchParams(location.search);
   var SLUG = (qs.get("s") || "").trim();
   var PREVIEW = qs.get("prevyou") === "1";
+  var SCRIPT = qs.get("mod") === "eskript";
 
   var app = document.getElementById("app");
   var state = document.getElementById("state");
@@ -280,6 +315,47 @@ nav button:active:not(:disabled){transform:translateY(1px)}
       rich(o.ko) + "</div>";
   }
 
+  // Everything, laid out vertically, at a size you can read from a metre away
+  // with a phone on a tripod. Camera notes are visible HERE and nowhere else:
+  // the trainee opening the same lesson never sees them.
+  function drawScript(d) {
+    document.body.classList.add("eskript");
+    var mins = Math.max(1, Math.round(SLIDES.length * 0.4));
+    var cards = SLIDES.map(function (s, n) {
+      var body = slideHtml(s).replace(/^<section class="slide[^"]*">/, "").replace(/<\/section>$/, "");
+      // The video slide is where the camera points at itself. Nothing to read.
+      if (s.type === "videyo") {
+        body = "<h2>" + esc(s.tit || "Video") + "</h2>" +
+          "<p><em>This slide holds the finished video. Nothing to say here.</em></p>";
+      }
+      return '<div class="card"><p class="no"><span>Slide ' + (n + 1) + " of " + SLIDES.length +
+        "</span> <b>" + esc(kindName(s.type)) + "</b></p>" +
+        '<div class="say">' + body + "</div>" +
+        (s.not_kamera
+          ? '<div class="kam"><b>To camera</b>' + rich(s.not_kamera) + "</div>"
+          : "") + "</div>";
+    }).join("");
+
+    var back = "/l/?s=" + encodeURIComponent(SLUG) + (PREVIEW ? "&prevyou=1" : "");
+    document.getElementById("state").hidden = true;
+    app.hidden = false;
+    app.innerHTML = '<div class="sk">' +
+      "<h1>" + esc(d.tit) + "</h1>" +
+      '<p class="meta">Filming script &middot; ' + SLIDES.length + " slides &middot; about " +
+      mins + " minute" + (mins === 1 ? "" : "s") + " read aloud &middot; " + esc(d.lang) + "</p>" +
+      '<div class="tools"><a class="pri" href="' + back + '">Open as slides</a>' +
+      '<a href="#" id="prn">Print / save PDF</a></div>' +
+      cards + "</div>";
+    var pr = document.getElementById("prn");
+    if (pr) pr.onclick = function (e) { e.preventDefault(); window.print(); };
+  }
+
+  function kindName(t) {
+    var m = { tit:"Cover", teks:"Text", pwen:"Points", videyo:"Video",
+              imaj:"Image", sitasyon:"Quote", fen:"Ending" };
+    return m[t] || t;
+  }
+
   function draw() {
     main.innerHTML = slideHtml(SLIDES[i]);
     main.scrollTop = 0;
@@ -372,6 +448,8 @@ nav button:active:not(:disabled){transform:translateY(1px)}
         var was = parseInt(localStorage.getItem("leson:" + SLUG) || "0", 10);
         if (was > 0 && was < SLIDES.length) i = was;
       } catch (e) { /* fine */ }
+
+      if (SCRIPT) { drawScript(d); return; }
 
       state.hidden = true;
       app.hidden = false;

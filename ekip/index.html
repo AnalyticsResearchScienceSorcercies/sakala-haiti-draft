@@ -846,6 +846,9 @@ form.login button{width:100%}
           '<a class="alt" style="text-decoration:none" href="' + LESON + esc(l.slug) +
             (l.eta === "live" ? "" : "&prevyou=1") + '" target="_blank" rel="noopener">' +
             (l.eta === "live" ? "Open" : "Preview") + "</a>" +
+          '<a class="alt" style="text-decoration:none" href="' + LESON + esc(l.slug) +
+            "&mod=eskript" + (l.eta === "live" ? "" : "&prevyou=1") +
+            '" target="_blank" rel="noopener">Script</a>' +
         "</td></tr>";
     }).join("");
 
@@ -921,6 +924,14 @@ form.login button{width:100%}
       fldArea("s" + i + "_ko", "Text", s.ko, "", "Blank line for a new paragraph. **bold** works.");
   }
 
+  // Appended to every slide. Never reaches a trainee -- it shows only in the
+  // filming script, so the deck is both the lesson and the shot list and the
+  // two can never drift apart.
+  function camNote(s, i) {
+    return fldArea("s" + i + "_not_kamera", "Note to camera (only you see this)",
+      s.not_kamera, "", "Shows in the filming script, never in the lesson.");
+  }
+
   function viewLesonEdit() {
     var d = LDRAFT;
     var slides = d.deck.slides;
@@ -931,7 +942,7 @@ form.login button{width:100%}
         '<button class="alt" data-lup="' + i + '"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
         '<button class="alt" data-ldn="' + i + '"' + (i === slides.length - 1 ? " disabled" : "") + ">&darr;</button>" +
         '<button class="alt danger" data-lrm="' + i + '"' + (slides.length < 2 ? " disabled" : "") + ">Remove</button>" +
-        "</div>" + slideFields(s, i) + "</div>";
+        "</div>" + slideFields(s, i) + camNote(s, i) + "</div>";
     }).join("");
 
     var kindOpts = SLIDE_KINDS.map(function (k) {
@@ -968,7 +979,9 @@ form.login button{width:100%}
       '<div class="acts" style="margin-top:20px">' +
         '<button class="go" id="lsave">Save</button>' +
         (d.isNew ? "" : '<a class="alt" style="text-decoration:none" href="' + LESON +
-          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Preview</a>') +
+          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Preview</a>' +
+          '<a class="alt" style="text-decoration:none" href="' + LESON +
+          esc(d.originalSlug) + '&mod=eskript&prevyou=1" target="_blank" rel="noopener">Filming script</a>') +
       "</div>", true);
     wire();
     wireLesonEdit();
@@ -979,7 +992,7 @@ form.login button{width:100%}
       function g(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.value : undefined; }
       function c(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.checked : undefined; }
       ["tit", "sou_tit", "kalite", "ko", "teks", "url", "kap", "alt",
-       "ki_moun", "fom", "bouton", "youtube"].forEach(function (k) {
+       "ki_moun", "fom", "bouton", "youtube", "not_kamera"].forEach(function (k) {
         var v = g(k);
         if (v !== undefined) s[k] = v.trim();
       });
