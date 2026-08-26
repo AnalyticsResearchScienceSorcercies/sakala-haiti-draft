@@ -1,6 +1,6 @@
 // Module handlers for the internal team API.
 import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
-import { validate } from "./validate.ts";
+import { validate, validateDeck } from "./validate.ts";
 
 export class Fail extends Error {
   status: number;
@@ -16,6 +16,7 @@ export function modWhoami(user: string) {
     moduleyo: [
       { kle: "fom", tit: "Forms", deskripsyon: "Build and publish forms", pare: true },
       { kle: "apwobasyon", tit: "Approvals", deskripsyon: "Two signatures before money moves", pare: true },
+      { kle: "leson", tit: "Lessons", deskripsyon: "Slide decks the trainees learn from", pare: true },
       { kle: "dok", tit: "Documents", deskripsyon: "Which version is current", pare: true },
       { kle: "pewol", tit: "Hours & payroll", deskripsyon: "What each person is owed", pare: false },
     ],
@@ -44,6 +45,118 @@ export async function modDok() {
 // same way it handles every other form, and now computes item analysis from
 // the form's OWN answer keys instead of a second copy pasted into this file.
 // Two copies of one answer key is how you get an answer key with two values.
+
+
+// -------------------------------------------------------------- lessons
+
+// A lesson is a row and one renderer draws it, the same bargain the form
+// engine makes. Creating a lesson is an INSERT: no deploy, no git, no HTML
+// per lesson, and Dan cannot make an ugly one because he never touches CSS.
+
+export async function lesonList() {
+  const { data, error } = await SB()
+    .from("ekip_leson")
+    .select("id,slug,tit,deskripsyon,deck,send,lang,eta,kreye_pa,updated_at")
+    .order("send", { ascending: true, nullsFirst: false })
+    .order("updated_at", { ascending: false });
+  if (error) throw new Fail(error.message, 500);
+  return {
+    leson: (data ?? []).map((l) => {
+      const slides = ((l.deck?.slides ?? []) as Record<string, unknown>[]);
+      return {
+        id: l.id, slug: l.slug, tit: l.tit, deskripsyon: l.deskripsyon,
+        send: l.send, lang: l.lang, eta: l.eta, kreye_pa: l.kreye_pa,
+        updated_at: l.updated_at,
+        glise: slides.length,
+        // Surfaced in the list because these are the two things that decide
+        // whether a lesson can go out: has it got its video, and does it hand
+        // the trainee anything to do at the end.
+        videyo: slides.filter((x) => x.type === "videyo").length,
+        videyo_vid: slides.filter((x) => x.type === "videyo" && !String(x.youtube ?? "").trim()).length,
+        fom: slides.filter((x) => x.type === "fen").map((x) => String(x.fom ?? "")).filter(Boolean)[0] ?? null,
+      };
+    }),
+  };
+}
+
+export async function lesonGet(slug: string) {
+  const { data, error } = await SB().from("ekip_leson").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw new Fail(error.message, 500);
+  if (!data) throw new Fail(`Lesson "${slug}" does not exist.`, 404);
+  return data;
+}
+
+export async function lesonSave(user: string, body: Record<string, unknown>, slug?: string) {
+  const newSlug = String(body.slug ?? slug ?? "").trim().toLowerCase();
+  if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(newSlug)) {
+    throw new Fail("Slug must be lowercase letters, digits and hyphens, 3-50 characters.");
+  }
+  const tit = String(body.tit ?? "").trim();
+  if (!tit) throw new Fail("The lesson needs a title.");
+
+  const eta = String(body.eta ?? "bouyon");
+  if (!["bouyon", "live", "feme"].includes(eta)) throw new Fail("Unknown status.");
+
+  const lang = String(body.lang ?? "KR");
+  if (!["KR", "EN", "FR"].includes(lang)) throw new Fail("Language must be KR, EN or FR.");
+
+  let send: number | null = null;
+  if (body.send !== undefined && body.send !== null && body.send !== "") {
+    send = Number(body.send);
+    if (!Number.isInteger(send) || send < 0 || send > 7) {
+      throw new Fail("Send must be a whole number from 0 to 7.");
+    }
+  }
+
+  const deck = body.deck ?? { slides: [] };
+  const errs = validateDeck(deck);
+  if (errs.length) throw new Fail(errs.join(" · "));
+
+  // GOING LIVE IN KREYOL IS THE POINT. An English deck can exist as a draft
+  // for as long as it takes -- that is how it gets written -- but a trainee
+  // opening a WhatsApp link and finding English is the failure this whole
+  // pipeline was built to avoid. Refuse it here rather than discover it in
+  // the field.
+  if (eta === "live" && lang !== "KR") {
+    throw new Fail(
+      `This lesson is in ${lang}. Only a Kreyol lesson can go live, because a ` +
+      `trainee opens it on a phone with nobody beside them. Keep it a draft ` +
+      `until it is translated.`);
+  }
+
+  const row = {
+    slug: newSlug, tit,
+    deskripsyon: String(body.deskripsyon ?? "").trim() || null,
+    deck, send, lang, eta,
+  };
+
+  if (slug) {
+    const { data, error } = await SB().from("ekip_leson")
+      .update(row).eq("slug", slug).select().maybeSingle();
+    if (error) throw new Fail(error.message, error.code === "23505" ? 409 : 500);
+    if (!data) throw new Fail(`Lesson "${slug}" does not exist.`, 404);
+    return data;
+  }
+
+  const { data, error } = await SB().from("ekip_leson")
+    .insert({ ...row, kreye_pa: user }).select().maybeSingle();
+  if (error) throw new Fail(
+    error.code === "23505" ? `Slug "${newSlug}" is already taken.` : error.message,
+    error.code === "23505" ? 409 : 500);
+  return data;
+}
+
+export async function lesonDelete(slug: string) {
+  // No responses to protect, unlike a form -- a lesson collects nothing. Only
+  // guard against deleting something a trainee currently has a link to.
+  const { data } = await SB().from("ekip_leson").select("eta").eq("slug", slug).maybeSingle();
+  if (data?.eta === "live") {
+    throw new Fail("This lesson is live and someone may hold a link to it. Close it first.", 409);
+  }
+  const { error } = await SB().from("ekip_leson").delete().eq("slug", slug);
+  if (error) throw new Fail(error.message, 500);
+  return { ok: true };
+}
 
 // ---------------------------------------------------------- forms (builder)
 

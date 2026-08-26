@@ -166,6 +166,7 @@ form.login button{width:100%}
   var API  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
   var APW  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/apwobasyon";
   var FORM = "https://konkret-haiti.com/f/?s=";
+  var LESON = "https://konkret-haiti.com/l/?s=";
   var login = document.getElementById("login");
   var lerr  = document.getElementById("lerr");
   var app   = document.getElementById("app");
@@ -793,6 +794,280 @@ form.login button{width:100%}
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
 
+  // =================================================== lessons
+  // A lesson is a deck of slides. Same bargain as the form builder: the style
+  // is written once in the renderer, so nobody editing here can make an ugly
+  // one, and creating a lesson is a save rather than a deploy.
+
+  var LDRAFT = null;
+
+  var SLIDE_KINDS = [
+    ["tit",      "Cover"],
+    ["teks",     "Text"],
+    ["pwen",     "Points"],
+    ["videyo",   "Video"],
+    ["imaj",     "Image"],
+    ["sitasyon", "Quote"],
+    ["fen",      "Ending"]
+  ];
+  function kindName(t) {
+    for (var i = 0; i < SLIDE_KINDS.length; i++) if (SLIDE_KINDS[i][0] === t) return SLIDE_KINDS[i][1];
+    return t;
+  }
+  function blankSlide(t) {
+    t = t || "teks";
+    if (t === "pwen") return { type:"pwen", tit:"", pwen:[""] };
+    if (t === "videyo") return { type:"videyo", tit:"", youtube:"", ko:"" };
+    if (t === "fen") return { type:"fen", tit:"", ko:"", fom:"", bouton:"" };
+    return { type:t, tit:"", ko:"" };
+  }
+
+  function viewLesonList(d) {
+    var rows = d.leson.map(function (l) {
+      // The two things that decide whether it can go out, said in the row so
+      // nobody has to open a lesson to find out it has no video yet.
+      var vid = l.videyo === 0
+        ? '<span style="color:var(--muted)">&mdash;</span>'
+        : l.videyo_vid
+          ? '<span class="pill bouyon">' + l.videyo_vid + " of " + l.videyo + " missing</span>"
+          : '<span class="pill live">' + l.videyo + "</span>";
+      var gate = l.fom
+        ? "<code>" + esc(l.fom) + "</code>"
+        : '<span class="pill bouyon">no gate</span>';
+      return "<tr><td>" + (l.send == null ? "" : '<strong style="font-size:15px">' + l.send + "</strong> ") +
+        "<strong>" + esc(l.tit) + "</strong>" +
+        '<div style="margin-top:4px"><code>' + esc(l.slug) + "</code></div></td>" +
+        '<td><span class="pill ' + esc(l.eta) + '">' +
+          ({bouyon:"DRAFT", live:"LIVE", feme:"CLOSED"}[l.eta] || l.eta) + "</span>" +
+          (l.lang !== "KR" ? ' <span class="pill bouyon">' + esc(l.lang) + "</span>" : "") + "</td>" +
+        "<td>" + l.glise + "</td><td>" + vid + "</td><td>" + gate + "</td>" +
+        '<td class="acts">' +
+          '<button class="alt" data-ledit="' + esc(l.slug) + '">Edit</button>' +
+          '<a class="alt" style="text-decoration:none" href="' + LESON + esc(l.slug) +
+            (l.eta === "live" ? "" : "&prevyou=1") + '" target="_blank" rel="noopener">' +
+            (l.eta === "live" ? "Open" : "Preview") + "</a>" +
+        "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<div class="acts" style="margin-bottom:6px"><h1 style="flex:1;font-size:19px;margin:0">Lessons</h1>' +
+      '<button class="go" id="lnew">+ New lesson</button></div>' +
+      '<p class="sub" style="margin:0 0 16px">What a trainee opens from a WhatsApp link. ' +
+      "Videos are YouTube ids, never uploaded files ... an external player lets someone " +
+      "on phone data drop to 144p, and a file we host does not.</p>" +
+      (d.leson.length
+        ? '<div class="scroll"><table><thead><tr><th>Lesson</th><th>Status</th><th>Slides</th>' +
+          "<th>Video</th><th>Gate</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        : '<div class="empty">No lessons yet. Create the first one.</div>'), true);
+    wire();
+    document.getElementById("lnew").onclick = function () { location.hash = "leson/new"; };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-ledit]"), function (b) {
+      b.onclick = function () { location.hash = "leson/" + b.getAttribute("data-ledit"); };
+    });
+  }
+
+  function fldText(id, label, v, ph) {
+    return '<div class="row"><div><label for="' + id + '">' + esc(label) + "</label>" +
+      '<input id="' + id + '" type="text" value="' + esc(v || "") + '"' +
+      (ph ? ' placeholder="' + esc(ph) + '"' : "") + "></div></div>";
+  }
+  function fldArea(id, label, v, ph, hint) {
+    return '<div class="row"><div><label for="' + id + '">' + esc(label) + "</label>" +
+      '<textarea id="' + id + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : "") + ">" +
+      esc(v || "") + "</textarea>" +
+      (hint ? '<p class="mini">' + hint + "</p>" : "") + "</div></div>";
+  }
+
+  function slideFields(s, i) {
+    var t = s.type;
+    if (t === "tit") {
+      return fldText("s" + i + "_kalite", "Eyebrow", s.kalite, "MODIL 1") +
+        fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_sou_tit", "Subtitle", s.sou_tit);
+    }
+    if (t === "pwen") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldArea("s" + i + "_pwen", "Points", (s.pwen || []).join("\n"), "", "One per line. Max 12.") +
+        '<label class="inline" style="margin-bottom:12px"><input type="checkbox" id="s' + i +
+        '_nimewo"' + (s.nimewo ? " checked" : "") + "><span>Number them</span></label>";
+    }
+    if (t === "videyo") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_youtube", "YouTube id or link", s.youtube) +
+        '<p class="mini">Paste the id or the whole link, either works. Leave it empty ' +
+        "until it is filmed ... the deck saves fine without it and the slide says so.</p>" +
+        fldArea("s" + i + "_ko", "Text under the video", s.ko);
+    }
+    if (t === "imaj") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_url", "Image link", s.url, "/img/...") +
+        fldText("s" + i + "_kap", "Caption", s.kap) +
+        fldText("s" + i + "_alt", "Description for a screen reader", s.alt);
+    }
+    if (t === "sitasyon") {
+      return fldArea("s" + i + "_teks", "The quote", s.teks) +
+        fldText("s" + i + "_ki_moun", "Who said it", s.ki_moun);
+    }
+    if (t === "fen") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldArea("s" + i + "_ko", "Text", s.ko) +
+        fldText("s" + i + "_fom", "Gate form slug", s.fom) +
+        fldText("s" + i + "_bouton", "Button", s.bouton) +
+        '<p class="mini">This is the join between the two engines: the ending slide ' +
+        "hands the trainee the gate that unlocks the next send.</p>";
+    }
+    return fldText("s" + i + "_tit", "Title", s.tit) +
+      fldArea("s" + i + "_ko", "Text", s.ko, "", "Blank line for a new paragraph. **bold** works.");
+  }
+
+  function viewLesonEdit() {
+    var d = LDRAFT;
+    var slides = d.deck.slides;
+
+    var cards = slides.map(function (s, i) {
+      return '<div class="sec"><div class="sechead">' +
+        '<span class="n">' + (i + 1) + ". " + esc(kindName(s.type)) + "</span>" +
+        '<button class="alt" data-lup="' + i + '"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
+        '<button class="alt" data-ldn="' + i + '"' + (i === slides.length - 1 ? " disabled" : "") + ">&darr;</button>" +
+        '<button class="alt danger" data-lrm="' + i + '"' + (slides.length < 2 ? " disabled" : "") + ">Remove</button>" +
+        "</div>" + slideFields(s, i) + "</div>";
+    }).join("");
+
+    var kindOpts = SLIDE_KINDS.map(function (k) {
+      return '<option value="' + k[0] + '">' + esc(k[1]) + "</option>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 14px">' +
+        (d.isNew ? "New lesson" : esc(d.tit || d.slug)) + "</h1>" +
+      '<div class="sec"><h3>The lesson</h3>' +
+        fldText("ltit", "Title", d.tit) +
+        fldText("lslug", "Link name (slug)", d.slug) +
+        '<div class="row"><div><label for="lsend">Send number</label>' +
+          '<input id="lsend" type="number" min="0" max="7" value="' +
+          (d.send == null ? "" : d.send) + '"></div>' +
+        '<div><label for="llang">Language</label><select id="llang">' +
+          ["KR", "EN", "FR"].map(function (x) {
+            return '<option value="' + x + '"' + (d.lang === x ? " selected" : "") + ">" + x + "</option>";
+          }).join("") +
+        "</select></div></div>" +
+        '<div class="row"><div><label for="leta">Status</label><select id="leta">' +
+          [["bouyon", "Draft"], ["live", "Live"], ["feme", "Closed"]].map(function (x) {
+            return '<option value="' + x[0] + '"' + (d.eta === x[0] ? " selected" : "") + ">" + x[1] + "</option>";
+          }).join("") +
+        "</select>" +
+        '<p class="mini">Only a Kreyol lesson can go live. An English deck stays a draft ' +
+        "until it is translated ... a trainee opens this alone, on a phone.</p></div></div>" +
+      cards +
+      '<div class="acts" style="margin:16px 0">' +
+        '<select id="lkind">' + kindOpts + "</select>" +
+        '<button class="alt" id="ladd">+ Add slide</button>' +
+      "</div>" +
+      '<div class="acts" style="margin-top:20px">' +
+        '<button class="go" id="lsave">Save</button>' +
+        (d.isNew ? "" : '<a class="alt" style="text-decoration:none" href="' + LESON +
+          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Preview</a>') +
+      "</div>", true);
+    wire();
+    wireLesonEdit();
+  }
+
+  function readSlides() {
+    LDRAFT.deck.slides.forEach(function (s, i) {
+      function g(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.value : undefined; }
+      function c(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.checked : undefined; }
+      ["tit", "sou_tit", "kalite", "ko", "teks", "url", "kap", "alt",
+       "ki_moun", "fom", "bouton", "youtube"].forEach(function (k) {
+        var v = g(k);
+        if (v !== undefined) s[k] = v.trim();
+      });
+      if (s.type === "pwen") {
+        var raw = g("pwen") || "";
+        s.pwen = raw.split("\n").map(function (x) { return x.trim(); }).filter(Boolean);
+        s.nimewo = !!c("nimewo");
+      }
+    });
+  }
+
+  function readTop() {
+    var d = LDRAFT;
+    d.tit = document.getElementById("ltit").value.trim();
+    d.slug = document.getElementById("lslug").value.trim();
+    d.eta = document.getElementById("leta").value;
+    d.lang = document.getElementById("llang").value;
+    var sv = document.getElementById("lsend").value;
+    d.send = sv === "" ? null : Number(sv);
+  }
+
+  function wireLesonEdit() {
+    var d = LDRAFT;
+    document.getElementById("ladd").onclick = function () {
+      readSlides(); readTop();
+      d.deck.slides.push(blankSlide(document.getElementById("lkind").value));
+      viewLesonEdit();
+    };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-lup]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        var i = +b.getAttribute("data-lup"), a = d.deck.slides;
+        a.splice(i - 1, 0, a.splice(i, 1)[0]);
+        viewLesonEdit();
+      };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-ldn]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        var i = +b.getAttribute("data-ldn"), a = d.deck.slides;
+        a.splice(i + 1, 0, a.splice(i, 1)[0]);
+        viewLesonEdit();
+      };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-lrm]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        d.deck.slides.splice(+b.getAttribute("data-lrm"), 1);
+        viewLesonEdit();
+      };
+    });
+    document.getElementById("lsave").onclick = saveLeson;
+
+    // Slug follows the title until somebody edits the slug by hand, then it
+    // stops moving. A link that changes under a trainee is a dead link.
+    var tit = document.getElementById("ltit"), slug = document.getElementById("lslug");
+    slug.addEventListener("input", function () { d.slugTouched = true; });
+    tit.addEventListener("input", function () {
+      if (d.slugTouched) return;
+      slug.value = String(tit.value || "").toLowerCase().normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "").slice(0, 48);
+    });
+  }
+
+  function saveLeson() {
+    readSlides(); readTop();
+    var d = LDRAFT;
+    var btn = document.getElementById("lsave");
+    btn.disabled = true; btn.textContent = "Saving\u2026";
+
+    var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, send:d.send,
+                 lang:d.lang, eta:d.eta, deck:d.deck };
+    api(d.isNew ? "leson" : "leson/" + d.originalSlug,
+        { method: d.isNew ? "POST" : "PUT", body: body })
+      .then(function () {
+        sessionStorage.setItem("ekipmsg", "Saved. " +
+          (d.eta === "live" ? "The lesson is live at " + LESON + d.slug
+                            : "Still a draft \u2014 nobody outside can open it yet."));
+        location.hash = "leson";
+        if ((location.hash || "") === "#leson") route();
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.textContent = "Save";
+        note("err", esc(e.message));
+      });
+  }
+
   // =================================================== approvals
   // Two-signature control. The rules (sequence, separation of persons,
   // finality) are enforced in Postgres — this screen only shows state and
@@ -1051,6 +1326,30 @@ form.login button{width:100%}
       loading();
       return api("fom").then(function (d) {
         viewFomList(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "leson" && arg === "new") {
+      LDRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"",
+                 send:null, lang:"KR", eta:"bouyon",
+                 deck:{ slides:[ blankSlide("tit"), blankSlide("fen") ] } };
+      return viewLesonEdit();
+    }
+    if (k === "leson" && arg) {
+      loading();
+      return api("leson/" + encodeURIComponent(arg)).then(function (l) {
+        LDRAFT = { isNew:false, slug:l.slug, originalSlug:l.slug, tit:l.tit,
+                   deskripsyon:l.deskripsyon||"", send:l.send, lang:l.lang,
+                   eta:l.eta, slugTouched:true,
+                   deck: (l.deck && l.deck.slides) ? l.deck : { slides:[blankSlide("tit")] } };
+        viewLesonEdit();
+      }).catch(oops);
+    }
+    if (k === "leson") {
+      loading();
+      return api("leson").then(function (d) {
+        viewLesonList(d);
         var m = sessionStorage.getItem("ekipmsg");
         if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
       }).catch(oops);

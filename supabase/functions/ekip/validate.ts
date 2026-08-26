@@ -429,3 +429,111 @@ function validateSumOf(
   }
   return errs;
 }
+
+// ---------------------------------------------------------------------------
+// Lessons. A slide deck, validated at the door for the same reason a form is:
+// a lesson that draws wrong is discovered by a trainee, on a phone, alone.
+//
+// Far looser than validate() above, and deliberately. A form collects money
+// and signatures; a lesson collects nothing, so the only real failures are a
+// slide type the renderer cannot draw and a slide with nothing on it.
+// ---------------------------------------------------------------------------
+
+export const SLIDE_TYPES = new Set([
+  "tit", "teks", "pwen", "videyo", "imaj", "sitasyon", "fen",
+]);
+
+const DECK_MAX_SLIDES = 60;   // past this it is a manual, not a lesson
+const SLIDE_TEXT_MAX = 4000;
+
+export function validateDeck(deck: unknown): string[] {
+  const errs: string[] = [];
+  if (!deck || typeof deck !== "object") return ["Deck is not an object."];
+  const d = deck as Record<string, unknown>;
+  const slides = d.slides;
+  if (!Array.isArray(slides)) return ['A deck needs a "slides" list.'];
+  if (!slides.length) return ["A lesson needs at least one slide."];
+  if (slides.length > DECK_MAX_SLIDES) {
+    errs.push(`${slides.length} slides is too many (max ${DECK_MAX_SLIDES}). ` +
+      `Past that it is a manual, and a manual is a document, not a lesson.`);
+  }
+
+  let ends = 0;
+
+  slides.forEach((sRaw, si) => {
+    const where = `Slide ${si + 1}`;
+    if (!sRaw || typeof sRaw !== "object" || Array.isArray(sRaw)) {
+      errs.push(`${where}: not a slide.`);
+      return;
+    }
+    const s = sRaw as Record<string, unknown>;
+    const type = String(s.type ?? "teks");
+    if (!SLIDE_TYPES.has(type)) {
+      errs.push(`${where}: unknown slide type "${type}".`);
+      return;
+    }
+
+    const txt = (k: string) => String(s[k] ?? "");
+    for (const k of ["tit", "sou_tit", "ko", "teks", "kap", "alt", "ki_moun", "bouton", "kalite"]) {
+      if (s[k] !== undefined && txt(k).length > SLIDE_TEXT_MAX) {
+        errs.push(`${where}: "${k}" is longer than ${SLIDE_TEXT_MAX} characters. Split the slide.`);
+      }
+    }
+
+    if (type === "tit" && !txt("tit")) errs.push(`${where}: a title slide needs a title.`);
+
+    if (type === "pwen") {
+      const pts = s.pwen;
+      if (!Array.isArray(pts) || !pts.length) errs.push(`${where}: a points slide needs at least one point.`);
+      else if (pts.length > 12) errs.push(`${where}: ${pts.length} points on one slide is a wall. Split it.`);
+    }
+
+    if (type === "videyo") {
+      // The renderer takes an id or a URL it can pull an id out of, so this
+      // only refuses what is neither. A missing video is allowed on purpose:
+      // the deck gets built and frozen before anything is filmed.
+      const raw = String(s.youtube ?? "").trim();
+      if (raw && !/^[A-Za-z0-9_-]{11}$/.test(raw) &&
+          !/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)[A-Za-z0-9_-]{11}/.test(raw)) {
+        errs.push(`${where}: that is not a YouTube video id or link.`);
+      }
+      if (s.komanse !== undefined && s.komanse !== null && s.komanse !== "") {
+        const n = Number(s.komanse);
+        if (!Number.isFinite(n) || n < 0) errs.push(`${where}: start time must be seconds, 0 or more.`);
+      }
+    }
+
+    if (type === "imaj") {
+      const u = String(s.url ?? "").trim();
+      // Same-origin or https only. A lesson that pulls an image over http gets
+      // blocked as mixed content and shows a hole nobody can explain.
+      if (u && !/^(https:\/\/|\/)/.test(u)) {
+        errs.push(`${where}: an image must be an https link or a path starting with "/".`);
+      }
+    }
+
+    if (type === "sitasyon" && !txt("teks")) errs.push(`${where}: a quote slide needs the quote.`);
+
+    if (type === "fen") {
+      ends++;
+      const fom = String(s.fom ?? "").trim();
+      if (fom && !/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(fom)) {
+        errs.push(`${where}: "${fom}" is not a form slug.`);
+      }
+      const lyen = String(s.lyen ?? "").trim();
+      if (lyen && !/^(https:\/\/|\/)/.test(lyen)) {
+        errs.push(`${where}: a link must be https or start with "/".`);
+      }
+    }
+  });
+
+  // Not an error. A deck with no ending hands the trainee nothing to do next,
+  // which is exactly the drift that turned Send 0's gate into a dead end, so
+  // it is worth saying out loud in the builder.
+  if (!ends) {
+    errs.push('This lesson has no ending slide, so nothing tells the trainee what to do next. ' +
+      'Add a "fen" slide pointing at the gate form.');
+  }
+
+  return errs;
+}

@@ -11,7 +11,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import {
   akseList, Fail, fichyeUrl, fomDelete, fomGet, fomList, fomSave,
-  initMods, modDok, modWhoami, reponsGet,
+  initMods, lesonDelete, lesonGet, lesonList, lesonSave, modDok, modWhoami, reponsGet,
 } from "./mods.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -131,6 +131,18 @@ Deno.serve(async (req: Request) => {
         if (m === "GET") out = await fomGet(rest);
         else if (m === "PUT" || m === "POST") out = await fomSave(user, await req.json(), rest);
         else if (m === "DELETE") out = await fomDelete(rest);
+        else throw new Fail("Method not allowed", 405);
+      }
+    } else if (head === "leson") {
+      // Same shape as fom: the slug in the path, the body carrying the deck.
+      if (!rest) {
+        if (m === "GET") out = await lesonList();
+        else if (m === "POST") out = await lesonSave(user, await req.json());
+        else throw new Fail("Method not allowed", 405);
+      } else {
+        if (m === "GET") out = await lesonGet(rest);
+        else if (m === "PUT" || m === "POST") out = await lesonSave(user, await req.json(), rest);
+        else if (m === "DELETE") out = await lesonDelete(rest);
         else throw new Fail("Method not allowed", 405);
       }
     } else if (head === "pewol") out = { pare: false, mesaj: "The payroll module is not built yet." };
