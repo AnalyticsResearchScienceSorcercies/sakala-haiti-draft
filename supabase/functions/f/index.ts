@@ -80,9 +80,40 @@ function fieldsOf(schema: Record<string, unknown>): Field[] {
   return out;
 }
 
-function setEq(got: unknown, want: unknown[]) {
-  const g = new Set(Array.isArray(got) ? got.map(String) : []);
-  return g.size === want.length && want.every((v) => g.has(String(v)));
+// A question's label for feedback. Most forms label the field; the quiz forms
+// put the question in the section legend and leave the field unlabelled, so
+// both have to be reachable by key.
+function labelsOf(schema: Record<string, unknown>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const sec of (schema.sections ?? []) as Record<string, unknown>[]) {
+    for (const f of (sec.fields ?? []) as Record<string, unknown>[]) {
+      out[String(f.key)] = String(f.label || sec.legend || f.key);
+    }
+  }
+  return out;
+}
+
+// PARTIAL CREDIT. Returns 0..1 for one question.
+//
+// Replaces exact-set equality, 2026-08-26. Under setEq a candidate who ticked
+// all four correct items on Send 0 q4 and added a fifth scored zero -- the
+// same zero as someone who ticked nothing. Nine attempts by four people
+// produced no pass and no score above 3/5, and the two who knew the answer
+// were marked identically to the two who did not. A gate that cannot tell
+// those apart is not measuring comprehension.
+//
+// Wrong ticks CANCEL right ones, so ticking every box scores 0 rather than
+// full marks. Floored at 0 so one bad question cannot eat another's credit.
+function pwen(got: unknown, want: unknown): number {
+  if (Array.isArray(want)) {
+    const wantSet = new Set(want.map(String));
+    const gotSet = new Set(Array.isArray(got) ? got.map(String) : []);
+    if (!wantSet.size) return gotSet.size ? 0 : 1;
+    let right = 0, wrong = 0;
+    for (const v of gotSet) wantSet.has(v) ? right++ : wrong++;
+    return Math.max(0, (right - wrong) / wantSet.size);
+  }
+  return String(got) === String(want) ? 1 : 0;
 }
 
 function fill(msg: string, referans: string | null) {
@@ -190,28 +221,49 @@ Deno.serve(async (req: Request) => {
 
   if (manke.length) return bad("Chan sa yo obligatwa: " + manke.join(", "));
 
+  // SCORING AND VERDICT ARE SEPARATE, 2026-08-26.
+  //
+  // Before, `pass_mark` gated both: a form with answer keys and no pass mark
+  // was not scored at all, so the only way to show a candidate a score was to
+  // also hang a door on it. Now answer keys produce a score, and `pass_mark`
+  // decides only whether that score is also a verdict. A gate can tell someone
+  // what they missed without shutting them out.
+  //
+  // `esko` is a PERCENTAGE, 0..100, and `total` is always 100. It was a count
+  // of whole questions until 2026-08-26; partial credit made that a fraction,
+  // and both columns are smallint. Percent survives any mix of question types
+  // and reads better on a phone than "3.75/5". `pass_mark` is a percentage
+  // too -- see the matching change in ekip/validate.ts.
   const passMark = (fom.schema as Record<string, unknown>).pass_mark;
   let esko: number | null = null;
   let total: number | null = null;
   let pase: boolean | null = null;
+  const manke_kesyon: string[] = [];
 
   const scored = fields.filter((f) => f.answer !== undefined);
-  if (typeof passMark === "number" && scored.length) {
-    esko = 0;
-    total = scored.length;
+  if (scored.length) {
+    const labels = labelsOf(fom.schema as Record<string, unknown>);
+    let sum = 0;
     for (const f of scored) {
-      const got = repons[f.key];
-      const ok = Array.isArray(f.answer)
-        ? setEq(got, f.answer as unknown[])
-        : String(got) === String(f.answer);
-      if (ok) esko++;
+      const p = pwen(repons[f.key], f.answer);
+      sum += p;
+      // Which question, never which option. Naming the missed options would
+      // hand back the answer key one retry at a time.
+      if (p < 1) manke_kesyon.push(labels[f.key] ?? f.key);
     }
-    pase = esko >= passMark;
+    total = 100;
+    esko = Math.round((sum / scored.length) * 100);
+    if (typeof passMark === "number") pase = esko >= passMark;
   }
 
   const { data: saved, error: insErr } = await sb().from("ekip_repons").insert({
     fom_id: fom.id, fom_slug: fom.slug, repons, esko, total, pase,
-    meta: { ua: (req.headers.get("user-agent") ?? "").slice(0, 300) },
+    meta: {
+      ua: (req.headers.get("user-agent") ?? "").slice(0, 300),
+      // Stamped so a row scored under the old whole-question scheme is never
+      // silently compared against one scored as a percentage.
+      ...(esko === null ? {} : { eskò_vesyon: 2 }),
+    },
   }).select("id,referans").maybeSingle();
 
   if (insErr) {
@@ -229,5 +281,8 @@ Deno.serve(async (req: Request) => {
 
   return new Response(JSON.stringify({
     ok: true, esko, total, pase, referans, msg: fill(raw, referans),
+    // Empty array when every scored question was right; absent when the form
+    // is not scored at all. The renderer distinguishes the two.
+    ...(esko === null ? {} : { manke: manke_kesyon }),
   }), { headers: json });
 });

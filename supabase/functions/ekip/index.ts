@@ -11,7 +11,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import {
   akseList, Fail, fichyeUrl, fomDelete, fomGet, fomList, fomSave,
-  initMods, modDok, modSend0, modWhoami, reponsGet,
+  initMods, modDok, modWhoami, reponsGet,
 } from "./mods.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -111,7 +111,6 @@ Deno.serve(async (req: Request) => {
 
     if (head === "" || head === "whoami") out = modWhoami(user);
     else if (head === "dok") out = await modDok();
-    else if (head === "send0") out = await modSend0();
     else if (head === "repons" && rest) out = await reponsGet(rest);
     else if (head === "akse") out = await akseList();
     else if (head === "fichye") {

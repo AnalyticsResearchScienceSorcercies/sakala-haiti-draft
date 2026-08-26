@@ -675,9 +675,55 @@ form.login button{width:100%}
   }
 
   // =================================================== responses
+  // Rows submitted before 2026-08-26 hold a count of whole questions
+  // ("3" out of "5"); rows after it hold a percentage out of 100. Both are
+  // shown in their own units rather than converted, because a 3/5 scored by
+  // exact-set matching does not mean the same thing as 60% scored with
+  // partial credit and pretending otherwise would invent a trend.
+  function score(r) {
+    return r.total === 100 ? r.esko + "%" : r.esko + "/" + r.total;
+  }
+
+  // Item analysis. Which question is losing people, worst first. Computed by
+  // the API from the form's own answer keys, so it can never drift from the
+  // live form the way the deleted Send 0 tab did.
+  function itemAnalysis(d) {
+    if (!d.kesyon || !d.kesyon.length || !d.rows.length) return "";
+    var n = d.rows.length;
+    var rows = d.kesyon.map(function (q) {
+      return "<tr><td>" + esc(q.label) +
+        "<div class='meter'><span style='width:" + q.pct + "%'></span></div></td>" +
+        "<td style='text-align:right;white-space:nowrap'><strong>" + q.pct + "%</strong>" +
+        "<br><span style='color:var(--muted);font-size:12px'>" + q.full + " right</span></td>" +
+        "<td style='text-align:right;white-space:nowrap;color:var(--muted);font-size:13px'>" +
+        q.part + " part<br>" + q.zero + " wrong</td></tr>";
+    }).join("");
+    var r = d.rezime;
+    var cards = r
+      ? '<div class="cards">' +
+        '<div class="card"><div class="n">' + r.eskore + '</div><div class="l">Scored</div></div>' +
+        '<div class="card"><div class="n">' + r.mwayèn + '%</div><div class="l">Average</div></div>' +
+        (r.gen_pòt
+          ? '<div class="card"><div class="n">' + r.pase + '</div><div class="l">Passed</div></div>'
+          : '<div class="card"><div class="n">—</div><div class="l">No pass mark</div></div>') +
+        "</div>"
+      : "";
+    return cards +
+      "<h2>By question, worst first</h2>" +
+      "<div class='scroll'><table><thead><tr><th>Question</th>" +
+      "<th style='text-align:right'>Fully right</th>" +
+      "<th style='text-align:right'>Partial / wrong</th></tr></thead><tbody>" +
+      rows + "</tbody></table></div>" +
+      "<p class='mini'>Partial credit: wrong ticks cancel right ones, floored at zero. " +
+      "A question nobody answers fully is usually the question, not the candidates. " +
+      "n = " + n + ".</p>";
+  }
+
   function viewRepons(d) {
     var cols = d.fields.slice(0, 8);
-    var scored = d.rows.length && d.rows[0].esko != null;
+    // some(), not rows[0] — a form can gain or lose its answer keys, so the
+    // newest row is not a reliable witness for the ones underneath it.
+    var scored = d.rows.some(function (r) { return r.esko != null; });
     var head = cols.map(function(c){ return "<th>" + esc(c.label) + "</th>"; }).join("");
     var rows = d.rows.map(function (r) {
       return "<tr>" + cols.map(function (c) {
@@ -687,8 +733,12 @@ form.login button{width:100%}
         if (Array.isArray(v)) v = v.join(", ");
         return "<td>" + esc(v === "" || v == null ? "—" : v) + "</td>";
       }).join("") +
-      (scored ? '<td style="text-align:center"><span class="' + (r.pase?"pass":"fail") + '">' +
-        r.esko + "/" + r.total + "</span></td>" : "") +
+      // THREE states, not two. A scored form with no pass mark has pase ===
+      // null, and painting that red said "failed" about a gate that was never
+      // a door. Only a real verdict gets a colour.
+      (scored ? '<td style="text-align:center">' + (r.esko == null ? "—"
+        : '<span class="' + (r.pase === true ? "pass" : r.pase === false ? "fail" : "") + '">' +
+          score(r) + "</span>") + "</td>" : "") +
       '<td style="white-space:nowrap;color:var(--muted);font-size:13px">' +
         esc(String(r.created_at).slice(0,16).replace("T"," ")) + "</td></tr>";
     }).join("");
@@ -699,7 +749,9 @@ form.login button{width:100%}
       '<p class="sub">' + d.rows.length + " response" + (d.rows.length===1?"":"s") +
         ' · <code>' + esc(d.slug) + "</code></p>" +
       (d.rows.length
-        ? '<div class="acts" style="margin-bottom:14px"><button class="alt" id="csv">Download CSV</button></div>' +
+        ? itemAnalysis(d) +
+          '<div class="acts" style="margin-bottom:14px"><button class="alt" id="csv">Download CSV</button></div>' +
+          (d.kesyon && d.kesyon.length ? "<h2>All responses</h2>" : "") +
           '<div class="scroll"><table><thead><tr>' + head +
           (scored ? "<th>Score</th>" : "") + "<th>When</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
           (d.fields.length > 8 ? '<p class="mini">Showing the first 8 fields. The CSV has all of them.</p>' : "") +
@@ -959,41 +1011,6 @@ form.login button{width:100%}
     wire();
   }
 
-  function viewSend0(d) {
-    if (!d.total) {
-      app.innerHTML = chrome("<h1 style='font-size:19px'>Send 0 results</h1>" +
-        "<div class='empty'>No responses yet.</div>", true);
-      wire(); return;
-    }
-    var miss = d.miss.map(function (m) {
-      return "<tr><td>" + esc(m.label) + "<div class='meter'><span style='width:" + m.pct + "%'></span></div></td>" +
-        "<td style='text-align:right;white-space:nowrap'><strong>" + m.wrong + "</strong> / " + d.total +
-        "<br><span style='color:var(--muted);font-size:12px'>" + m.pct + "%</span></td></tr>";
-    }).join("");
-    var subs = d.rows.map(function (r) {
-      return "<tr><td>" + esc(r.non) + "</td><td>" + esc(r.kominote) + "</td><td>" + esc(r.telefon||"—") +
-        "</td><td style='text-align:center'><span class='" + (r.pase?"pass":"fail") + "'>" + r.esko +
-        "/5</span></td><td style='text-align:center'>" +
-        (r.pase ? "<span class='pass'>PASSED</span>" : "<span class='fail'>FAILED</span>") +
-        "</td><td style='white-space:nowrap;color:var(--muted);font-size:13px'>" +
-        esc(String(r.created_at).slice(0,16).replace("T"," ")) + "</td></tr>";
-    }).join("");
-    app.innerHTML = chrome(
-      "<h1 style='font-size:19px;margin:0 0 2px'>Send 0 results</h1>" +
-      "<p class='sub'>The comprehension gate</p>" +
-      '<div class="cards">' +
-        '<div class="card"><div class="n">' + d.total + '</div><div class="l">Responses</div></div>' +
-        '<div class="card"><div class="n">' + d.passed + '</div><div class="l">Passed</div></div>' +
-        '<div class="card"><div class="n">' + d.rate + '%</div><div class="l">Pass rate</div></div>' +
-        '<div class="card"><div class="n">' + (d.avg==null?"—":d.avg) + '</div><div class="l">Average</div></div>' +
-      "</div><h2>Most missed questions</h2><div class='scroll'><table><thead><tr><th>Question</th>" +
-      "<th style='text-align:right'>Missed</th></tr></thead><tbody>" + miss + "</tbody></table></div>" +
-      "<h2>All responses</h2><div class='scroll'><table><thead><tr><th>Name</th><th>Community</th>" +
-      "<th>Phone</th><th style='text-align:center'>Score</th><th style='text-align:center'>Result</th>" +
-      "<th>When</th></tr></thead><tbody>" + subs + "</tbody></table></div>", true);
-    wire();
-  }
-
   function viewTodo(d) {
     app.innerHTML = chrome('<div class="empty">' + esc(d.mesaj||"Not built yet.") + "</div>", true);
     wire();
@@ -1067,7 +1084,7 @@ form.login button{width:100%}
       }).catch(oops);
     }
 
-    var V = { dok:viewDok, send0:viewSend0, pewol:viewTodo };
+    var V = { dok:viewDok, pewol:viewTodo };
     if (!V[k]) { location.hash = ""; return; }
     loading();
     api(k).then(V[k]).catch(oops);

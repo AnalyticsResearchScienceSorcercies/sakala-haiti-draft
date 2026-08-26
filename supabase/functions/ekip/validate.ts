@@ -197,11 +197,20 @@ export function validate(schema: unknown): string[] {
     errs.push(`This form has ${files} upload fields; the limit is ${FILE_MAX_FIELDS}.`);
   }
 
+  // PASS MARK IS A PERCENTAGE as of 2026-08-26, not a count of questions.
+  // The `f` function now awards partial credit and reports the score out of
+  // 100, so "4" no longer means "4 of the 5 questions" -- it means 4%. There
+  // was exactly one form in the database carrying a pass mark when this
+  // changed, and it was migrated in the same pass.
+  //
+  // A pass mark remains OPTIONAL and answer keys no longer depend on it: a
+  // form can score a candidate and tell them what they missed without also
+  // deciding they failed. Leave it off unless the form is genuinely a door.
   const pm = s.pass_mark;
   if (pm !== undefined && pm !== null) {
     if (typeof pm !== "number" || pm < 0) errs.push("Pass mark is not a number.");
     else if (!scored) errs.push("There is a pass mark but no field has an answer key.");
-    else if (pm > scored) errs.push(`Pass mark (${pm}) is higher than the number of scored fields (${scored}).`);
+    else if (pm > 100) errs.push(`Pass mark is a percentage, so ${pm} is above the maximum of 100.`);
   }
   return errs;
 }

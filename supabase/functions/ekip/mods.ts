@@ -10,11 +10,6 @@ export class Fail extends Error {
 let SB: () => SupabaseClient;
 export function initMods(url: string, key: string) { SB = () => createClient(url, key); }
 
-function setEq(got: string[], want: string[]) {
-  const g = new Set(got ?? []);
-  return g.size === want.length && want.every((v) => g.has(v));
-}
-
 export function modWhoami(user: string) {
   return {
     user,
@@ -22,7 +17,6 @@ export function modWhoami(user: string) {
       { kle: "fom", tit: "Forms", deskripsyon: "Build and publish forms", pare: true },
       { kle: "apwobasyon", tit: "Approvals", deskripsyon: "Two signatures before money moves", pare: true },
       { kle: "dok", tit: "Documents", deskripsyon: "Which version is current", pare: true },
-      { kle: "send0", tit: "Send 0 results", deskripsyon: "The comprehension gate", pare: true },
       { kle: "pewol", tit: "Hours & payroll", deskripsyon: "What each person is owed", pare: false },
     ],
   };
@@ -39,53 +33,17 @@ export async function modDok() {
   return { total: (data ?? []).length, kategori: byKat };
 }
 
-// STALE AS OF 2026-08-22, AND KNOWN TO BE. Two separate problems:
+// The Send 0 results module was DELETED on 2026-08-26. It read the legacy
+// `jp_send0_reponses` table, which stopped receiving writes on 2026-08-22 when
+// Send 0 moved onto the form engine, and it scored those rows against a
+// hardcoded copy of the answer key that had since drifted from the live form.
+// It showed 2 rows, from build day, while 9 real submissions by 4 candidates
+// piled up unseen in `ekip_repons`.
 //
-//   1. This key is the pre-2026-08-22 one. q5 is now ["a","b","d","e","f"]
-//      after the violence clause went into the terms page and into the gate,
-//      so every "wrong" count for q5 below is computed against a question
-//      that no longer exists.
-//   2. It reads jp_send0_reponses, the legacy table. Send 0 now runs through
-//      the form engine and its responses live in ekip_repons, so this view is
-//      frozen on the two pre-migration rows and will never show a new one.
-//
-// The fix is not to update this key. It is to delete this whole module and let
-// the generic responses view handle send0 like every other form, with item
-// analysis computed from the schema's own answer keys rather than a copy of
-// them pasted into a second file. Left in place only so the existing admin tab
-// does not 404 before that lands.
-const KOREK: Record<string, string> = { q1: "b", q2: "b", q3: "b" };
-const SET_KOREK: Record<string, string[]> = { q4: ["a", "b", "d", "e"], q5: ["a", "b", "d", "e"] };
-const LABEL: Record<string, string> = {
-  q1: "1. Training pay per hour",
-  q2: "2. Trainee who does not finish",
-  q3: "3. What Level 2 means",
-  q4: "4. Never held against you",
-  q5: "5. What ends it",
-};
-
-export async function modSend0() {
-  const { data, error } = await SB()
-    .from("jp_send0_reponses")
-    .select("non,kominote,telefon,q1,q2,q3,q4,q5,esko,pase,created_at")
-    .order("created_at", { ascending: false });
-  if (error) throw new Fail(error.message, 500);
-  const rows = data ?? [];
-  const total = rows.length;
-  const passed = rows.filter((r) => r.pase).length;
-  const miss = Object.keys(LABEL).map((q) => {
-    const wrong = rows.filter((r) =>
-      q in KOREK ? r[q] !== KOREK[q] : !setEq(r[q], SET_KOREK[q])).length;
-    return { q, label: LABEL[q], wrong, pct: total ? Math.round((wrong / total) * 100) : 0 };
-  }).sort((a, b) => b.wrong - a.wrong);
-  return {
-    total, passed,
-    rate: total ? Math.round((passed / total) * 100) : 0,
-    avg: total ? +(rows.reduce((s, r) => s + (r.esko ?? 0), 0) / total).toFixed(1) : null,
-    miss, rows,
-    stale: true,
-  };
-}
+// Nothing replaced it, because `reponsGet()` below already handles send0 the
+// same way it handles every other form, and now computes item analysis from
+// the form's OWN answer keys instead of a second copy pasted into this file.
+// Two copies of one answer key is how you get an answer key with two values.
 
 // ---------------------------------------------------------- forms (builder)
 
@@ -177,6 +135,7 @@ export async function reponsGet(slug: string) {
   if (error) throw new Fail(error.message, 500);
 
   const fields: { key: string; label: string; type: string; fields?: unknown }[] = [];
+  const keyed: Record<string, unknown>[] = [];
   for (const sec of (fom.schema?.sections ?? []) as Record<string, unknown>[]) {
     for (const f of (sec.fields ?? []) as Record<string, unknown>[]) {
       fields.push({
@@ -188,9 +147,61 @@ export async function reponsGet(slug: string) {
         // payload does not change for any existing form.
         ...(f.type === "group" ? { fields: f.fields } : {}),
       });
+      if (f.answer !== undefined) keyed.push({ ...f, _label: String(f.label || sec.legend || f.key) });
     }
   }
-  return { slug, tit: fom.tit, eta: fom.eta, fields, rows: data ?? [] };
+
+  // ITEM ANALYSIS, from the form's own answer keys. Added 2026-08-26 to
+  // replace the deleted Send 0 module, which carried its own copy of the key
+  // and drifted from the live form without anyone noticing.
+  //
+  // Admin only, and admin already sees the keys -- fomGet() returns the whole
+  // schema to a logged-in caller by design. Nothing here reaches a trainee.
+  const rows = data ?? [];
+  const kesyon = keyed.map((f) => {
+    const key = String(f.key);
+    let full = 0, part = 0, zero = 0;
+    for (const r of rows) {
+      const p = pwen((r.repons as Record<string, unknown>)?.[key], f.answer);
+      p >= 1 ? full++ : p > 0 ? part++ : zero++;
+    }
+    return {
+      key, label: String(f._label), type: String(f.type),
+      full, part, zero,
+      pct: rows.length ? Math.round((full / rows.length) * 100) : 0,
+    };
+  }).sort((a, b) => a.pct - b.pct);   // worst-answered first, which is the point
+
+  const eskore = rows.filter((r) => r.esko != null);
+  return {
+    slug, tit: fom.tit, eta: fom.eta, fields, rows,
+    kesyon,
+    rezime: eskore.length
+      ? {
+        eskore: eskore.length,
+        mwayèn: Math.round(eskore.reduce((s, r) => s + (r.esko ?? 0), 0) / eskore.length),
+        pase: eskore.filter((r) => r.pase === true).length,
+        // A form can be scored and have no pass mark, which is the preferred
+        // shape for a gate. Then there is no verdict to count.
+        gen_pòt: eskore.some((r) => r.pase !== null),
+      }
+      : null,
+  };
+}
+
+// Same partial-credit rule the `f` function scores with. Restated rather than
+// shared because these are two separate deployments; if they drift, the admin
+// screen is wrong and the stored score is still right.
+function pwen(got: unknown, want: unknown): number {
+  if (Array.isArray(want)) {
+    const wantSet = new Set(want.map(String));
+    const gotSet = new Set(Array.isArray(got) ? got.map(String) : []);
+    if (!wantSet.size) return gotSet.size ? 0 : 1;
+    let right = 0, wrong = 0;
+    for (const v of gotSet) wantSet.has(v) ? right++ : wrong++;
+    return Math.max(0, (right - wrong) / wantSet.size);
+  }
+  return String(got) === String(want) ? 1 : 0;
 }
 
 // ------------------------------------------------------------------ files
