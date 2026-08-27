@@ -46,6 +46,18 @@ header .t{font-weight:700;font-size:15px;letter-spacing:-.01em;
  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header .n{margin-left:auto;color:var(--muted);font-size:13px;flex:none;
  font-variant-numeric:tabular-nums}
+/* Two auto margins would split the free space between them. Once the reading
+   link is showing it takes the gap, and the counter just sits beside it. */
+header .rd:not([hidden]) ~ .n{margin-left:10px}
+/* The way out of the deck and into the document. It sits in the header rather
+   than at the end of the deck because the reason to want it arrives early:
+   somebody who cannot swipe thirteen slides right now needs to know on slide
+   one that they do not have to. Hidden when there is no reading version. */
+header .rd{margin-left:auto;flex:none;font-size:12.5px;font-weight:700;
+ text-decoration:none;color:var(--muted);border:1px solid var(--line);
+ border-radius:999px;padding:4px 12px;background:var(--card)}
+header .rd[hidden]{display:none}
+header .rd:active{transform:translateY(1px)}
 
 /* The progress bar is the whole navigation model: a trainee can see how
    much is left before they start, which is the thing that decides whether
@@ -147,6 +159,125 @@ nav button:active:not(:disabled){transform:translateY(1px)}
 .draft{background:#fff6e0;border-bottom:1px solid #b07d1a;color:#7a5610;
  padding:8px 16px;font-size:13px;font-weight:700;text-align:center;flex:none}
 
+/* ---------------------------------------------------------- reading mode
+   ?mod=liv is the manual text, and it exists because a slide deck is a bad
+   way to look something up. A trainee mid-conversation with a parent cannot
+   swipe through thirteen slides to find the sentence about the share. The
+   deck is for learning it once; this is for finding it again.
+
+   Same blocks, same row, drawn continuously instead of paged, so the two can
+   never drift. Serif body on purpose: it is a document, and it should look
+   like one and print like one. No webfont ... this opens on phone data.
+   ============================================================ */
+body.liv{display:block;padding:0}
+body.liv #app{display:block;flex:none;min-height:0}
+body.liv nav,body.liv .bar,body.liv header{display:none}
+body.liv main{overflow:visible}
+
+/* the reading bar: how much is left, which is what decides whether they start */
+.lvtop{position:sticky;top:0;z-index:20;background:var(--paper);
+ border-bottom:1px solid var(--line)}
+.lvtop .in{max-width:720px;margin:0 auto;padding:10px 20px;
+ display:flex;align-items:center;gap:12px}
+.lvtop .t{font-weight:700;font-size:14px;letter-spacing:-.01em;flex:1;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvtop .sw{flex:none;display:flex;border:1px solid var(--line);border-radius:999px;
+ overflow:hidden;background:var(--card)}
+.lvtop .sw a{padding:5px 13px;font-size:12.5px;font-weight:700;text-decoration:none;
+ color:var(--muted);letter-spacing:.01em}
+.lvtop .sw a.on{background:var(--ink);color:var(--paper)}
+.lvbar{height:3px;background:var(--line)}
+.lvbar span{display:block;height:100%;background:var(--accent);width:0}
+
+.lv{max-width:720px;margin:0 auto;padding:34px 20px 90px}
+.lv .kal{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+ color:var(--accent);margin:0 0 12px}
+.lv h1{font-size:34px;line-height:1.15;letter-spacing:-.025em;margin:0 0 12px}
+.lv .dek{color:var(--muted);font-size:18px;line-height:1.5;margin:0 0 18px;
+ font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,serif}
+.lv .meta{color:var(--muted);font-size:13px;margin:0;padding:14px 0 0;
+ border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;
+ align-items:center;font-variant-numeric:tabular-nums}
+.lv .meta b{color:var(--ink)}
+
+/* contents. Built from the block titles, so it costs nothing to maintain and
+   cannot fall out of step with the document it indexes. */
+.lv .toc{margin:22px 0 0;border:1px solid var(--line);border-radius:var(--r);
+ background:var(--card);overflow:hidden}
+.lv .toc > summary{padding:13px 16px;cursor:pointer;font-weight:700;font-size:13px;
+ letter-spacing:.06em;text-transform:uppercase;color:var(--muted);list-style:none}
+.lv .toc > summary::-webkit-details-marker{display:none}
+.lv .toc > summary::after{content:"›";float:right;display:inline-block;
+ transform:rotate(90deg);transform-origin:50% 45%;
+ transition:transform .18s ease;font-size:19px;line-height:1;font-weight:400}
+.lv .toc[open] > summary::after{transform:rotate(-90deg)}
+.lv .toc ol{margin:0;padding:0 16px 14px 16px;list-style:none;counter-reset:tc}
+.lv .toc li{counter-increment:tc;border-top:1px solid var(--line)}
+.lv .toc a{display:flex;gap:11px;padding:10px 2px;text-decoration:none;
+ color:var(--ink);font-size:15.5px;line-height:1.35}
+.lv .toc a:hover{color:var(--accent)}
+.lv .toc a::before{content:counter(tc);flex:none;width:22px;color:var(--muted);
+ font-size:12.5px;font-weight:700;padding-top:3px;font-variant-numeric:tabular-nums}
+
+/* the body. One measure, one rhythm, and a rule between sections so the eye
+   knows where it is on a page it is scrolling with a thumb. */
+.lv section{padding:30px 0 0;scroll-margin-top:62px}
+.lv section + section{border-top:1px solid var(--line);margin-top:30px}
+.lv section > h2{font-size:13px;font-weight:800;letter-spacing:.09em;
+ text-transform:uppercase;color:var(--accent);margin:0 0 14px;
+ display:flex;gap:11px;align-items:baseline}
+.lv section > h2 .no{flex:none;color:var(--muted);font-variant-numeric:tabular-nums}
+.lv .bd{font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,serif;
+ font-size:18.5px;line-height:1.66}
+.lv .bd p{margin:0 0 16px}
+.lv .bd p:last-child{margin-bottom:0}
+.lv .bd strong{font-weight:700}
+/* the first line of a section, set apart, the way a manual opens a chapter */
+.lv section > .bd > p:first-child{font-size:19.5px;line-height:1.55}
+
+.lv ul.pwen li{font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,serif;
+ font-size:18px;line-height:1.6;margin-bottom:13px}
+.lv blockquote{font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,serif;
+ font-size:21px}
+.lv .atansyon{margin-top:18px}
+.lv .atansyon p{font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,serif;
+ font-size:17px;line-height:1.55}
+.lv .vid{margin-top:4px}
+.lv .kap{margin-top:-4px}
+
+/* the gate, at the end of the document, exactly as it ends the deck */
+.lv .fen{border-top:3px solid var(--ink);margin-top:38px;padding-top:26px;text-align:center}
+.lv .fen h2{display:block;font-size:24px;letter-spacing:-.015em;text-transform:none;
+ color:var(--ink);font-weight:700;margin-bottom:12px}
+.lv .fen .bd{font-size:18px}
+
+.lv .tools{display:flex;gap:10px;margin:26px 0 0;flex-wrap:wrap}
+.lv .tools a,.lv .tools button{display:inline-block;padding:10px 16px;
+ border:1px solid var(--line);border-radius:var(--r);text-decoration:none;
+ color:var(--ink);font-weight:700;font-size:14px;background:var(--card);
+ font-family:inherit;cursor:pointer}
+.lv .tools a:hover,.lv .tools button:hover{border-color:var(--ink)}
+
+.lv .vid2{margin:0 0 18px}
+
+/* An empty reading version is a real state, not a bug: the deck ships first
+   and the manual text follows. Say which, and hand back the deck. */
+.lv .poko{border:1px dashed var(--line);border-radius:var(--r);background:var(--card);
+ padding:34px 24px;text-align:center;color:var(--muted);margin-top:26px}
+
+@media print{
+  .lvtop,.lv .tools,.lv .toc,.draft,.lv .vid,.lv .vid2{display:none}
+  body.liv{background:#fff}
+  .lv{max-width:none;padding:0}
+  .lv section{break-inside:auto;padding-top:22px}
+  .lv section > h2{break-after:avoid}
+  .lv .atansyon,.lv blockquote{break-inside:avoid}
+  .lv h1{font-size:26pt}
+  .lv .bd{font-size:11.5pt;line-height:1.5}
+  .lv ul.pwen li{font-size:11.5pt}
+  a[href]::after{content:""}
+}
+
 /* ---------------------------------------------------------- script mode
    ?mod=eskript lays the whole deck out vertically at reading size, for the
    person standing in front of the camera. It is the same deck, not a second
@@ -185,7 +316,9 @@ body.eskript main{overflow:visible}
 <body>
 
 <div id="app" hidden>
-  <header><span class="t" id="tit"></span><span class="n" id="num"></span></header>
+  <header><span class="t" id="tit"></span>
+    <a class="rd" id="rd" href="#" hidden>Li</a>
+    <span class="n" id="num"></span></header>
   <div class="bar"><span id="prog"></span></div>
   <div id="draft" class="draft" hidden>BOUYON ... leson sa a poko pare pou piblik la</div>
   <main id="main"></main>
@@ -208,7 +341,9 @@ body.eskript main{overflow:visible}
   var qs = new URLSearchParams(location.search);
   var SLUG = (qs.get("s") || "").trim();
   var PREVIEW = qs.get("prevyou") === "1";
-  var SCRIPT = qs.get("mod") === "eskript";
+  var MOD = (qs.get("mod") || "").trim();
+  var SCRIPT = MOD === "eskript";
+  var READ = MOD === "liv";
 
   var app = document.getElementById("app");
   var state = document.getElementById("state");
@@ -325,6 +460,158 @@ body.eskript main{overflow:visible}
       rich(o.ko) + "</div>";
   }
 
+  // ------------------------------------------------------------- reading mode
+  // The manual text as a document. Same blocks as the deck, drawn continuously,
+  // so there is no second copy of anything and the two cannot drift.
+  //
+  // A deck answers "teach me this once." A document answers "what was the line
+  // about the share" while a parent is sitting in front of you. Two different
+  // jobs, and one of them cannot be done by swiping.
+
+  // Words shown to a trainee, so they follow the lesson's language and not the
+  // admin's. KR is the default because KR is what goes live.
+  var WORD = {
+    KR: { slides:"Glise", read:"Li", min:"minit", minS:"", words:"mo", toc:"Sa ki ladan l",
+          openDeck:"Louvri kòm glise", print:"Enprime / sere an PDF",
+          poko:"Vèsyon pou li a poko ekri. Leson an la an glise." },
+    EN: { slides:"Slides", read:"Read", min:"minute", minS:"s", words:"words", toc:"What is in here",
+          openDeck:"Open as slides", print:"Print / save PDF",
+          poko:"The reading version is not written yet. The lesson is there as slides." },
+    FR: { slides:"Diapos", read:"Lire", min:"minute", minS:"s", words:"mots", toc:"Sommaire",
+          openDeck:"Ouvrir en diapos", print:"Imprimer / PDF",
+          poko:"La version à lire n'est pas encore écrite. La leçon existe en diapos." }
+  };
+  var W = WORD.KR;
+
+  function livTitled(b) {
+    return b.type !== "fen" && b.type !== "tit" && String(b.tit || "").trim();
+  }
+
+  // Contents come out of the blocks that carry a heading. Nothing to maintain,
+  // and it cannot fall out of step with the document it indexes.
+  function livToc(blocks, offset) {
+    var items = [];
+    blocks.forEach(function (b, n) {
+      var t = livTitled(b);
+      if (t) items.push('<li><a href="#s' + (n + offset) + '">' + esc(t) + "</a></li>");
+    });
+    if (items.length < 3) return "";
+    return '<details class="toc" open><summary>' + esc(W.toc || "Contents") +
+      "</summary><ol>" + items.join("") + "</ol></details>";
+  }
+
+  function livBlock(b, n) {
+    var t = String(b.type || "teks");
+
+    if (t === "tit") {
+      // A cover inside a document is a section break, not a second cover.
+      return '<section id="s' + n + '"><h2>' +
+        (b.kalite ? '<span class="no">' + esc(b.kalite) + "</span>" : "") +
+        esc(b.tit || "") + "</h2>" +
+        (b.sou_tit ? '<div class="bd"><p>' + esc(b.sou_tit) + "</p></div>" : "") +
+        "</section>";
+    }
+
+    if (t === "fen") {
+      var href = b.fom ? FORM + encodeURIComponent(b.fom) : (b.lyen || "");
+      return '<section id="s' + n + '" class="fen"><h2>' +
+        esc(b.tit || "Ou fini leson an") + "</h2>" +
+        (b.ko ? '<div class="bd">' + rich(b.ko) + "</div>" : "") +
+        (href ? '<a class="go" href="' + esc(href) + '">' +
+          esc(b.bouton || "Kòmanse travay la") + "</a>" : "") +
+        "</section>";
+    }
+
+    // Everything else: the deck's own markup for the body, framed as a section.
+    // slideHtml() draws the parts; this only frames them, which is why a block
+    // type added to the deck later shows up here with no work.
+    var inner = slideHtml(b)
+      .replace(/^<section class="slide[^"]*">/, "")
+      .replace(/<\/section>$/, "");
+    var head = "";
+    var ttl = livTitled(b);
+    if (ttl) {
+      // The heading is drawn by the frame, so take the deck's copy out rather
+      // than print it twice.
+      inner = inner.replace("<h2>" + esc(ttl) + "</h2>", "");
+      head = "<h2>" + esc(ttl) + "</h2>";
+    }
+    if (t === "teks" || t === "sitasyon") inner = '<div class="bd">' + inner + "</div>";
+    if (t === "videyo") inner = '<div class="vid2">' + inner + "</div>";
+    return '<section id="s' + n + '">' + head + inner + "</section>";
+  }
+
+  function livWords(blocks) {
+    var n = 0;
+    function count(v) { n += String(v || "").trim().split(/\s+/).filter(Boolean).length; }
+    blocks.forEach(function (b) {
+      ["tit", "sou_tit", "ko", "teks", "kap"].forEach(function (k) { if (b[k]) count(b[k]); });
+      (b.pwen || []).forEach(count);
+      if (b.atansyon) count(typeof b.atansyon === "string" ? b.atansyon : b.atansyon.ko);
+    });
+    return n;
+  }
+
+  function drawLiv(d) {
+    document.body.classList.add("liv");
+    var blocks = (d.liv && d.liv.slides) || [];
+    var deckHref = "/l/?s=" + encodeURIComponent(SLUG) + (PREVIEW ? "&prevyou=1" : "");
+    var mine = deckHref + "&mod=liv";
+
+    var top = '<div class="lvtop"><div class="in">' +
+      '<span class="t">' + esc(d.tit || "") + "</span>" +
+      '<span class="sw"><a href="' + deckHref + '">' + esc(W.slides) + "</a>" +
+      '<a class="on" href="' + mine + '">' + esc(W.read) + "</a></span>" +
+      '</div><div class="lvbar"><span id="lvprog"></span></div></div>';
+
+    var body;
+    if (!blocks.length) {
+      body = '<div class="poko"><p>' + esc(W.poko) + "</p>" +
+        '<div class="tools" style="justify-content:center"><a href="' + deckHref + '">' +
+        esc(W.openDeck) + "</a></div></div>";
+    } else {
+      var words = livWords(blocks);
+      var mins = Math.max(1, Math.round(words / 190));
+      var cover = blocks[0] && blocks[0].type === "tit" ? blocks[0] : null;
+      var rest = cover ? blocks.slice(1) : blocks;
+      var offset = cover ? 1 : 0;
+
+      body =
+        (cover && cover.kalite ? '<p class="kal">' + esc(cover.kalite) + "</p>" : "") +
+        "<h1>" + esc((cover && cover.tit) || d.tit || "") + "</h1>" +
+        (cover && cover.sou_tit ? '<p class="dek">' + esc(cover.sou_tit) + "</p>" : "") +
+        '<p class="meta"><b>' + mins + "</b>&nbsp;" + esc(W.min) + (mins === 1 ? "" : esc(W.minS)) +
+          " <span>&middot;</span> <b>" + words.toLocaleString() + "</b>&nbsp;" + esc(W.words) +
+          " <span>&middot;</span> " + esc(d.lang || "") + "</p>" +
+        livToc(rest, offset) +
+        rest.map(function (b, n) { return livBlock(b, n + offset); }).join("") +
+        '<div class="tools"><a href="' + deckHref + '">' + esc(W.openDeck) + "</a>" +
+        '<button type="button" id="lvprn">' + esc(W.print) + "</button></div>";
+    }
+
+    document.getElementById("state").hidden = true;
+    app.hidden = false;
+    app.innerHTML = top + '<div class="lv">' + body + "</div>";
+
+    var pr = document.getElementById("lvprn");
+    if (pr) pr.onclick = function () { window.print(); };
+
+    // Progress against the scroll, not against a block count: in a document the
+    // only honest answer to "how much is left" is how far down you are.
+    var bar = document.getElementById("lvprog");
+    if (bar) {
+      var tick = function () {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (h > 0 ? Math.min(100, (window.scrollY / h) * 100) : 100) + "%";
+      };
+      window.addEventListener("scroll", tick, { passive: true });
+      window.addEventListener("resize", tick);
+      tick();
+    }
+
+    wireVideo();
+  }
+
   // Everything, laid out vertically, at a size you can read from a metre away
   // with a phone on a tripod. Camera notes are visible HERE and nowhere else:
   // the trainee opening the same lesson never sees them.
@@ -347,6 +634,7 @@ body.eskript main{overflow:visible}
     }).join("");
 
     var back = "/l/?s=" + encodeURIComponent(SLUG) + (PREVIEW ? "&prevyou=1" : "");
+    var hasLiv = !!(d.liv && d.liv.slides && d.liv.slides.length);
     document.getElementById("state").hidden = true;
     app.hidden = false;
     app.innerHTML = '<div class="sk">' +
@@ -354,6 +642,7 @@ body.eskript main{overflow:visible}
       '<p class="meta">Filming script &middot; ' + SLIDES.length + " slides &middot; about " +
       mins + " minute" + (mins === 1 ? "" : "s") + " read aloud &middot; " + esc(d.lang) + "</p>" +
       '<div class="tools"><a class="pri" href="' + back + '">Open as slides</a>' +
+      (hasLiv ? '<a href="' + back + '&mod=liv">Open as reading</a>' : "") +
       '<a href="#" id="prn">Print / save PDF</a></div>' +
       cards + "</div>";
     var pr = document.getElementById("prn");
@@ -384,23 +673,28 @@ body.eskript main{overflow:visible}
   // The player is only built on tap. Before that the slide is a thumbnail,
   // which costs a few KB instead of a few hundred.
   function wireVideo() {
-    var v = main.querySelector(".vid[data-yt]");
-    if (!v) return;
-    var poster = v.querySelector(".poster");
-    if (!poster) return;
-    poster.addEventListener("click", function () {
-      var id = v.getAttribute("data-yt");
-      var t = v.getAttribute("data-t");
-      var fr = document.createElement("iframe");
-      fr.setAttribute("allow", "accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen");
-      fr.setAttribute("allowfullscreen", "");
-      fr.setAttribute("title", "Videyo");
-      // nocookie, and no related videos from other channels at the end.
-      fr.src = "https://www.youtube-nocookie.com/embed/" + id +
-        "?autoplay=1&rel=0&modestbranding=1&playsinline=1" + (t ? "&start=" + t : "");
-      v.innerHTML = "";
-      v.appendChild(fr);
-    }, { once: true });
+    // The deck has one video on screen at a time; the reading version has all
+    // of them on one page. Wire every facade found, and let each build its own
+    // player on tap -- the facade is the whole reason three embeds cost a few
+    // KB instead of a few hundred on somebody else's phone data.
+    var root = document.body.classList.contains("liv") ? app : main;
+    Array.prototype.forEach.call(root.querySelectorAll(".vid[data-yt]"), function (v) {
+      var poster = v.querySelector(".poster");
+      if (!poster) return;
+      poster.addEventListener("click", function () {
+        var id = v.getAttribute("data-yt");
+        var t = v.getAttribute("data-t");
+        var fr = document.createElement("iframe");
+        fr.setAttribute("allow", "accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen");
+        fr.setAttribute("allowfullscreen", "");
+        fr.setAttribute("title", "Videyo");
+        // nocookie, and no related videos from other channels at the end.
+        fr.src = "https://www.youtube-nocookie.com/embed/" + id +
+          "?autoplay=1&rel=0&modestbranding=1&playsinline=1" + (t ? "&start=" + t : "");
+        v.innerHTML = "";
+        v.appendChild(fr);
+      }, { once: true });
+    });
   }
 
   function go(d) {
@@ -446,12 +740,18 @@ body.eskript main{overflow:visible}
       if (!res.ok) { fail("Nou pa jwenn leson an", res.j && res.j.error); return; }
       var d = res.j;
       SLIDES = (d.deck && d.deck.slides) || [];
-      if (!SLIDES.length) { fail("Leson an vid", "Pa gen anyen ladan l pou kounye a."); return; }
+      var LIV = (d.liv && d.liv.slides) || [];
+      if (!SLIDES.length && !LIV.length) {
+        fail("Leson an vid", "Pa gen anyen ladan l pou kounye a."); return;
+      }
 
       document.getElementById("tit").textContent = d.tit || "";
       document.title = (d.tit || "Leson") + " — Konkret";
       document.getElementById("draft").hidden = d.eta === "live";
       if (d.lang) document.documentElement.lang = d.lang === "EN" ? "en" : d.lang === "FR" ? "fr" : "ht";
+      W = WORD[d.lang] || WORD.KR;
+
+      if (READ) { drawLiv(d); return; }
 
       // Resume where they stopped, but never past the end if the deck shrank.
       try {
@@ -460,6 +760,13 @@ body.eskript main{overflow:visible}
       } catch (e) { /* fine */ }
 
       if (SCRIPT) { drawScript(d); return; }
+
+      var rd = document.getElementById("rd");
+      if (LIV.length) {
+        rd.hidden = false;
+        rd.textContent = W.read;
+        rd.href = "/l/?s=" + encodeURIComponent(SLUG) + (PREVIEW ? "&prevyou=1" : "") + "&mod=liv";
+      }
 
       state.hidden = true;
       app.hidden = false;

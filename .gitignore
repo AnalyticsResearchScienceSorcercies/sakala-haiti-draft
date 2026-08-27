@@ -11,3 +11,4 @@ __pycache__/
 # Agent working notes, not part of the deployed site
 _agent_upload/
 _agent_groups/
+supabase/.temp/

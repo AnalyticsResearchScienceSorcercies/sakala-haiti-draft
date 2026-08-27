@@ -1,6 +1,10 @@
 // Public lesson API. Serves one slide deck.
 //
-//   GET /l/<slug>   ->  the deck, if it is live
+//   GET /l/<slug>   ->  the lesson, if it is live: the deck AND the reading
+//                       version, in one response
+//
+// Both renderings ship together because they are one row and the page lets a
+// trainee flip between them without a second round trip on a bad connection.
 //
 // Public by design, same as `f`: a trainee opens a WhatsApp link and has no
 // credentials. verify_jwt off for that reason. Reads go through the
@@ -61,7 +65,7 @@ Deno.serve(async (req: Request) => {
   if (!slug) return bad("Ki leson?", 400);
 
   const { data: leson, error } = await sb()
-    .from("ekip_leson").select("slug,tit,deskripsyon,deck,send,lang,eta")
+    .from("ekip_leson").select("slug,tit,deskripsyon,deck,liv,send,lang,eta")
     .eq("slug", slug).maybeSingle();
 
   if (error) { console.error("lookup failed", error); return bad("Gen yon pwoblèm teknik.", 500); }

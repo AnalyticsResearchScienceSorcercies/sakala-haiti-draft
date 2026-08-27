@@ -444,48 +444,86 @@ export const SLIDE_TYPES = new Set([
 ]);
 
 const DECK_MAX_SLIDES = 60;   // past this it is a manual, not a lesson
+const LIV_MAX_BLOCKS = 240;   // and a manual is allowed to be one
 const SLIDE_TEXT_MAX = 4000;
 
-export function validateDeck(deck: unknown): string[] {
+// The reading version is the same block vocabulary drawn continuously instead
+// of paged, so it runs through the same checker with three rules relaxed:
+//
+//   empty     -- an unwritten reading version is the normal state of a new
+//                lesson, not an error. The deck ships first.
+//   ending    -- the deck carries the gate. Two ending slides pointing at one
+//                form is two doors into one room.
+//   the cap   -- 60 blocks is "past this it is a manual". This IS the manual.
+//
+// Everything else is identical, which is the point: one vocabulary, two
+// renderings, one row, so what they read and what they watch cannot drift.
+type DeckRules = {
+  empty?: boolean; ending?: boolean; max?: number; what?: string; pwen?: number;
+};
+
+export function validateLiv(liv: unknown): string[] {
+  return validateDeck(liv, {
+    empty: true, ending: false, max: LIV_MAX_BLOCKS, what: "Section", pwen: 30,
+  });
+}
+
+export function validateDeck(deck: unknown, rules: DeckRules = {}): string[] {
+  const empty = rules.empty === true;
+  const ending = rules.ending !== false;
+  const max = rules.max ?? DECK_MAX_SLIDES;
+  const what = rules.what ?? "Slide";
+  // Twelve points is a wall on a phone slide. On a page it is a checklist, and
+  // Send 0's Level 1 checklist is thirteen lines because the job has thirteen
+  // things in it. The cap belongs to the slide, not to the content.
+  const maxPwen = rules.pwen ?? 12;
+  const lower = what.toLowerCase();
+
   const errs: string[] = [];
   if (!deck || typeof deck !== "object") return ["Deck is not an object."];
   const d = deck as Record<string, unknown>;
   const slides = d.slides;
   if (!Array.isArray(slides)) return ['A deck needs a "slides" list.'];
-  if (!slides.length) return ["A lesson needs at least one slide."];
-  if (slides.length > DECK_MAX_SLIDES) {
-    errs.push(`${slides.length} slides is too many (max ${DECK_MAX_SLIDES}). ` +
-      `Past that it is a manual, and a manual is a document, not a lesson.`);
+  if (!slides.length) {
+    return empty ? [] : ["A lesson needs at least one slide."];
+  }
+  if (slides.length > max) {
+    errs.push(`${slides.length} ${lower}s is too many (max ${max}). ` +
+      (what === "Slide"
+        ? `Past that it is a manual, and a manual is a document, not a lesson.`
+        : `Past that nobody finishes it.`));
   }
 
   let ends = 0;
 
   slides.forEach((sRaw, si) => {
-    const where = `Slide ${si + 1}`;
+    const where = `${what} ${si + 1}`;
     if (!sRaw || typeof sRaw !== "object" || Array.isArray(sRaw)) {
-      errs.push(`${where}: not a slide.`);
+      errs.push(`${where}: not a ${lower}.`);
       return;
     }
     const s = sRaw as Record<string, unknown>;
     const type = String(s.type ?? "teks");
     if (!SLIDE_TYPES.has(type)) {
-      errs.push(`${where}: unknown slide type "${type}".`);
+      errs.push(`${where}: unknown ${lower} type "${type}".`);
       return;
     }
 
     const txt = (k: string) => String(s[k] ?? "");
     for (const k of ["tit", "sou_tit", "ko", "teks", "kap", "alt", "ki_moun", "bouton", "kalite"]) {
       if (s[k] !== undefined && txt(k).length > SLIDE_TEXT_MAX) {
-        errs.push(`${where}: "${k}" is longer than ${SLIDE_TEXT_MAX} characters. Split the slide.`);
+        errs.push(`${where}: "${k}" is longer than ${SLIDE_TEXT_MAX} characters. Split the ${lower}.`);
       }
     }
 
-    if (type === "tit" && !txt("tit")) errs.push(`${where}: a title slide needs a title.`);
+    if (type === "tit" && !txt("tit")) errs.push(`${where}: a title ${lower} needs a title.`);
 
     if (type === "pwen") {
       const pts = s.pwen;
-      if (!Array.isArray(pts) || !pts.length) errs.push(`${where}: a points slide needs at least one point.`);
-      else if (pts.length > 12) errs.push(`${where}: ${pts.length} points on one slide is a wall. Split it.`);
+      if (!Array.isArray(pts) || !pts.length) errs.push(`${where}: a points ${lower} needs at least one point.`);
+      else if (pts.length > maxPwen) {
+        errs.push(`${where}: ${pts.length} points in one ${lower} is a wall. Split it.`);
+      }
     }
 
     if (type === "videyo") {
@@ -512,7 +550,7 @@ export function validateDeck(deck: unknown): string[] {
       }
     }
 
-    if (type === "sitasyon" && !txt("teks")) errs.push(`${where}: a quote slide needs the quote.`);
+    if (type === "sitasyon" && !txt("teks")) errs.push(`${where}: a quote ${lower} needs the quote.`);
 
     if (type === "fen") {
       ends++;
@@ -530,7 +568,7 @@ export function validateDeck(deck: unknown): string[] {
   // Not an error. A deck with no ending hands the trainee nothing to do next,
   // which is exactly the drift that turned Send 0's gate into a dead end, so
   // it is worth saying out loud in the builder.
-  if (!ends) {
+  if (ending && !ends) {
     errs.push('This lesson has no ending slide, so nothing tells the trainee what to do next. ' +
       'Add a "fen" slide pointing at the gate form.');
   }

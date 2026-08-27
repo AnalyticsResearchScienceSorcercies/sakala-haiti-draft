@@ -131,6 +131,60 @@ canvas.pad{display:block;width:100%;height:140px;touch-action:none;cursor:crossh
  padding:12px 0;margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:13px}
 
+/* ---- lessons, grouped by send ----------------------------------------
+   One send is one thing you teach, and it exists in as many languages as it
+   has been translated into. A flat table made that eight rows that look like
+   eight lessons; it is six modules, a terms page and one translation. The
+   group is the module, the rows inside it are the languages. */
+.grp{background:var(--card);border:1px solid var(--line);border-radius:9px;
+ margin-bottom:10px;overflow:hidden}
+.grp[open]{border-color:var(--ink)}
+.grp > summary{display:flex;gap:12px;align-items:center;padding:13px 15px;
+ cursor:pointer;list-style:none;user-select:none}
+.grp > summary::-webkit-details-marker{display:none}
+.grp > summary:hover{background:var(--head)}
+.grp .sn{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);
+ color:var(--paper);display:flex;align-items:center;justify-content:center;
+ font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.grp .sn.none{background:var(--line);color:var(--muted)}
+.grp .st{flex:1 1 auto;font-weight:700;font-size:15.5px;min-width:0;
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grp .sl{flex:none;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.grp .chev{flex:none;color:var(--muted);font-size:17px;line-height:1;
+ transition:transform .16s ease}
+.grp[open] .chev{transform:rotate(90deg)}
+.grp .body{border-top:1px solid var(--line);padding:4px 15px 15px}
+
+/* one language of one module */
+.var{padding:14px 0;border-bottom:1px solid var(--line)}
+.var:last-child{border-bottom:0;padding-bottom:2px}
+.var .vh{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
+.var .lg{flex:none;font-size:11px;font-weight:800;letter-spacing:.07em;
+ border:1px solid var(--ink);border-radius:4px;padding:2px 6px}
+.var .vt{font-weight:700;font-size:14.5px}
+.var .vm{color:var(--muted);font-size:12.5px;margin:0 0 10px;
+ display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.var .vm .sep{opacity:.5}
+.var .vm .no{color:var(--warn);font-weight:700}
+.var .acts a,.var .acts button{font-size:13px;padding:7px 12px}
+.var .acts .off{opacity:.42;cursor:not-allowed;pointer-events:none}
+/* The one language that can actually go out. Everything else is a draft by
+   rule, not by accident, so the eye should find KR first. */
+.var.kr{border-left:3px solid var(--ok);padding-left:12px;margin-left:-15px;
+ padding-right:0;border-bottom-left-radius:0}
+.addlang{padding:12px 0 2px}
+
+/* The editor's two halves. Same blocks, two deliveries, one row ... so they
+   are two tabs of one form and not two screens, and Save writes both. */
+.tabs{display:flex;gap:0;margin:18px 0 14px;border-bottom:2px solid var(--ink)}
+.tabs button{padding:10px 18px;border:1px solid var(--line);border-bottom:0;
+ background:var(--paper);color:var(--muted);font:inherit;font-weight:700;
+ font-size:14px;cursor:pointer;border-radius:8px 8px 0 0;margin-bottom:-2px}
+.tabs button + button{margin-left:6px}
+.tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tabs .ct{font-weight:400;opacity:.75;font-variant-numeric:tabular-nums}
+.tabnote{color:var(--muted);font-size:13px;margin:-4px 0 14px}
+
 form.login{max-width:330px;margin:60px auto;background:var(--card);border:1px solid var(--line);
  border-radius:10px;padding:22px}
 form.login input{margin-bottom:13px}
@@ -814,6 +868,13 @@ form.login button{width:100%}
     for (var i = 0; i < SLIDE_KINDS.length; i++) if (SLIDE_KINDS[i][0] === t) return SLIDE_KINDS[i][1];
     return t;
   }
+  // Which array the editor is pointed at. Only one tab is on screen, so the
+  // field ids do not need a prefix -- readSlides() always reads whatever is
+  // currently drawn, and switching tabs writes it back first.
+  function curSlides() {
+    return LDRAFT.tab === "liv" ? LDRAFT.liv.slides : LDRAFT.deck.slides;
+  }
+
   function blankSlide(t) {
     t = t || "teks";
     if (t === "pwen") return { type:"pwen", tit:"", pwen:[""] };
@@ -822,51 +883,138 @@ form.login button{width:100%}
     return { type:t, tit:"", ko:"" };
   }
 
+  var LANG_NAME = { KR: "Kreyòl", EN: "English", FR: "Français" };
+  var ETA_NAME = { bouyon: "DRAFT", live: "LIVE", feme: "CLOSED" };
+
+  // Which groups are open survives a save, because the alternative is opening
+  // the same module again after every edit.
+  function grpOpen() {
+    try { return JSON.parse(localStorage.getItem("ekip:leson:open") || "[]"); }
+    catch (e) { return []; }
+  }
+  function grpToggle(key, on) {
+    var a = grpOpen().filter(function (x) { return x !== key; });
+    if (on) a.push(key);
+    try { localStorage.setItem("ekip:leson:open", JSON.stringify(a)); } catch (e) { /* fine */ }
+  }
+
+  // A module can be delivered three ways and every one of them is the same
+  // row: watch it, read it, or stand in front of a camera and say it. The
+  // buttons are in that order because that is the order they get used in.
+  function lesonLinks(l) {
+    var q = LESON + esc(l.slug) + (l.eta === "live" ? "" : "&prevyou=1");
+    function a(href, label, cls) {
+      return '<a class="alt ' + (cls || "") + '" style="text-decoration:none" href="' +
+        href + '" target="_blank" rel="noopener">' + label + "</a>";
+    }
+    return '<div class="acts">' +
+      a(q, l.eta === "live" ? "Slides" : "Slides (preview)") +
+      (l.liv
+        ? a(q + "&mod=liv", "Reading")
+        : '<span class="alt off" title="No reading version written yet">Reading</span>') +
+      a(q + "&mod=eskript", "Script") +
+      '<button class="alt" data-ledit="' + esc(l.slug) + '">Edit</button>' +
+      "</div>";
+  }
+
+  function lesonVar(l) {
+    // The two things that decide whether it can go out, said in the row so
+    // nobody has to open a lesson to find out it has no video yet.
+    var bits = ["<code>" + esc(l.slug) + "</code>", l.glise + " slides"];
+    if (l.videyo === 0) bits.push('<span class="no">no video slide</span>');
+    else if (l.videyo_vid) bits.push('<span class="no">' + l.videyo_vid + " of " + l.videyo + " not filmed</span>");
+    else bits.push(l.videyo + " video" + (l.videyo === 1 ? "" : "s"));
+    bits.push(l.fom ? "gate <code>" + esc(l.fom) + "</code>" : '<span class="no">no gate</span>');
+    bits.push(l.liv ? l.liv + " sections to read" : '<span class="no">no reading version</span>');
+
+    return '<div class="var' + (l.lang === "KR" ? " kr" : "") + '">' +
+      '<div class="vh"><span class="lg">' + esc(l.lang) + "</span>" +
+      '<span class="vt">' + esc(l.tit) + "</span>" +
+      '<span class="pill ' + esc(l.eta) + '">' + (ETA_NAME[l.eta] || esc(l.eta)) + "</span></div>" +
+      '<p class="vm">' + bits.join('<span class="sep">&middot;</span>') + "</p>" +
+      lesonLinks(l) + "</div>";
+  }
+
   function viewLesonList(d) {
-    var rows = d.leson.map(function (l) {
-      // The two things that decide whether it can go out, said in the row so
-      // nobody has to open a lesson to find out it has no video yet.
-      var vid = l.videyo === 0
-        ? '<span style="color:var(--muted)">&mdash;</span>'
-        : l.videyo_vid
-          ? '<span class="pill bouyon">' + l.videyo_vid + " of " + l.videyo + " missing</span>"
-          : '<span class="pill live">' + l.videyo + "</span>";
-      var gate = l.fom
-        ? "<code>" + esc(l.fom) + "</code>"
-        : '<span class="pill bouyon">no gate</span>';
-      return "<tr><td>" + (l.send == null ? "" : '<strong style="font-size:15px">' + l.send + "</strong> ") +
-        "<strong>" + esc(l.tit) + "</strong>" +
-        '<div style="margin-top:4px"><code>' + esc(l.slug) + "</code></div></td>" +
-        '<td><span class="pill ' + esc(l.eta) + '">' +
-          ({bouyon:"DRAFT", live:"LIVE", feme:"CLOSED"}[l.eta] || l.eta) + "</span>" +
-          (l.lang !== "KR" ? ' <span class="pill bouyon">' + esc(l.lang) + "</span>" : "") + "</td>" +
-        "<td>" + l.glise + "</td><td>" + vid + "</td><td>" + gate + "</td>" +
-        '<td class="acts">' +
-          '<button class="alt" data-ledit="' + esc(l.slug) + '">Edit</button>' +
-          '<a class="alt" style="text-decoration:none" href="' + LESON + esc(l.slug) +
-            (l.eta === "live" ? "" : "&prevyou=1") + '" target="_blank" rel="noopener">' +
-            (l.eta === "live" ? "Open" : "Preview") + "</a>" +
-          '<a class="alt" style="text-decoration:none" href="' + LESON + esc(l.slug) +
-            "&mod=eskript" + (l.eta === "live" ? "" : "&prevyou=1") +
-            '" target="_blank" rel="noopener">Script</a>' +
-        "</td></tr>";
+    // Group by send. Order inside a group is KR first, because KR is the only
+    // language that is allowed to go live and therefore the only one anybody
+    // is ever looking for in a hurry.
+    var order = { KR: 0, EN: 1, FR: 2 };
+    var keys = [], byKey = {};
+    d.leson.forEach(function (l) {
+      var k = l.send == null ? "x" : String(l.send);
+      if (!byKey[k]) { byKey[k] = []; keys.push(k); }
+      byKey[k].push(l);
+    });
+    keys.sort(function (a, b) {
+      if (a === "x") return 1;
+      if (b === "x") return -1;
+      return Number(a) - Number(b);
+    });
+
+    var open = grpOpen();
+    var groups = keys.map(function (k) {
+      var list = byKey[k].slice().sort(function (a, b) {
+        return (order[a.lang] == null ? 9 : order[a.lang]) -
+               (order[b.lang] == null ? 9 : order[b.lang]);
+      });
+      // The group is named in English, because the admin side is English and a
+      // heading reading "Modil 1 - Rekritman Patisipan (KR)" names a
+      // translation rather than the module it belongs to. Display order inside
+      // is the opposite -- KR first, because KR is what goes live.
+      var named = list.slice().sort(function (a, b) {
+        var r = { EN: 0, FR: 1, KR: 2 };
+        return (r[a.lang] == null ? 9 : r[a.lang]) - (r[b.lang] == null ? 9 : r[b.lang]);
+      })[0];
+      var name = named.tit;
+      var pills = list.map(function (l) {
+        return '<span class="pill ' + esc(l.eta) + '">' + esc(l.lang) + " " +
+          (ETA_NAME[l.eta] || esc(l.eta)) + "</span>";
+      }).join("");
+      // A module with no Kreyòl is a module no trainee can open. Say it here,
+      // closed, rather than let somebody find out by opening two rows.
+      var noKr = !list.some(function (l) { return l.lang === "KR"; });
+      if (noKr) pills += '<span class="pill bouyon">no KR</span>';
+
+      return '<details class="grp" data-grp="' + esc(k) + '"' +
+        (open.indexOf(k) >= 0 ? " open" : "") + "><summary>" +
+        '<span class="sn' + (k === "x" ? " none" : "") + '">' + (k === "x" ? "&ndash;" : esc(k)) + "</span>" +
+        '<span class="st">' + esc(name) + "</span>" +
+        '<span class="sl">' + pills + "</span>" +
+        '<span class="chev">&rsaquo;</span></summary>' +
+        '<div class="body">' + list.map(lesonVar).join("") +
+        '<div class="addlang"><button class="alt" data-lnew="' + esc(k) +
+        '">+ Add a language to this module</button></div>' +
+        "</div></details>";
     }).join("");
 
     app.innerHTML = chrome(
       '<div id="note" hidden></div>' +
       '<div class="acts" style="margin-bottom:6px"><h1 style="flex:1;font-size:19px;margin:0">Lessons</h1>' +
       '<button class="go" id="lnew">+ New lesson</button></div>' +
-      '<p class="sub" style="margin:0 0 16px">What a trainee opens from a WhatsApp link. ' +
+      '<p class="sub" style="margin:0 0 16px">One row per send, opened to show the languages it exists in. ' +
+      "Every language is three deliveries of one row ... slides to learn it, reading to look it up, " +
+      "script to film it ... so none of the three can drift from the other two. " +
       "Videos are YouTube ids, never uploaded files ... an external player lets someone " +
       "on phone data drop to 144p, and a file we host does not.</p>" +
       (d.leson.length
-        ? '<div class="scroll"><table><thead><tr><th>Lesson</th><th>Status</th><th>Slides</th>' +
-          "<th>Video</th><th>Gate</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        ? groups
         : '<div class="empty">No lessons yet. Create the first one.</div>'), true);
     wire();
     document.getElementById("lnew").onclick = function () { location.hash = "leson/new"; };
     Array.prototype.forEach.call(app.querySelectorAll("[data-ledit]"), function (b) {
       b.onclick = function () { location.hash = "leson/" + b.getAttribute("data-ledit"); };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-lnew]"), function (b) {
+      b.onclick = function () {
+        var k = b.getAttribute("data-lnew");
+        location.hash = "leson/new" + (k === "x" ? "" : "?send=" + k);
+      };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("details.grp"), function (g) {
+      g.addEventListener("toggle", function () {
+        grpToggle(g.getAttribute("data-grp"), g.open);
+      });
     });
   }
 
@@ -934,16 +1082,34 @@ form.login button{width:100%}
 
   function viewLesonEdit() {
     var d = LDRAFT;
-    var slides = d.deck.slides;
+    var reading = d.tab === "liv";
+    var slides = curSlides();
+    var word = reading ? "Section" : "Slide";
 
     var cards = slides.map(function (s, i) {
       return '<div class="sec"><div class="sechead">' +
         '<span class="n">' + (i + 1) + ". " + esc(kindName(s.type)) + "</span>" +
         '<button class="alt" data-lup="' + i + '"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
         '<button class="alt" data-ldn="' + i + '"' + (i === slides.length - 1 ? " disabled" : "") + ">&darr;</button>" +
-        '<button class="alt danger" data-lrm="' + i + '"' + (slides.length < 2 ? " disabled" : "") + ">Remove</button>" +
-        "</div>" + slideFields(s, i) + camNote(s, i) + "</div>";
+        // A deck must keep one block; a reading version is allowed to go back
+        // to empty, because "not written yet" is a real state for it.
+        '<button class="alt danger" data-lrm="' + i + '"' +
+          (!reading && slides.length < 2 ? " disabled" : "") + ">Remove</button>" +
+        "</div>" + slideFields(s, i) + (reading ? "" : camNote(s, i)) + "</div>";
     }).join("");
+
+    var tabs = '<div class="tabs">' +
+      '<button type="button" id="tabdeck" class="' + (reading ? "" : "on") + '">Slides ' +
+        '<span class="ct">' + d.deck.slides.length + "</span></button>" +
+      '<button type="button" id="tabliv" class="' + (reading ? "on" : "") + '">Reading ' +
+        '<span class="ct">' + d.liv.slides.length + "</span></button>" +
+      "</div>" +
+      '<p class="tabnote">' + (reading
+        ? "The manual text, drawn as one document instead of paged. Same blocks, " +
+          "same row, so it cannot drift from the deck. Leave it empty and the " +
+          "lesson is slides only ... nothing breaks."
+        : "What a trainee swipes through on a phone. One idea per slide.") +
+      "</p>";
 
     var kindOpts = SLIDE_KINDS.map(function (k) {
       return '<option value="' + k[0] + '">' + esc(k[1]) + "</option>";
@@ -971,15 +1137,19 @@ form.login button{width:100%}
         "</select>" +
         '<p class="mini">Only a Kreyol lesson can go live. An English deck stays a draft ' +
         "until it is translated ... a trainee opens this alone, on a phone.</p></div></div>" +
-      cards +
+      tabs +
+      (cards || '<div class="empty">Nothing written here yet. Add the first section, ' +
+        "or leave it empty and the lesson stays slides only.</div>") +
       '<div class="acts" style="margin:16px 0">' +
         '<select id="lkind">' + kindOpts + "</select>" +
-        '<button class="alt" id="ladd">+ Add slide</button>' +
+        '<button class="alt" id="ladd">+ Add ' + word.toLowerCase() + "</button>" +
       "</div>" +
       '<div class="acts" style="margin-top:20px">' +
         '<button class="go" id="lsave">Save</button>' +
         (d.isNew ? "" : '<a class="alt" style="text-decoration:none" href="' + LESON +
-          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Preview</a>' +
+          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Slides</a>' +
+          (d.liv.slides.length ? '<a class="alt" style="text-decoration:none" href="' + LESON +
+            esc(d.originalSlug) + '&mod=liv&prevyou=1" target="_blank" rel="noopener">Reading</a>' : "") +
           '<a class="alt" style="text-decoration:none" href="' + LESON +
           esc(d.originalSlug) + '&mod=eskript&prevyou=1" target="_blank" rel="noopener">Filming script</a>') +
       "</div>", true);
@@ -988,7 +1158,7 @@ form.login button{width:100%}
   }
 
   function readSlides() {
-    LDRAFT.deck.slides.forEach(function (s, i) {
+    curSlides().forEach(function (s, i) {
       function g(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.value : undefined; }
       function c(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.checked : undefined; }
       ["tit", "sou_tit", "kalite", "ko", "teks", "url", "kap", "alt",
@@ -1016,15 +1186,29 @@ form.login button{width:100%}
 
   function wireLesonEdit() {
     var d = LDRAFT;
+
+    // Switching tabs writes the open one back first. Losing an edit to a tab
+    // click is the kind of thing somebody stops using a builder over.
+    function tab(name) {
+      return function () {
+        if (d.tab === name) return;
+        readSlides(); readTop();
+        d.tab = name;
+        viewLesonEdit();
+      };
+    }
+    document.getElementById("tabdeck").onclick = tab("deck");
+    document.getElementById("tabliv").onclick = tab("liv");
+
     document.getElementById("ladd").onclick = function () {
       readSlides(); readTop();
-      d.deck.slides.push(blankSlide(document.getElementById("lkind").value));
+      curSlides().push(blankSlide(document.getElementById("lkind").value));
       viewLesonEdit();
     };
     Array.prototype.forEach.call(app.querySelectorAll("[data-lup]"), function (b) {
       b.onclick = function () {
         readSlides(); readTop();
-        var i = +b.getAttribute("data-lup"), a = d.deck.slides;
+        var i = +b.getAttribute("data-lup"), a = curSlides();
         a.splice(i - 1, 0, a.splice(i, 1)[0]);
         viewLesonEdit();
       };
@@ -1032,7 +1216,7 @@ form.login button{width:100%}
     Array.prototype.forEach.call(app.querySelectorAll("[data-ldn]"), function (b) {
       b.onclick = function () {
         readSlides(); readTop();
-        var i = +b.getAttribute("data-ldn"), a = d.deck.slides;
+        var i = +b.getAttribute("data-ldn"), a = curSlides();
         a.splice(i + 1, 0, a.splice(i, 1)[0]);
         viewLesonEdit();
       };
@@ -1040,7 +1224,7 @@ form.login button{width:100%}
     Array.prototype.forEach.call(app.querySelectorAll("[data-lrm]"), function (b) {
       b.onclick = function () {
         readSlides(); readTop();
-        d.deck.slides.splice(+b.getAttribute("data-lrm"), 1);
+        curSlides().splice(+b.getAttribute("data-lrm"), 1);
         viewLesonEdit();
       };
     });
@@ -1065,7 +1249,7 @@ form.login button{width:100%}
     btn.disabled = true; btn.textContent = "Saving\u2026";
 
     var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, send:d.send,
-                 lang:d.lang, eta:d.eta, deck:d.deck };
+                 lang:d.lang, eta:d.eta, deck:d.deck, liv:d.liv };
     api(d.isNew ? "leson" : "leson/" + d.originalSlug,
         { method: d.isNew ? "POST" : "PUT", body: body })
       .then(function () {
@@ -1317,6 +1501,13 @@ form.login button{width:100%}
     var h = location.hash.replace(/^#/,"");
     var parts = h.split("/");
     var k = parts[0], arg = parts[1];
+    // "+ Add a language to this module" arrives as leson/new?send=3, so the
+    // new lesson opens already belonging to the module it was created from.
+    var qArg = null;
+    if (arg && arg.indexOf("?") >= 0) {
+      qArg = new URLSearchParams(arg.slice(arg.indexOf("?") + 1));
+      arg = arg.slice(0, arg.indexOf("?"));
+    }
 
     if (!k) return viewHome();
 
@@ -1344,9 +1535,12 @@ form.login button{width:100%}
       }).catch(oops);
     }
     if (k === "leson" && arg === "new") {
+      var pre = qArg && qArg.get("send");
       LDRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"",
-                 send:null, lang:"KR", eta:"bouyon",
-                 deck:{ slides:[ blankSlide("tit"), blankSlide("fen") ] } };
+                 send: pre === null || pre === undefined || pre === "" ? null : Number(pre),
+                 lang:"KR", eta:"bouyon", tab:"deck",
+                 deck:{ slides:[ blankSlide("tit"), blankSlide("fen") ] },
+                 liv:{ slides:[] } };
       return viewLesonEdit();
     }
     if (k === "leson" && arg) {
@@ -1354,8 +1548,9 @@ form.login button{width:100%}
       return api("leson/" + encodeURIComponent(arg)).then(function (l) {
         LDRAFT = { isNew:false, slug:l.slug, originalSlug:l.slug, tit:l.tit,
                    deskripsyon:l.deskripsyon||"", send:l.send, lang:l.lang,
-                   eta:l.eta, slugTouched:true,
-                   deck: (l.deck && l.deck.slides) ? l.deck : { slides:[blankSlide("tit")] } };
+                   eta:l.eta, slugTouched:true, tab:"deck",
+                   deck: (l.deck && l.deck.slides) ? l.deck : { slides:[blankSlide("tit")] },
+                   liv: (l.liv && l.liv.slides) ? l.liv : { slides:[] } };
         viewLesonEdit();
       }).catch(oops);
     }

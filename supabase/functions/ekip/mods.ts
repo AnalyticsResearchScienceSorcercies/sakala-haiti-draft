@@ -1,6 +1,6 @@
 // Module handlers for the internal team API.
 import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
-import { validate, validateDeck } from "./validate.ts";
+import { validate, validateDeck, validateLiv } from "./validate.ts";
 
 export class Fail extends Error {
   status: number;
@@ -16,7 +16,7 @@ export function modWhoami(user: string) {
     moduleyo: [
       { kle: "fom", tit: "Forms", deskripsyon: "Build and publish forms", pare: true },
       { kle: "apwobasyon", tit: "Approvals", deskripsyon: "Two signatures before money moves", pare: true },
-      { kle: "leson", tit: "Lessons", deskripsyon: "Slide decks the trainees learn from", pare: true },
+      { kle: "leson", tit: "Lessons", deskripsyon: "What a trainee watches and reads", pare: true },
       { kle: "dok", tit: "Documents", deskripsyon: "Which version is current", pare: true },
       { kle: "pewol", tit: "Hours & payroll", deskripsyon: "What each person is owed", pare: false },
     ],
@@ -56,7 +56,7 @@ export async function modDok() {
 export async function lesonList() {
   const { data, error } = await SB()
     .from("ekip_leson")
-    .select("id,slug,tit,deskripsyon,deck,send,lang,eta,kreye_pa,updated_at")
+    .select("id,slug,tit,deskripsyon,deck,liv,send,lang,eta,kreye_pa,updated_at")
     .order("send", { ascending: true, nullsFirst: false })
     .order("updated_at", { ascending: false });
   if (error) throw new Fail(error.message, 500);
@@ -74,6 +74,9 @@ export async function lesonList() {
         videyo: slides.filter((x) => x.type === "videyo").length,
         videyo_vid: slides.filter((x) => x.type === "videyo" && !String(x.youtube ?? "").trim()).length,
         fom: slides.filter((x) => x.type === "fen").map((x) => String(x.fom ?? "")).filter(Boolean)[0] ?? null,
+        // The reading version, counted the same way. Zero means it is not
+        // written yet, which is the normal state until the deck is settled.
+        liv: ((l.liv?.slides ?? []) as unknown[]).length,
       };
     }),
   };
@@ -112,6 +115,13 @@ export async function lesonSave(user: string, body: Record<string, unknown>, slu
   const errs = validateDeck(deck);
   if (errs.length) throw new Fail(errs.join(" · "));
 
+  // The reading version is optional and stays optional. A lesson with an empty
+  // `liv` is a lesson somebody has not written the manual text for yet, and the
+  // builder must never make that a reason it cannot save the deck.
+  const liv = body.liv ?? { slides: [] };
+  const livErrs = validateLiv(liv);
+  if (livErrs.length) throw new Fail("Reading version: " + livErrs.join(" · "));
+
   // GOING LIVE IN KREYOL IS THE POINT. An English deck can exist as a draft
   // for as long as it takes -- that is how it gets written -- but a trainee
   // opening a WhatsApp link and finding English is the failure this whole
@@ -127,7 +137,7 @@ export async function lesonSave(user: string, body: Record<string, unknown>, slu
   const row = {
     slug: newSlug, tit,
     deskripsyon: String(body.deskripsyon ?? "").trim() || null,
-    deck, send, lang, eta,
+    deck, liv, send, lang, eta,
   };
 
   if (slug) {
