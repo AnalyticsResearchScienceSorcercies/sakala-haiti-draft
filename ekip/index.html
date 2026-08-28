@@ -17,6 +17,10 @@ a{color:inherit}
 h1{font-size:22px;margin:0 0 2px}
 h3{font-size:15px;margin:0 0 10px}
 .sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+/* The bar already owns the page's h1. This is the screen's name, not a second
+   top-level heading. */
+.pgt{flex:1;font-size:19px;font-weight:700;margin:0;text-transform:none;
+ letter-spacing:0;border:0;padding:0}
 h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
  padding-bottom:6px;border-bottom:2px solid var(--ink)}
 .bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;
@@ -56,6 +60,8 @@ td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
 .pill.live{border-color:var(--ok);color:var(--ok);font-weight:700}
 .pill.bouyon{border-color:var(--warn);color:var(--warn);font-weight:700}
 .pill.feme{opacity:.7}
+/* Not a state a language is in ... a language that does not exist. */
+.pill.gap{border-color:var(--bad);color:var(--bad);font-weight:700}
 
 label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;
@@ -69,12 +75,19 @@ textarea{resize:vertical;min-height:70px}
 
 button.go{padding:11px 18px;background:var(--ink);color:var(--paper);border:0;border-radius:7px;
  font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
-button.alt{padding:9px 14px;background:var(--card);color:var(--ink);border:1px solid var(--line);
- border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-button.alt:hover{border-color:var(--ink)}
-button.alt.file{padding:4px 9px;font-size:12px}
-button.danger{color:var(--bad);border-color:var(--bad)}
-button[disabled]{opacity:.5;cursor:not-allowed}
+/* A control looks like a control whatever tag it is. Half these are <a>
+   (they open a new tab) and one is a <span> (nothing to open yet); scoping
+   this to button.alt left the three most-used actions on the lessons screen
+   looking like plain text next to a bordered Edit nobody clicks. */
+.alt{display:inline-flex;align-items:center;justify-content:center;
+ padding:9px 14px;background:var(--card);color:var(--ink);border:1px solid var(--line);
+ border-radius:7px;font-size:14px;font-weight:600;line-height:1.2;cursor:pointer;
+ font-family:inherit;text-decoration:none}
+.alt:not(.off):not([disabled]):hover{border-color:var(--ink)}
+.alt.file{padding:4px 9px;font-size:12px}
+.alt.danger{color:var(--bad);border-color:var(--bad)}
+.alt.off,button[disabled]{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 .sec{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px;margin-bottom:14px}
@@ -154,6 +167,13 @@ code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:13px}
  transition:transform .16s ease}
 .grp[open] .chev{transform:rotate(90deg)}
 .grp .body{border-top:1px solid var(--line);padding:4px 15px 15px}
+/* On a phone the pills were flex:none and the title was the only thing that
+   could give, so a three-language module read "Module 1 ...". Wrap instead. */
+@media(max-width:620px){
+ .grp > summary{flex-wrap:wrap;gap:10px}
+ .grp .st{white-space:normal;overflow:visible;text-overflow:clip}
+ .grp .chev{order:1}
+ .grp .sl{order:2;flex:1 0 100%;justify-content:flex-start;padding-left:40px}}
 
 /* one language of one module */
 .var{padding:14px 0;border-bottom:1px solid var(--line)}
@@ -162,12 +182,18 @@ code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:13px}
 .var .lg{flex:none;font-size:11px;font-weight:800;letter-spacing:.07em;
  border:1px solid var(--ink);border-radius:4px;padding:2px 6px}
 .var .vt{font-weight:700;font-size:14.5px}
+/* The separator hangs off the end of the fact before it, never stands on its
+   own -- a free-standing dot in a wrapping flex row lands at the start of the
+   next line, which reads as a bullet nobody wrote. Each fact is nowrap so
+   "gate send1-gate" cannot split across two lines either. */
 .var .vm{color:var(--muted);font-size:12.5px;margin:0 0 10px;
- display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.var .vm .sep{opacity:.5}
+ display:flex;gap:0 7px;flex-wrap:wrap;align-items:baseline}
+.var .vm .f{white-space:nowrap}
+.var .vm .f:not(:last-child)::after{content:"·";margin-left:7px;opacity:.5}
+/* Orange means it blocks. A draft that has not been filmed yet is a to-do,
+   and painting every to-do the same colour as a real hole spends the signal. */
 .var .vm .no{color:var(--warn);font-weight:700}
-.var .acts a,.var .acts button{font-size:13px;padding:7px 12px}
-.var .acts .off{opacity:.42;cursor:not-allowed;pointer-events:none}
+.var .acts .alt{font-size:13px;padding:7px 12px}
 /* The one language that can actually go out. Everything else is a draft by
    rule, not by accident, so the eye should find KR first. */
 .var.kr{border-left:3px solid var(--ok);padding-left:12px;margin-left:-15px;
@@ -191,7 +217,10 @@ form.login input{margin-bottom:13px}
 form.login button{width:100%}
 [hidden]{display:none!important}
 @media(prefers-color-scheme:dark){
- :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e;--card:#1f1c16;--head:#2b271f}
+ /* The status colours carry most of the meaning on this screen, and the
+    daylight versions land at 2.6:1 on a dark card. Lift all three. */
+ :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e;--card:#1f1c16;--head:#2b271f;
+  --ok:#5fbf83;--warn:#e0a83c;--bad:#f08a8a}
  .fld{background:#16140f}
  button.go{background:#f2ede4;color:#16140f}
  .note.err{background:#2e1a1a}.note.ok{background:#16261b}.note.warn{background:#2b2312}}
@@ -917,21 +946,53 @@ form.login button{width:100%}
       "</div>";
   }
 
-  function lesonVar(l) {
-    // The two things that decide whether it can go out, said in the row so
-    // nobody has to open a lesson to find out it has no video yet.
-    var bits = ["<code>" + esc(l.slug) + "</code>", l.glise + " slides"];
-    if (l.videyo === 0) bits.push('<span class="no">no video slide</span>');
-    else if (l.videyo_vid) bits.push('<span class="no">' + l.videyo_vid + " of " + l.videyo + " not filmed</span>");
-    else bits.push(l.videyo + " video" + (l.videyo === 1 ? "" : "s"));
-    bits.push(l.fom ? "gate <code>" + esc(l.fom) + "</code>" : '<span class="no">no gate</span>');
-    bits.push(l.liv ? l.liv + " sections to read" : '<span class="no">no reading version</span>');
+  // "3d ago" is enough. The exact minute is in the editor and nobody plans
+  // around it; what the list has to answer is which of these was touched last.
+  function ago(ts) {
+    var t = ts ? new Date(ts).getTime() : NaN;
+    if (!t) return "";
+    var d = (Date.now() - t) / 1000;
+    if (d < 0) d = 0;
+    if (d < 90) return "just now";
+    if (d < 5400) return Math.round(d / 60) + "m ago";
+    if (d < 86400) return Math.round(d / 3600) + "h ago";
+    return Math.round(d / 86400) + "d ago";
+  }
 
+  // A missing piece is orange when it stops the lesson going out and grey when
+  // it is simply the next thing to do. A draft with no gate yet is a Tuesday;
+  // a live module with no gate is a lesson that teaches and then asks nothing.
+  function lesonVar(l, groupName, krStamp) {
+    var live = l.eta === "live", modil = l.send != null;
+    function fact(html, hot) {
+      return '<span class="f' + (hot ? " no" : "") + '">' + html + "</span>";
+    }
+    var bits = [fact("<code>" + esc(l.slug) + "</code>"), fact(l.glise + " slides")];
+    // An empty YouTube box is a hole in the deck whatever the status, so that
+    // one is orange always. The rest only shout once the lesson is live.
+    if (l.videyo_vid) bits.push(fact(l.videyo_vid + " of " + l.videyo + " not filmed", true));
+    else if (l.videyo === 0) bits.push(fact("no video slide", live && modil));
+    else bits.push(fact(l.videyo + " video" + (l.videyo === 1 ? "" : "s")));
+    bits.push(l.fom ? fact("gate <code>" + esc(l.fom) + "</code>")
+                    : fact("no gate", live && modil));
+    bits.push(l.liv ? fact(l.liv + " sections to read")
+                    : fact("no reading version", live));
+    // The screen exists so the three deliveries cannot drift. Drift between
+    // languages was the one kind it could not see: KR moves, the translation
+    // stays where it was, and both rows still read LIVE.
+    if (l.lang !== "KR" && krStamp && l.updated_at &&
+        new Date(l.updated_at).getTime() < new Date(krStamp).getTime()) {
+      bits.push(fact("KR edited since", true));
+    }
+    if (l.updated_at) bits.push(fact("edited " + ago(l.updated_at)));
+
+    // The group heading already carries the module name. Printing it again on
+    // the only row inside is the same sentence twice.
+    var tit = l.tit === groupName ? "" : '<span class="vt">' + esc(l.tit) + "</span>";
     return '<div class="var' + (l.lang === "KR" ? " kr" : "") + '">' +
-      '<div class="vh"><span class="lg">' + esc(l.lang) + "</span>" +
-      '<span class="vt">' + esc(l.tit) + "</span>" +
+      '<div class="vh"><span class="lg">' + esc(l.lang) + "</span>" + tit +
       '<span class="pill ' + esc(l.eta) + '">' + (ETA_NAME[l.eta] || esc(l.eta)) + "</span></div>" +
-      '<p class="vm">' + bits.join('<span class="sep">&middot;</span>') + "</p>" +
+      '<p class="vm">' + bits.join("") + "</p>" +
       lesonLinks(l) + "</div>";
   }
 
@@ -967,6 +1028,8 @@ form.login button{width:100%}
         return (r[a.lang] == null ? 9 : r[a.lang]) - (r[b.lang] == null ? 9 : r[b.lang]);
       })[0];
       var name = named.tit;
+      var kr = list.filter(function (l) { return l.lang === "KR"; })[0];
+      var krStamp = kr ? kr.updated_at : null;
       var pills = list.map(function (l) {
         return '<span class="pill ' + esc(l.eta) + '">' + esc(l.lang) + " " +
           (ETA_NAME[l.eta] || esc(l.eta)) + "</span>";
@@ -974,7 +1037,7 @@ form.login button{width:100%}
       // A module with no Kreyòl is a module no trainee can open. Say it here,
       // closed, rather than let somebody find out by opening two rows.
       var noKr = !list.some(function (l) { return l.lang === "KR"; });
-      if (noKr) pills += '<span class="pill bouyon">no KR</span>';
+      if (noKr) pills += '<span class="pill gap">no KR</span>';
 
       return '<details class="grp" data-grp="' + esc(k) + '"' +
         (open.indexOf(k) >= 0 ? " open" : "") + "><summary>" +
@@ -982,7 +1045,11 @@ form.login button{width:100%}
         '<span class="st">' + esc(name) + "</span>" +
         '<span class="sl">' + pills + "</span>" +
         '<span class="chev">&rsaquo;</span></summary>' +
-        '<div class="body">' + list.map(lesonVar).join("") +
+        '<div class="body">' + list.map(function (l) {
+          // Only a one-language module repeats itself. Where there are two or
+          // more, each row keeps its own title because the titles differ.
+          return lesonVar(l, list.length === 1 ? name : null, krStamp);
+        }).join("") +
         '<div class="addlang"><button class="alt" data-lnew="' + esc(k) +
         '">+ Add a language to this module</button></div>' +
         "</div></details>";
@@ -990,13 +1057,11 @@ form.login button{width:100%}
 
     app.innerHTML = chrome(
       '<div id="note" hidden></div>' +
-      '<div class="acts" style="margin-bottom:6px"><h1 style="flex:1;font-size:19px;margin:0">Lessons</h1>' +
+      '<div class="acts" style="margin-bottom:6px"><h2 class="pgt">Lessons</h2>' +
       '<button class="go" id="lnew">+ New lesson</button></div>' +
       '<p class="sub" style="margin:0 0 16px">One row per send, opened to show the languages it exists in. ' +
       "Every language is three deliveries of one row ... slides to learn it, reading to look it up, " +
-      "script to film it ... so none of the three can drift from the other two. " +
-      "Videos are YouTube ids, never uploaded files ... an external player lets someone " +
-      "on phone data drop to 144p, and a file we host does not.</p>" +
+      "script to film it ... so none of the three can drift from the other two.</p>" +
       (d.leson.length
         ? groups
         : '<div class="empty">No lessons yet. Create the first one.</div>'), true);
