@@ -937,32 +937,49 @@ form.login button{width:100%}
     })[0].tit;
   }
 
-  // One entry per numbered module, then one per loose document. A row with no
-  // send number has nothing to pair it with, so it stands on its own rather
-  // than being heaped in with every other loose document under one heading
-  // that would name whichever happened to sort first.
+  // What pairs two rows as the same document in two languages. A numbered
+  // module is grouped by its send number and needs nothing else; gwoup names
+  // the group for anything without a number, and wins where it is set. A row
+  // with neither is a document nothing pairs with, and stands alone.
+  function grpKey(l) {
+    if (l.gwoup) return "g:" + l.gwoup;
+    if (l.send != null) return "s" + l.send;
+    return "l:" + l.slug;
+  }
+
   function lesonEntries(list) {
-    var mods = {}, keys = [], loose = [];
+    var by = {}, keys = [];
     (list || []).forEach(function (l) {
-      if (l.send == null) { loose.push(l); return; }
-      var k = String(l.send);
-      if (!mods[k]) { mods[k] = []; keys.push(k); }
-      mods[k].push(l);
+      var k = grpKey(l);
+      if (!by[k]) { by[k] = []; keys.push(k); }
+      by[k].push(l);
     });
-    keys.sort(function (a, b) { return Number(a) - Number(b); });
+
     var out = keys.map(function (k) {
-      var g = langSort(mods[k]), name = grpName(g);
-      // Nearly every title already opens with "Module 3", so prefixing the
-      // send number produced "3 - Module 3 - Safety". Number it only when the
-      // title does not number itself.
-      return { key: "s" + k, send: Number(k), doc: false,
-               label: /^\s*(modil|module|modul)\s*\d/i.test(name) ? name : k + " \u2014 " + name,
-               list: g };
+      var g = langSort(by[k]), name = grpName(g);
+      var sends = g.map(function (x) { return x.send; })
+                   .filter(function (x) { return x != null; });
+      var send = sends.length ? Math.min.apply(null, sends) : null;
+      var gwoup = g[0].gwoup || null;
+      var alone = k.indexOf("l:") === 0;
+      // Nearly every module title already opens with "Module 3", so prefixing
+      // the send number produced "3 - Module 3 - Safety". Number it only when
+      // the title does not number itself. A document that stands alone carries
+      // its language instead, because that is the only thing telling it apart
+      // from the translation somebody has not paired to it yet.
+      var label = alone ? name + " (" + g[0].lang + ")"
+        : (send != null && !/^\s*(modil|module|modul)\s*\d/i.test(name)
+            ? send + " \u2014 " + name : name);
+      return { key: k, send: send, gwoup: gwoup, doc: send == null,
+               canAdd: send != null || !!gwoup, label: label, list: g };
     });
-    loose.sort(function (a, b) { return String(a.tit).localeCompare(String(b.tit)); });
-    loose.forEach(function (l) {
-      out.push({ key: "l:" + l.slug, send: null, doc: true,
-                 label: l.tit + " (" + l.lang + ")", list: [l] });
+
+    // Numbered modules in order, then everything else by name.
+    out.sort(function (a, b) {
+      if (a.send == null && b.send == null) return a.label.localeCompare(b.label);
+      if (a.send == null) return 1;
+      if (b.send == null) return -1;
+      return a.send - b.send;
     });
     return out;
   }
@@ -1113,14 +1130,23 @@ form.login button{width:100%}
       (noKr ? '<p class="note warn">This module has no Kreyol version, so no trainee ' +
               "can open it yet.</p>" : "") +
       '<div class="pane">' + lesonVar(sel.leson, null, kr ? kr.updated_at : null) + "</div>" +
-      (sel.entry.doc ? "" :
-        '<div class="addlang"><button class="alt" id="laddlang">+ Add a language to this ' +
-        "module</button></div>"), true);
+      (sel.entry.canAdd
+        ? '<div class="addlang"><button class="alt" id="laddlang">+ Add a language to this ' +
+          (sel.entry.send == null ? "document" : "module") + "</button></div>"
+        // Otherwise there is nothing to add a language TO. Say where the
+        // pairing comes from rather than leave a document with no way out.
+        : '<p class="sub" style="margin:14px 0 0">This document has no send number ' +
+          "and no group, so nothing pairs it with a translation. Open it and give " +
+          "it a group name, then give the translation the same one."), true);
     wire();
 
     document.getElementById("lnew").onclick = function () { location.hash = "leson/new"; };
     var add = document.getElementById("laddlang");
-    if (add) add.onclick = function () { location.hash = "leson/new?send=" + sel.entry.send; };
+    if (add) add.onclick = function () {
+      location.hash = "leson/new?" + (sel.entry.send != null
+        ? "send=" + sel.entry.send
+        : "gwoup=" + encodeURIComponent(sel.entry.gwoup));
+    };
     Array.prototype.forEach.call(app.querySelectorAll("[data-ledit]"), function (b) {
       b.onclick = function () { location.hash = "leson/" + b.getAttribute("data-ledit"); };
     });
@@ -1270,7 +1296,14 @@ form.login button{width:100%}
           ["KR", "EN", "FR"].map(function (x) {
             return '<option value="' + x + '"' + (d.lang === x ? " selected" : "") + ">" + x + "</option>";
           }).join("") +
-        "</select></div></div>" +
+        "</select></div>" +
+        '<div><label for="lgwoup">Group</label>' +
+          '<input id="lgwoup" type="text" value="' + esc(d.gwoup || "") +
+          '" placeholder="kondisyon-itilizasyon"></div></div>' +
+        '<p class="mini">Leave the group empty for a numbered module ... the send ' +
+        "number already pairs its languages. Name it for anything with no send " +
+        "number, and give every language of that document the same name, or they " +
+        "stay separate documents on every screen that lists them.</p>" +
         '<div class="row"><div><label for="leta">Status</label><select id="leta">' +
           [["bouyon", "Draft"], ["live", "Live"], ["feme", "Closed"]].map(function (x) {
             return '<option value="' + x[0] + '"' + (d.eta === x[0] ? " selected" : "") + ">" + x[1] + "</option>";
@@ -1317,6 +1350,8 @@ form.login button{width:100%}
 
   function readTop() {
     var d = LDRAFT;
+    var gw = document.getElementById("lgwoup");
+    d.gwoup = gw ? gw.value.trim().toLowerCase() : "";
     d.tit = document.getElementById("ltit").value.trim();
     d.slug = document.getElementById("lslug").value.trim();
     d.eta = document.getElementById("leta").value;
@@ -1436,7 +1471,7 @@ form.login button{width:100%}
     var d = LDRAFT;
     if (!d) return "";
     return JSON.stringify(lesonNorm({ tit: d.tit, slug: d.slug, send: d.send,
-      lang: d.lang, eta: d.eta, deck: d.deck, liv: d.liv }));
+      gwoup: d.gwoup, lang: d.lang, eta: d.eta, deck: d.deck, liv: d.liv }));
   }
   function lesonMark() { LCLEAN = lesonSnap(); }
   function lesonDirty() {
@@ -1452,7 +1487,7 @@ form.login button{width:100%}
     btn.disabled = true; btn.textContent = "Saving\u2026";
 
     var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, send:d.send,
-                 lang:d.lang, eta:d.eta, deck:d.deck, liv:d.liv };
+                 gwoup:d.gwoup || null, lang:d.lang, eta:d.eta, deck:d.deck, liv:d.liv };
     api(d.isNew ? "leson" : "leson/" + d.originalSlug,
         { method: d.isNew ? "POST" : "PUT", body: body })
       .then(function () {
@@ -1754,6 +1789,7 @@ form.login button{width:100%}
       var pre = qArg && qArg.get("send");
       LDRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"",
                  send: pre === null || pre === undefined || pre === "" ? null : Number(pre),
+                 gwoup: (qArg && qArg.get("gwoup")) || "",
                  lang:"KR", eta:"bouyon", tab:"deck",
                  deck:{ slides:[ blankSlide("tit"), blankSlide("fen") ] },
                  liv:{ slides:[] } };
@@ -1769,7 +1805,7 @@ form.login button{width:100%}
         var l = r[0];
         LESONS = r[1].leson || [];
         LDRAFT = { isNew:false, slug:l.slug, originalSlug:l.slug, tit:l.tit,
-                   deskripsyon:l.deskripsyon||"", send:l.send, lang:l.lang,
+                   deskripsyon:l.deskripsyon||"", send:l.send, gwoup:l.gwoup||"", lang:l.lang,
                    eta:l.eta, slugTouched:true, tab:"deck",
                    deck: (l.deck && l.deck.slides) ? l.deck : { slides:[blankSlide("tit")] },
                    liv: (l.liv && l.liv.slides) ? l.liv : { slides:[] } };

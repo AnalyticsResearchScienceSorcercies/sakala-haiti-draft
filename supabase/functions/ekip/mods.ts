@@ -56,7 +56,7 @@ export async function modDok() {
 export async function lesonList() {
   const { data, error } = await SB()
     .from("ekip_leson")
-    .select("id,slug,tit,deskripsyon,deck,liv,send,lang,eta,kreye_pa,updated_at")
+    .select("id,slug,tit,deskripsyon,deck,liv,send,gwoup,lang,eta,kreye_pa,updated_at")
     .order("send", { ascending: true, nullsFirst: false })
     .order("updated_at", { ascending: false });
   if (error) throw new Fail(error.message, 500);
@@ -65,7 +65,7 @@ export async function lesonList() {
       const slides = ((l.deck?.slides ?? []) as Record<string, unknown>[]);
       return {
         id: l.id, slug: l.slug, tit: l.tit, deskripsyon: l.deskripsyon,
-        send: l.send, lang: l.lang, eta: l.eta, kreye_pa: l.kreye_pa,
+        send: l.send, gwoup: l.gwoup, lang: l.lang, eta: l.eta, kreye_pa: l.kreye_pa,
         updated_at: l.updated_at,
         glise: slides.length,
         // Surfaced in the list because these are the two things that decide
@@ -111,6 +111,19 @@ export async function lesonSave(user: string, body: Record<string, unknown>, slu
     }
   }
 
+  // Which document this row is a translation of. A numbered module is already
+  // grouped by its send number, so this stays empty there; it is what pairs
+  // the languages of anything that has no number, and it wins over send when
+  // somebody deliberately wants a second document inside a module.
+  let gwoup: string | null = null;
+  const gRaw = String(body.gwoup ?? "").trim().toLowerCase();
+  if (gRaw) {
+    if (!/^[a-z0-9][a-z0-9-]{0,38}[a-z0-9]$/.test(gRaw)) {
+      throw new Fail("Group must be lowercase letters, digits and hyphens, 2-40 characters.");
+    }
+    gwoup = gRaw;
+  }
+
   const deck = body.deck ?? { slides: [] };
   const errs = validateDeck(deck);
   if (errs.length) throw new Fail(errs.join(" · "));
@@ -137,22 +150,38 @@ export async function lesonSave(user: string, body: Record<string, unknown>, slu
   const row = {
     slug: newSlug, tit,
     deskripsyon: String(body.deskripsyon ?? "").trim() || null,
-    deck, liv, send, lang, eta,
+    deck, liv, send, gwoup, lang, eta,
+  };
+
+  // The database holds one row per language per group. Say which collision it
+  // was, because "duplicate key value violates unique constraint" tells the
+  // person who hit it nothing about what to change.
+  const clash = (e: { message: string; code?: string }) => {
+    if (e.code === "23505" && /gwoup_lang/.test(e.message)) {
+      return new Fail(
+        `There is already a ${lang} version of this ` +
+        (gwoup ? `group ("${gwoup}")` : `module (send ${send})`) +
+        `. Open that one instead, or give this one a different language.`, 409);
+    }
+    return new Fail(e.message, e.code === "23505" ? 409 : 500);
   };
 
   if (slug) {
     const { data, error } = await SB().from("ekip_leson")
       .update(row).eq("slug", slug).select().maybeSingle();
-    if (error) throw new Fail(error.message, error.code === "23505" ? 409 : 500);
+    if (error) throw clash(error);
     if (!data) throw new Fail(`Lesson "${slug}" does not exist.`, 404);
     return data;
   }
 
   const { data, error } = await SB().from("ekip_leson")
     .insert({ ...row, kreye_pa: user }).select().maybeSingle();
-  if (error) throw new Fail(
-    error.code === "23505" ? `Slug "${newSlug}" is already taken.` : error.message,
-    error.code === "23505" ? 409 : 500);
+  if (error) {
+    if (error.code === "23505" && /slug/.test(error.message)) {
+      throw new Fail(`Slug "${newSlug}" is already taken.`, 409);
+    }
+    throw clash(error);
+  }
   return data;
 }
 
