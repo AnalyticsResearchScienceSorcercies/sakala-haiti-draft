@@ -89,6 +89,11 @@ button.go{padding:11px 18px;background:var(--ink);color:var(--paper);border:0;bo
 .alt.off,button[disabled]{opacity:.5;cursor:not-allowed}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* A select in a control row is one control among several, not a form field.
+   The global width:100% made it claim the whole line and knocked the button
+   it belongs to onto the next one. Fixed width, not shrink-to-fit, so the
+   button does not slide sideways every time the choice changes. */
+.acts select{width:auto;min-width:170px;max-width:100%;padding:7px 10px;font-size:14px}
 
 .sec{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px;margin-bottom:14px}
 .sechead{display:flex;gap:10px;align-items:center;margin-bottom:12px}
