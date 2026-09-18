@@ -47,6 +47,10 @@ const FILE_ACCEPT = new Set(["photo", "pdf", "any"]);
 // submissions. Six is already generous for a receipt log.
 const FILE_MAX_FIELDS = 6;
 
+// An explanation is read on a phone between two questions. Past this it is a
+// lesson, and a lesson is a deck.
+const EXPLAIN_MAX = 1200;
+
 export function validate(schema: unknown): string[] {
   const errs: string[] = [];
   if (!schema || typeof schema !== "object") return ["Schema is not an object."];
@@ -186,6 +190,20 @@ export function validate(schema: unknown): string[] {
         }
       }
 
+      // An explanation is shown AFTER the question is marked, by /tcheke. It
+      // is stripped from the served schema for the same reason the answer key
+      // is: prose saying why the right answer is right hands back the key.
+      if (f.eksplikasyon !== undefined) {
+        if (typeof f.eksplikasyon !== "string") {
+          errs.push(`${where}: the explanation must be text.`);
+        } else if (f.eksplikasyon.length > EXPLAIN_MAX) {
+          errs.push(`${where}: the explanation is longer than ${EXPLAIN_MAX} characters.`);
+        }
+        if (f.answer === undefined) {
+          errs.push(`${where}: an explanation needs a correct answer to explain.`);
+        }
+      }
+
       if (f.answer !== undefined) scored++;
       if (!String(f.label ?? "") && !CHOICE.has(type)) {
         errs.push(`${where}: missing label.`);
@@ -206,6 +224,17 @@ export function validate(schema: unknown): string[] {
   // A pass mark remains OPTIONAL and answer keys no longer depend on it: a
   // form can score a candidate and tell them what they missed without also
   // deciding they failed. Leave it off unless the form is genuinely a door.
+  // ONE QUESTION A SCREEN. Paging is only coherent when the sections are
+  // questions, so a quiz with nothing scored is almost certainly a mistake.
+  if (s.kiz !== undefined) {
+    if (typeof s.kiz !== "boolean") errs.push('"kiz" must be true or false.');
+    else if (s.kiz && !scored) {
+      errs.push("This form is set to run as a quiz but no question has a correct answer set.");
+    }
+  }
+
+  errs.push(...validateFr(s, secs, seen));
+
   const pm = s.pass_mark;
   if (pm !== undefined && pm !== null) {
     if (typeof pm !== "number" || pm < 0) errs.push("Pass mark is not a number.");
@@ -426,6 +455,91 @@ function validateSumOf(
   const ctype = cols.get(ck)!;
   if (ctype !== "?" && !NUMERIC.has(ctype)) {
     errs.push(`${where}: column "${ck}" is not a number, so it cannot be added up.`);
+  }
+  return errs;
+}
+
+// ---------------------------------------------------------------------------
+// The French overlay.
+//
+// WHY IT IS ONE OBJECT AT THE ROOT and not `label_fr` beside each label: the
+// builder's option editor is a textarea of "value|text" lines, and saving it
+// rebuilds every option as a fresh {v,t}. Anything parked on an option object
+// is deleted the first time somebody fixes a typo in the wording -- silently,
+// which is the worst way to lose a translation. Out here nothing the editor
+// writes can reach it.
+//
+// The overlay is DISPLAY ONLY. Option values are never translated, so what is
+// stored in ekip_repons and what is scored stay in one language whichever way
+// the toggle is set.
+// ---------------------------------------------------------------------------
+
+function validateFr(
+  s: Record<string, unknown>,
+  secs: unknown[],
+  keys: Set<string>,
+): string[] {
+  const errs: string[] = [];
+  if (s.fr === undefined) return errs;
+  if (!s.fr || typeof s.fr !== "object" || Array.isArray(s.fr)) {
+    return ["The French version must be an object."];
+  }
+  const fr = s.fr as Record<string, unknown>;
+
+  for (const k of ["tit", "subtitle", "submit_label", "success_message"]) {
+    if (fr[k] !== undefined && typeof fr[k] !== "string") {
+      errs.push(`French "${k}" must be text.`);
+    }
+  }
+
+  if (fr.sections !== undefined) {
+    if (!fr.sections || typeof fr.sections !== "object" || Array.isArray(fr.sections)) {
+      errs.push("French sections must be an object keyed by section number.");
+    } else {
+      for (const [k, v] of Object.entries(fr.sections as Record<string, unknown>)) {
+        const i = Number(k);
+        if (!Number.isInteger(i) || i < 0 || i >= secs.length) {
+          errs.push(`French: there is no section ${k} in this form.`);
+          continue;
+        }
+        if (!v || typeof v !== "object") { errs.push(`French section ${k}: not an object.`); continue; }
+        for (const [kk, vv] of Object.entries(v as Record<string, unknown>)) {
+          if (kk !== "legend" && kk !== "hint") errs.push(`French section ${k}: "${kk}" is not translatable.`);
+          else if (typeof vv !== "string") errs.push(`French section ${k}: "${kk}" must be text.`);
+        }
+      }
+    }
+  }
+
+  if (fr.fields !== undefined) {
+    if (!fr.fields || typeof fr.fields !== "object" || Array.isArray(fr.fields)) {
+      errs.push("French fields must be an object keyed by field key.");
+      return errs;
+    }
+    for (const [k, v] of Object.entries(fr.fields as Record<string, unknown>)) {
+      // A translation pointing at a key that no longer exists is how a form
+      // ends up half-French after a field is renamed. Say so at the door.
+      if (!keys.has(k)) { errs.push(`French: there is no field "${k}" in this form.`); continue; }
+      if (!v || typeof v !== "object") { errs.push(`French field "${k}": not an object.`); continue; }
+      for (const [kk, vv] of Object.entries(v as Record<string, unknown>)) {
+        if (kk === "options") {
+          if (!vv || typeof vv !== "object" || Array.isArray(vv)) {
+            errs.push(`French field "${k}": options must be an object keyed by option value.`);
+            continue;
+          }
+          for (const [ok, ov] of Object.entries(vv as Record<string, unknown>)) {
+            if (typeof ov !== "string") errs.push(`French field "${k}", option "${ok}": must be text.`);
+          }
+        } else if (kk === "label" || kk === "eksplikasyon") {
+          if (typeof vv !== "string") errs.push(`French field "${k}": "${kk}" must be text.`);
+          else if (kk === "eksplikasyon" && vv.length > EXPLAIN_MAX) {
+            errs.push(`French field "${k}": the explanation is longer than ${EXPLAIN_MAX} characters.`);
+          }
+        } else {
+          errs.push(`French field "${k}": "${kk}" is not translatable.`);
+        }
+      }
+    }
   }
   return errs;
 }

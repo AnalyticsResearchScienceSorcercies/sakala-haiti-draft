@@ -118,9 +118,62 @@ canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crossh
 .center{text-align:center;color:var(--muted);padding:50px 20px}
 [hidden]{display:none!important}
 
+
+/* ============================================================
+   QUIZ MODE. One question a screen, marked the moment it is
+   answered. Turned on by `kiz: true` on the schema; every form
+   without it renders exactly as it did before.
+   ============================================================ */
+.lang{display:flex;gap:6px}
+.lang button{background:var(--card);border:1px solid var(--line);border-radius:999px;
+ padding:5px 13px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.lang button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.htop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+
+.kount{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+ color:var(--muted);margin:0 0 6px}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:0 0 20px}
+.bar span{display:block;height:100%;background:var(--ink);transition:width .25s}
+.kes{font-size:19px;font-weight:700;line-height:1.35;margin:0 0 16px;letter-spacing:-.01em}
+
+button.opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;
+ padding:13px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:9px;
+ background:var(--card);color:var(--ink);font:inherit;font-size:16px;line-height:1.4;cursor:pointer}
+button.opt:active{transform:translateY(1px)}
+button.opt .tik{flex:none;width:20px;height:20px;border:2px solid var(--line);border-radius:50%;
+ margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+button.opt.many .tik{border-radius:5px}
+button.opt.on{border-color:var(--ink);background:#f3efe7;font-weight:600}
+button.opt.on .tik{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+button.opt[disabled]{cursor:default;opacity:.72}
+button.opt.on[disabled]{opacity:1}
+
+.jij{border-radius:8px;padding:14px;margin:16px 0 0;border:1px solid var(--line);background:var(--card)}
+.jij .v{font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin:0 0 7px}
+.jij p{margin:0;font-size:15.5px;line-height:1.55}
+.jij.bon{border-color:var(--ok)} .jij.bon .v{color:var(--ok)}
+.jij.mwatye{border-color:var(--warn)} .jij.mwatye .v{color:var(--warn)}
+.jij.pa{border-color:var(--accent)} .jij.pa .v{color:var(--accent)}
+
+/* the card: sized and styled to be screenshotted into WhatsApp */
+.kat{border:2px solid var(--ink);border-radius:12px;padding:26px 20px;background:var(--card);
+ text-align:center;margin:0 0 18px}
+.kat .kt{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+ color:var(--muted);margin:0 0 12px}
+.kat .ks{font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;margin:0}
+.kat .kd{font-size:14px;color:var(--muted);margin:10px 0 0}
+.kat .kdom{font-size:13px;font-weight:700;letter-spacing:.06em;margin:16px 0 0;
+ padding-top:14px;border-top:1px solid var(--line)}
+.mini{font-size:13px;color:var(--muted);text-align:center;margin:14px 0 0}
+button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
+ border:1px solid var(--line);border-radius:var(--r);font:inherit;font-size:15px;
+ font-weight:600;cursor:pointer;margin-top:10px}
+
 @media(prefers-color-scheme:dark){
  :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--card:#1f1c16;--muted:#a49b8e;--warn:#e8c877}
  label.opt:has(input:checked){background:#2b271f}
+ button.opt.on{background:#2b271f}
+ button.alt{background:#1f1c16}
  button.go{background:#f2ede4;color:#16140f}
  .note.err{background:#2e1a1a}
  .note.warn{background:#2b2312;border-color:#7a5610}
@@ -253,6 +306,271 @@ canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crossh
       return '<label class="opt"><input type="'+type+'" name="'+esc(f.key)+'" value="'+esc(x.v)+'"'+
         (f.required && type==="radio" && i===0 ? " required":"") + "><span>"+esc(x.t)+"</span></label>";
     }).join("");
+  }
+
+  // ==========================================================
+  // QUIZ MODE
+  //
+  // Three things the plain renderer cannot do, all asked for by
+  // one observation: a score that arrives after the last question
+  // teaches nothing, because by then nobody is still thinking
+  // about question two.
+  //
+  //   1. One question a screen, marked the moment it is answered,
+  //      with the explanation where the attention already is.
+  //   2. A language toggle, so one row serves a manager in Kreyol
+  //      and a partner in French. Display only - the value stored
+  //      and scored is always the Kreyol option value, so
+  //      ekip_repons never goes bilingual.
+  //   3. A result card built to be screenshotted into WhatsApp.
+  //
+  // Turned on by `kiz: true`. Every other form renders as before.
+  // ==========================================================
+  var L = "kr", STEP = 0, ANS = {}, QS = [], INTRO = [];
+  try { var sv = localStorage.getItem("fom_lang"); if (sv === "fr" || sv === "kr") L = sv; } catch (e) {}
+
+  var MWA = {
+    kr: ["janvye","fevriye","mas","avril","me","jen","jiye","out","septanm","oktob","novanm","desanm"],
+    fr: ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"]
+  };
+  function dat() { var d = new Date(); return d.getDate() + " " + MWA[L][d.getMonth()] + " " + d.getFullYear(); }
+  function w(kr, frTxt) { return L === "fr" ? frTxt : kr; }
+
+  // The French overlay is ONE object at the root of the schema, keyed by
+  // section index and field key - never tucked beside the Kreyol on the
+  // option objects themselves. The builder's option editor rebuilds every
+  // option as {v,t} from a textarea, so anything stored on an option is wiped
+  // the first time somebody edits the wording. Out here it cannot be reached.
+  function frAll() { return (DEF && DEF.schema && DEF.schema.fr) || null; }
+  function bilingual() { var f = frAll(); return !!(f && f.fields); }
+  function frNow() { return L === "fr" ? frAll() : null; }
+  function topTx(k, d) { var f = frNow(); return (f && f[k]) || d; }
+  function secTx(sec, i) { var f = frNow(), o = f && f.sections && f.sections[String(i)];
+    return (o && o.legend) || sec.legend || ""; }
+  function fldTx(fl, k, d) { var f = frNow(), o = f && f.fields && f.fields[fl.key];
+    return (o && o[k]) || d; }
+  function optTx(fl, o) { var f = frNow(), x = f && f.fields && f.fields[fl.key];
+    return (x && x.options && x.options[o.v]) || o.t; }
+
+  // A copy with the visible strings swapped, so the existing field renderers
+  // draw French without knowing French exists. The KEY and the option VALUES
+  // are untouched, which is what keeps the submission monolingual.
+  function locFld(fl) {
+    if (!frNow()) return fl;
+    var c = {}; for (var k in fl) c[k] = fl[k];
+    c.label = fldTx(fl, "label", fl.label);
+    if (fl.options) c.options = fl.options.map(function (o) { return { v: o.v, t: optTx(fl, o) }; });
+    return c;
+  }
+
+  // A section is a question if it holds a scored field. `kesyon` is set by
+  // strip() in the API, standing in for the answer key it deletes.
+  function buildKiz() {
+    QS = []; INTRO = [];
+    (DEF.schema.sections || []).forEach(function (sec, i) {
+      var q = (sec.fields || []).filter(function (f) { return f.kesyon; })[0];
+      if (q) QS.push({ sec: sec, i: i, f: q }); else INTRO.push({ sec: sec, i: i });
+    });
+  }
+
+  function kizShell() {
+    var s = DEF.schema;
+    var lang = bilingual()
+      ? '<div class="lang"><button type="button" data-lang="kr" class="' + (L === "kr" ? "on" : "") + '">Kreyòl</button>' +
+        '<button type="button" data-lang="fr" class="' + (L === "fr" ? "on" : "") + '">Français</button></div>'
+      : "";
+    wrap.innerHTML = '<header><div class="htop"><div><h1>' + esc(topTx("tit", DEF.tit)) + "</h1>" +
+      (s.subtitle ? '<p class="sub">' + esc(topTx("subtitle", s.subtitle)) + "</p>" : "") +
+      "</div>" + lang + "</div></header>" +
+      '<div id="note" hidden></div><div id="stage"></div>';
+    Array.prototype.forEach.call(wrap.querySelectorAll("[data-lang]"), function (b) {
+      b.onclick = function () {
+        L = b.getAttribute("data-lang");
+        try { localStorage.setItem("fom_lang", L); } catch (e) {}
+        kizShell(); drawStep();
+      };
+    });
+    if (DEF.eta === "bouyon") note("warn", "BOUYON — fòm sa a poko louvri. Repons yo p ap anrejistre.");
+  }
+
+  function drawStep() {
+    var st = document.getElementById("stage");
+    if (STEP === 0) return drawIntro(st);
+    if (STEP <= QS.length) return drawQ(st, STEP - 1);
+    return drawSend(st);
+  }
+
+  function drawIntro(st) {
+    var body = INTRO.map(function (x) {
+      var inner = (x.sec.fields || []).map(function (fl) {
+        var r = FIELD[fl.type];
+        return r ? r(locFld(fl)) : '<div class="note err">Kalite chan «' + esc(fl.type) + '» pa rekonèt.</div>';
+      }).join("");
+      return "<fieldset>" + (x.sec.legend ? "<legend>" + esc(secTx(x.sec, x.i)) + "</legend>" : "") +
+        (x.sec.hint ? '<p class="hint">' + esc(x.sec.hint) + "</p>" : "") + inner + "</fieldset>";
+    }).join("");
+
+    st.innerHTML = '<form id="f"><input class="hp" name="website" tabindex="-1" autocomplete="off">' +
+      body + '<button class="go" type="submit">' + esc(w("Kòmanse", "Commencer")) + "</button></form>";
+
+    // A real submit, so the browser's own required-field checking still runs
+    // on the identity block. Nothing is sent here; it only advances a step.
+    document.getElementById("f").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var fd = new FormData(document.getElementById("f"));
+      INTRO.forEach(function (x) {
+        (x.sec.fields || []).forEach(function (fl) {
+          ANS[fl.key] = fl.type === "checkbox" ? fd.getAll(fl.key)
+                      : fl.type === "file"     ? filePick(fd.get(fl.key))
+                      : (fd.get(fl.key) || "");
+        });
+      });
+      ANS.website = fd.get("website") || "";
+      STEP = 1; drawStep(); window.scrollTo(0, 0);
+    });
+    wireRatings(); wireSignatures(); wireFiles(); showQueue();
+  }
+
+  function drawQ(st, qi) {
+    var q = QS[qi], fl = q.f, many = fl.type === "checkbox";
+    var sel = [], locked = false;
+
+    st.innerHTML =
+      '<p class="kount">' + esc(w("Kesyon", "Question")) + " " + (qi + 1) + " / " + QS.length + "</p>" +
+      '<div class="bar"><span style="width:' + Math.round(qi / QS.length * 100) + '%"></span></div>' +
+      '<p class="kes">' + esc(secTx(q.sec, q.i)) + "</p>" +
+      '<div id="opts">' + (fl.options || []).map(function (o) {
+        return '<button type="button" class="opt' + (many ? " many" : "") + '" data-v="' + esc(o.v) + '">' +
+          '<span class="tik"></span><span>' + esc(optTx(fl, o)) + "</span></button>";
+      }).join("") + "</div>" +
+      (many ? '<button class="go" id="go" type="button">' + esc(w("Tcheke", "Valider")) + "</button>" : "") +
+      '<div id="jij"></div>';
+
+    Array.prototype.forEach.call(st.querySelectorAll("button.opt"), function (b) {
+      b.onclick = function () {
+        if (locked) return;
+        var v = b.getAttribute("data-v");
+        if (many) {
+          var at = sel.indexOf(v);
+          if (at >= 0) { sel.splice(at, 1); b.classList.remove("on"); }
+          else { sel.push(v); b.classList.add("on"); }
+        } else {
+          Array.prototype.forEach.call(st.querySelectorAll("button.opt"), function (x) { x.classList.remove("on"); });
+          b.classList.add("on");
+          sel = [v];
+          mark(v);
+        }
+      };
+    });
+    var go = document.getElementById("go");
+    if (go) go.onclick = function () {
+      if (!sel.length) { note("err", w("Chwazi omwen youn.", "Choisissez au moins une réponse.")); return; }
+      document.getElementById("note").hidden = true;
+      mark(sel.slice());
+    };
+
+    // The answer locks once it is marked. Letting somebody change it after
+    // reading the explanation would make the stored response a record of the
+    // explanation rather than of what they knew.
+    function mark(val) {
+      if (locked) return;
+      locked = true;
+      ANS[fl.key] = val;
+      Array.prototype.forEach.call(st.querySelectorAll("button.opt"), function (x) { x.disabled = true; });
+      if (go) go.hidden = true;
+      ask("tcheke", { key: fl.key, val: val })
+        .then(function (o) { show(o.ok ? o.j : null); })
+        .catch(function () { show(null); });   // offline: no mark, but never a dead end
+    }
+
+    function show(j) {
+      var nx = qi + 1 < QS.length ? w("Kesyon ki vini an", "Question suivante") : w("Wè rezilta a", "Voir le résultat");
+      var panel = "";
+      if (j) {
+        var pt = Number(j.pwen) || 0;
+        var cls = pt >= 1 ? "bon" : pt > 0 ? "mwatye" : "pa";
+        var verd = pt >= 1 ? w("Kòrèk", "Correct")
+                 : pt > 0  ? w("An pati", "En partie")
+                           : w("Se pa sa", "Pas celle-là");
+        var tex = (L === "fr" && j.eksplikasyon_fr) ? j.eksplikasyon_fr : (j.eksplikasyon || "");
+        panel = '<div class="jij ' + cls + '"><p class="v">' + esc(verd) + "</p>" +
+          (tex ? "<p>" + esc(tex) + "</p>" : "") + "</div>";
+      }
+      document.getElementById("jij").innerHTML = panel +
+        '<button class="go" id="nx" type="button" style="margin-top:16px">' + esc(nx) + "</button>";
+      document.getElementById("nx").onclick = function () { STEP++; drawStep(); window.scrollTo(0, 0); };
+    }
+  }
+
+  function drawSend(st) {
+    st.innerHTML = '<div class="center">' + esc(w("N ap voye…", "Envoi…")) + "</div>";
+    var payload = {}; for (var k in ANS) payload[k] = ANS[k];
+    if (navigator.onLine === false) {
+      if (qpush(payload)) return kizBanked(st);
+    }
+    post(payload).then(function (o) {
+      if (!o.ok) { st.innerHTML = '<div class="note err">' + esc(o.j.error || "Gen yon pwoblèm.") + "</div>"; return; }
+      kizDone(st, o.j);
+    }).catch(function () {
+      if (qpush(payload)) kizBanked(st);
+      else st.innerHTML = '<div class="note err">' + esc(w("Koneksyon an pa mache.", "Pas de connexion.")) + "</div>";
+    });
+  }
+
+  function katHtml(sko, sub) {
+    return '<div class="kat"><p class="kt">' + esc(topTx("tit", DEF.tit)) + "</p>" +
+      '<p class="ks">' + esc(sko) + '</p><p class="kd">' + esc(sub) + "</p>" +
+      '<p class="kdom">konkret-haiti.com</p></div>';
+  }
+
+  // `manke` comes back from the API as the question's own legend, and the API
+  // has one language. On a French page that put a Kreyol list under a French
+  // heading. The overlay already holds both, so map one to the other here
+  // rather than teaching the server about languages.
+  function frLegend() {
+    var f = frNow();
+    if (!f || !f.sections) return null;
+    var map = {};
+    (DEF.schema.sections || []).forEach(function (sec, i) {
+      var o = f.sections[String(i)];
+      if (o && o.legend && sec.legend) map[sec.legend] = o.legend;
+    });
+    return map;
+  }
+
+  function kizDone(st, o) {
+    var sko = o.esko == null ? "✓" : o.esko + "%";
+    var miss = "";
+    if (o.manke && o.manke.length) {
+      var tr = frLegend();
+      miss = '<p class="msg" style="text-align:left">' + esc(w("Gade kesyon sa yo ankò:", "Revoyez ces questions :")) +
+        '</p><ul class="manke">' + o.manke.map(function (m) {
+          return "<li>" + esc((tr && tr[m]) || m) + "</li>";
+        }).join("") + "</ul>";
+    }
+    var f = frAll();
+    var msg = (L === "fr" && f && f.success_message) ? f.success_message : o.msg;
+    st.innerHTML = katHtml(sko, QS.length + " " + w("kesyon", "questions") + " · " + dat()) +
+      '<p class="msg">' + esc(msg) + "</p>" + miss +
+      '<p class="mini">' + esc(w("Pran yon foto ekran pou w kenbe kat sa a.",
+                                 "Faites une capture d’écran pour garder cette carte.")) + "</p>" +
+      (navigator.share ? '<button class="alt" id="pataje" type="button">' + esc(w("Pataje", "Partager")) + "</button>" : "") +
+      '<button class="alt" id="ankor" type="button">' + esc(w("Reponn ankò", "Recommencer")) + "</button>";
+    var sh = document.getElementById("pataje");
+    if (sh) sh.onclick = function () {
+      navigator.share({ title: DEF.tit, text: DEF.tit + " — " + sko + " · konkret-haiti.com" }).catch(function () {});
+    };
+    document.getElementById("ankor").onclick = function () { location.reload(); };
+    window.scrollTo(0, 0);
+  }
+
+  function kizBanked(st) {
+    st.innerHTML = katHtml("✓", dat()) +
+      '<p class="msg">' + esc(w("Repons ou sove sou telefòn nan. N ap voye l otomatikman lè intènèt la tounen.",
+                                "Vos réponses sont enregistrées sur le téléphone. Elles partiront au retour du réseau.")) + "</p>" +
+      '<button class="alt" id="ankor" type="button">' + esc(w("Reponn ankò", "Recommencer")) + "</button>";
+    document.getElementById("ankor").onclick = function () { location.reload(); };
+    window.scrollTo(0, 0);
   }
 
   // ---------------------- page renderers ----------------------
@@ -632,6 +950,13 @@ canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crossh
       if (!o.ok) { wrap.innerHTML = '<div class="center">'+esc(o.j.error)+"</div>"; return; }
       DEF = o.j;
       if (DEF.eta === "feme") { wrap.innerHTML = '<div class="center">Fòm sa a fèmen.</div>'; return; }
+      // A quiz is the same row drawn a different way: paged, marked question
+      // by question, and bilingual if the schema carries a French overlay.
+      if (DEF.schema && DEF.schema.kiz) {
+        if (!bilingual()) L = "kr";
+        buildKiz(); kizShell(); drawStep();
+        return;
+      }
       renderForm(DEF);
       if (DEF.eta === "bouyon") note("warn", "BOUYON — fòm sa a poko louvri. Repons yo p ap anrejistre.");
     })

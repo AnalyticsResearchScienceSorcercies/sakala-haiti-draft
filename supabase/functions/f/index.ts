@@ -1,6 +1,7 @@
 // Public form API. Serves any form definition and accepts its responses.
 //
 //   GET  /f/<slug>          -> schema with every answer key STRIPPED
+//   POST /f/<slug>/tcheke   -> mark ONE question, return its explanation
 //   POST /f/<slug>/upload   -> mint one signed upload URL for one file field
 //   POST /f/<slug>          -> validate, score server-side, store
 //
@@ -63,10 +64,22 @@ function strip(schema: Record<string, unknown>) {
   const out = JSON.parse(JSON.stringify(schema));
   for (const sec of out.sections ?? []) {
     for (const f of sec.fields ?? []) {
+      // `kesyon` replaces the key it deletes. The renderer needs to know which
+      // sections are questions to page through them one at a time, and "this
+      // field is scored" is not a secret -- the form says so on its face. The
+      // VALUE stays server-side, which is the whole invariant.
+      if (f.answer !== undefined) f.kesyon = true;
       delete f.answer;
-      for (const c of f.fields ?? []) delete c.answer;
+      // An explanation says why the right answer is right. Serving it with the
+      // schema would hand back the key in prose, which is the leak test with
+      // extra steps. It is returned by /tcheke, after the person has answered.
+      delete f.eksplikasyon;
+      for (const c of f.fields ?? []) { delete c.answer; delete c.eksplikasyon; }
     }
   }
+  // Same rule one layer up: the French overlay carries its own copy.
+  const fr = out.fr as Record<string, Record<string, Record<string, unknown>>> | undefined;
+  if (fr && fr.fields) for (const k of Object.keys(fr.fields)) delete fr.fields[k].eksplikasyon;
   return out;
 }
 
@@ -150,11 +163,45 @@ Deno.serve(async (req: Request) => {
 
   if (req.method !== "POST") return bad("Method not allowed", 405);
 
-  if (fom.eta !== "live") {
+  // `tcheke` is exempt: it stores nothing, so a draft can be walked end to end
+  // before anybody sets it live. Everything below this line writes.
+  if (fom.eta !== "live" && sub !== "tcheke") {
     return bad(fom.eta === "bouyon" ? "Fòm sa a poko louvri." : "Fòm sa a fèmen.", 409);
   }
 
   const fields = fieldsOf(fom.schema);
+
+  // POST /f/<slug>/tcheke -- mark ONE question and hand back its explanation.
+  //
+  // Why this route exists: a score that arrives after the last question
+  // teaches nothing, because the person has stopped thinking about question
+  // two by the time they see it was wrong. Marking at the moment of the
+  // answer puts the explanation where the attention already is.
+  //
+  // What it deliberately does NOT return: the correct option. Same rule as
+  // `manke` on submit -- which question, never which option. Naming the right
+  // option here would hand back the answer key one tap at a time, and a
+  // checkbox question would give up its whole set in one call.
+  //
+  // It writes nothing and reads nothing per-person, so it runs on a `bouyon`
+  // form too: Dan has to be able to walk a draft before setting it live.
+  if (sub === "tcheke") {
+    let q: Record<string, unknown>;
+    try { q = await req.json(); } catch { return bad("bad json"); }
+    const key = String(q.key ?? "");
+    const f = fieldsOf(fom.schema).find((x) => x.key === key) as Record<string, unknown> | undefined;
+    if (!f) return bad(`Pa gen kesyon "${key}".`, 404);
+    if (f.answer === undefined) return bad("Kesyon sa a pa gen repons ki kòrèk.", 409);
+
+    const fr = (fom.schema as Record<string, Record<string, Record<string, Record<string, unknown>>>>).fr;
+    return new Response(JSON.stringify({
+      // 0..1, so a checkbox question can come back half right rather than
+      // being flattened to wrong. The renderer draws three states off this.
+      pwen: pwen(q.val, f.answer),
+      eksplikasyon: String(f.eksplikasyon ?? ""),
+      eksplikasyon_fr: String(fr?.fields?.[key]?.eksplikasyon ?? ""),
+    }), { headers: json });
+  }
 
   if (sub === "upload") {
     const r = await issueUpload(req, fom, fields);
