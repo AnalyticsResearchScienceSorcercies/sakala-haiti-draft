@@ -9,92 +9,95 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Òganizatè TapTap, 2026-10-02. Dan's "Fich planifikasyon Dosmond" as five
-   homework pages a trainee fills on a phone. Everything saves on the phone
-   as it is typed and works with no signal; each page has one button that
-   sends a copy to Ekip (form oganizate-devwa). No account anywhere: several
-   trainees can share a phone and pick their name at the top. */
+   homework pages, drawn like the workbook it came from: teal header rows,
+   grey section rows, a yellow devwa box, PPP blue and X green. The only
+   change from the sheet is the day columns: one week at a time, because 31
+   columns do not fit a phone. Everything saves on the phone as it is typed
+   and works with no signal; each page sends a copy to Ekip (form
+   oganizate-devwa). No account: trainees sharing a phone pick their name. */
 :root{
-  --bg:#F4EFE2; --card:#FFFDF7; --ink:#0a0a0a; --muted:#5b5446; --line:#E3D5B8;
-  --prussian:#003153; --red:#DC143C; --green:#006A4E; --ppp:#CFE2F3; --x:#CDE8D6;
-  --soon:#9A6A00; --soon-bg:#FFF4CC;
+  --ink:#1F2A30; --teal:#1F4E5A; --sand:#FFF4CC; --gold:#9A6A00; --mist:#E3ECEF;
+  --grid:#C9D3D6; --muted:#5A6A70; --ppp:#CFE2F3; --x:#D9EAD3; --red:#B3261E; --bg:#FFFFFF;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 "Roboto Slab",Georgia,serif}
-.app{max-width:560px;margin:0 auto;padding:0 14px 60px}
-.draft{background:var(--soon-bg);color:var(--soon);font-size:12px;text-align:center;padding:5px 14px;margin:0 -14px}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 8px;gap:10px}
-.brand{font-family:Anton,Impact,sans-serif;font-size:22px;color:var(--prussian);letter-spacing:.4px}
-.who{font-size:14px;text-align:right}
-.who b{display:block}
-button,select,input,textarea{font:inherit}
-.link{background:none;border:0;color:var(--prussian);text-decoration:underline;cursor:pointer;padding:2px;font-size:14px}
-nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;margin:0 -14px;padding-left:14px;padding-right:14px;scrollbar-width:none}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.35 Arial,Helvetica,sans-serif}
+button,select,input,textarea{font:inherit;color:inherit}
+nav.tabs{position:sticky;top:0;z-index:5;background:#F1F3F4;border-bottom:1px solid #ccc;padding:6px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
-nav.tabs a{flex:none;text-decoration:none;color:var(--prussian);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:14px;white-space:nowrap}
-nav.tabs a.on{background:var(--prussian);color:#fff;border-color:var(--prussian)}
-nav.tabs a .ok{color:var(--green);font-weight:700}
-nav.tabs a.on .ok{color:#9be7b9}
-h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:28px;line-height:1.1;margin:8px 0 6px}
-h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
-.devwa{background:var(--soon-bg);border-radius:10px;padding:12px 14px;font-size:15px;margin:6px 0 14px}
-.devwa b{display:block;color:var(--soon);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
-.fld{display:block;margin-bottom:10px}
-.fld span{display:block;font-size:13px;color:var(--muted);margin-bottom:3px}
-.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff}
-.fld textarea{min-height:64px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
-.stat b{display:block;font-size:18px}
-.stat span{font-size:12px;color:var(--muted)}
-.wk{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2;border-bottom:1px solid var(--line);margin-bottom:8px}
-.wk button{background:var(--card);border:1px solid var(--line);border-radius:8px;width:42px;height:38px;font-size:20px;color:var(--prussian);cursor:pointer}
-.wk .lbl{text-align:center;font-weight:700}
-.wk .lbl small{display:block;font-weight:400;color:var(--muted);font-size:12px}
-.task{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 10px 8px;margin-bottom:8px}
-.task .top{display:flex;gap:8px;align-items:flex-start}
-.task .name{flex:1;font-weight:700;font-size:15px}
-.task .name input{width:100%;border:0;border-bottom:1px dashed var(--line);background:none;font-weight:700;padding:2px 0}
-.task .sub{color:var(--muted);font-size:13px}
-.chip{font-size:12px;border-radius:999px;padding:2px 8px;white-space:nowrap;border:1px solid var(--line)}
-.chip.fini{background:var(--x);border-color:#9fd3b4}
-.chip.apfet{background:var(--ppp);border-color:#a9c8e6}
-.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
-.days .dh{font-size:11px;color:var(--muted);text-align:center}
-.days button{height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;font-size:13px;font-weight:700;cursor:pointer;padding:0}
-.days button.P{background:var(--ppp);color:var(--prussian)}
-.days button.X{background:var(--x);color:var(--green)}
-.days button.T{background:var(--x);color:var(--green);font-size:12px}
-.days button:disabled{background:transparent;border-style:dashed;opacity:.35;cursor:default}
-.days button.today{outline:2px solid var(--red);outline-offset:1px}
-.more{margin-top:8px;border-top:1px solid var(--line);padding-top:8px}
-.acts{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px}
-.del{background:none;border:0;color:var(--red);font-size:13px;cursor:pointer;padding:4px}
-.add{width:100%;padding:11px;background:var(--card);border:1px dashed var(--line);border-radius:10px;font-weight:700;color:var(--prussian);cursor:pointer;margin:2px 0 8px}
-.go{width:100%;padding:14px;border:0;border-radius:12px;background:var(--prussian);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
-.go.sec{background:var(--card);color:var(--prussian);border:1px solid var(--prussian)}
-.send{margin-top:22px;background:var(--card);border:2px solid var(--prussian);border-radius:14px;padding:14px}
-.send p{margin:8px 0 0;font-size:14px}
-.ok{color:var(--green);font-weight:700}
-.wait{color:var(--soon);font-weight:700}
-.legend{font-size:13px;color:var(--muted);margin:4px 0 0}
-.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin:0 4px 0 8px}
-.people button{display:block;width:100%;text-align:left;padding:14px;margin-bottom:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-weight:700;cursor:pointer}
-.ex td{padding:6px 8px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
-.ex td:last-child{color:var(--muted);white-space:nowrap}
-.ex .h td{font-weight:700;color:var(--prussian);background:#EDE6D3}
-table.ex{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden}
+nav.tabs a{flex:none;border:1px solid #ccc;background:#fff;padding:6px 11px;text-decoration:none;font-size:13px;color:var(--ink);white-space:nowrap}
+nav.tabs a.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+nav.tabs a .ok{color:#2e7d32;font-weight:700}
+nav.tabs a.on .ok{color:#b9f6ca}
+.app{max-width:760px;margin:0 auto;padding:10px 10px 60px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+h1{color:var(--teal);font-size:19px;margin:6px 0 6px}
+.tag{font-size:11px;font-style:italic;color:var(--gold);white-space:nowrap}
+.who{font-size:12px;color:var(--muted);margin:0 0 8px}
+.link{background:none;border:0;color:var(--teal);text-decoration:underline;cursor:pointer;padding:0 2px;font-size:12px}
+.devwa{background:var(--sand);padding:9px 11px;margin:4px 0 12px;font-size:14px}
+.devwa b{display:block;font-size:13px;margin-bottom:2px}
+table{border-collapse:collapse;width:100%}
+td,th{border:1px solid var(--grid);padding:4px 6px;vertical-align:top}
+table.hd{margin-bottom:10px}
+table.hd th{width:42%;text-align:left;font-weight:700;border:0;padding:3px 6px 3px 0;vertical-align:middle}
+table.hd td{padding:0}
+table.hd input,table.hd select,table.hd .val{width:100%;border:0;padding:6px 7px;background:transparent;min-height:30px;display:block}
+table.hd .val{font-weight:700}
+table.g thead th{background:var(--teal);color:#fff;font-weight:700;text-align:center;font-size:12px;padding:5px 2px;line-height:1.15}
+table.g thead th.nm{text-align:left;padding-left:6px}
+table.g thead th small{display:block;font-weight:400;opacity:.85;font-size:11px}
+table.g tr.sec td{background:var(--mist);color:var(--teal);font-weight:700}
+table.g td.nm{width:auto}
+table.g td.nm input,table.g td.nm textarea{width:100%;border:0;padding:2px 0;background:transparent;resize:none;display:block}
+table.g td.nm textarea{font-size:13px;line-height:1.25;overflow:hidden}
+table.g td.nm .sub{font-size:11px;color:var(--muted)}
+table.g td.nm input.mini{font-size:11px;color:var(--muted)}
+table.jou td.x{min-width:0;vertical-align:middle;text-align:center}
+table.g td.c{padding:0;width:8%;height:1px}
+table.g td.c button{display:block;width:100%;height:100%;min-height:36px;border:0;background:#fff;cursor:pointer;font-size:11px;font-weight:700;padding:0}
+table.g td.c button.P{background:var(--ppp)}
+table.g td.c button.X{background:var(--x)}
+table.g td.c button.T{background:var(--x);font-size:10px}
+table.g td.c button:disabled{background:#f6f6f4;cursor:default}
+table.g td.c.today{box-shadow:inset 0 0 0 2px #e8a3a0}
+table.g tr.det td{background:#FBFAF6}
+table.g tr.add td{border-style:dashed}
+.addb{background:none;border:0;color:var(--teal);font-weight:700;cursor:pointer;padding:3px 0;font-size:13px}
+.del{background:none;border:0;color:var(--red);cursor:pointer;font-size:12px;padding:2px}
+.det .f{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.det label{display:block;font-size:11px;color:var(--muted)}
+.det label input,.det label select{display:block;width:100%;border:1px solid var(--grid);padding:5px 6px;margin-top:2px;background:#fff;color:var(--ink);font-size:13px}
+.det .full{grid-column:1 / -1}
+.wk{display:flex;align-items:center;justify-content:space-between;margin:6px 0 4px}
+.wk button{border:1px solid #ccc;background:#fff;width:40px;height:30px;cursor:pointer;font-size:16px;color:var(--teal)}
+.wk button:disabled{opacity:.35;cursor:default}
+.wk b{font-size:13px}
+.legend{font-size:12px;color:var(--muted);margin:2px 0 6px}
+.legend i{display:inline-block;width:12px;height:12px;vertical-align:-2px;margin:0 3px 0 8px;border:1px solid var(--grid)}
+.scroll{overflow-x:auto}
+table.jou td{padding:0;min-width:90px}
+table.jou td input,table.jou td textarea{width:100%;border:0;padding:6px;background:transparent;min-height:34px;resize:vertical}
+table.jou th{background:var(--teal);color:#fff;font-size:12px;padding:5px}
+table.jou tr.tot td{border:0;padding:6px;font-weight:700}
+table.ex td{font-size:13px}
+table.ex tr.sec td{background:var(--mist);color:var(--teal);font-weight:700}
+table.ex thead th{background:var(--teal);color:#fff;text-align:left;padding:5px 6px;font-size:12px}
+table.lis th{background:var(--teal);color:#fff;text-align:left;font-size:12px;padding:5px 6px}
+table.lis td a{color:var(--ink)}
+.send{margin-top:16px;border:2px solid var(--teal);padding:10px}
+.send p{margin:6px 0 0;font-size:13px}
+.go{background:var(--teal);color:#fff;border:0;padding:10px 14px;font-weight:700;cursor:pointer;width:100%;font-size:14px}
+.go.sec{background:#fff;color:var(--teal);border:1px solid var(--teal)}
+.ok{color:#2e7d32;font-weight:700}
+.wait{color:var(--gold);font-weight:700}
+.err{color:var(--red)}
+.people button{display:block;width:100%;text-align:left;padding:10px;margin-bottom:6px;background:#fff;border:1px solid var(--grid);font-weight:700;cursor:pointer}
+p{margin:6px 0}
 </style>
 </head>
 <body>
+<nav class="tabs" id="tabs"></nav>
 <div class="app">
-  <div class="draft">BOUYON · pou Dan li</div>
-  <header>
-    <div class="brand">ÒGANIZATÈ TAPTAP</div>
-    <div class="who" id="who"></div>
-  </header>
-  <nav class="tabs" id="tabs"></nav>
   <main id="main"></main>
 </div>
 <script>
@@ -271,26 +274,36 @@ function curWeek(){
   return {ws:ws, i:WEEK, days:ws[WEEK]};
 }
 var DH = ["L","M","M","J","V","S","D"];
+var MN = ["janvye","fevriye","mas","avril","me","jen","jiyè","out","septanm","oktòb","novanm","desanm"];
+function mwaTx(){ return MN[+M().mwa.slice(5,7)-1] + " " + M().mwa.slice(0,4); }
 function weekBar(){
   var c = curWeek(), real = c.days.filter(function(x){ return x; });
-  var mn = ["janvye","fevriye","mas","avril","me","jen","jiyè","out","septanm","oktòb","novanm","desanm"][+M().mwa.slice(5,7)-1];
   return '<div class="wk"><button data-wk="-1" aria-label="Semèn anvan"'+(c.i===0?" disabled":"")+'>‹</button>'
-    + '<div class="lbl">Semèn '+(c.i+1)+'<small>'+real[0]+' – '+real[real.length-1]+' '+mn+'</small></div>'
+    + '<b>Semèn '+(c.i+1)+' · '+real[0]+' – '+real[real.length-1]+' '+MN[+M().mwa.slice(5,7)-1]+'</b>'
     + '<button data-wk="1" aria-label="Semèn apre"'+(c.i===c.ws.length-1?" disabled":"")+'>›</button></div>';
 }
-// mode: "pp" = blank → P → X, "x" = blank → X, "t" = blank → the hour now
-function dayGrid(path, d, mode){
-  var c = curWeek(), td = (M().mwa === thisMonth()) ? new Date().getDate() : 0, h = "";
-  DH.forEach(function(x){ h += '<div class="dh">'+x+'</div>'; });
-  c.days.forEach(function(day){
-    if(!day){ h += '<button disabled></button>'; return; }
-    var v = d[day] || "", cls = v === "P" ? "P" : v === "X" ? "X" : v ? "T" : "";
-    var txt = v === "P" ? "PPP" : v === "X" ? "X" : v ? v : day;
-    h += '<button class="'+cls+(day===td?" today":"")+'" data-cell="'+path+'" data-day="'+day+'" data-mode="'+mode+'" title="'+day+'">'+esc(txt)+'</button>';
-  });
-  return '<div class="days">'+h+'</div>';
+// The teal header row: the name column, then this week's seven days.
+function gridHead(first){
+  var c = curWeek(), h = '<thead><tr><th class="nm">'+esc(first)+'</th>';
+  c.days.forEach(function(day, i){ h += '<th>'+DH[i]+'<small>'+(day||"")+'</small></th>'; });
+  return h + '</tr></thead>';
 }
-function legend(){ return '<p class="legend">Tape sou yon jou:<i style="background:var(--ppp)"></i>PPP planifye<i style="background:var(--x)"></i>X fèt</p>'; }
+// mode: "pp" = blank, PPP, X   "x" = blank, X   "t" = blank, the hour now
+function dayCells(path, d, mode){
+  var c = curWeek(), td = (M().mwa === thisMonth()) ? new Date().getDate() : 0, h = "";
+  c.days.forEach(function(day){
+    if(!day){ h += '<td class="c"><button disabled></button></td>'; return; }
+    var v = d[day] || "", cls = v === "P" ? "P" : v === "X" ? "X" : v ? "T" : "";
+    var txt = v === "P" ? "PPP" : v || "";
+    h += '<td class="c'+(day===td?" today":"")+'"><button class="'+cls+'" data-cell="'+path+'" data-day="'+day+'" data-mode="'+mode+'" aria-label="'+day+'">'+esc(txt)+'</button></td>';
+  });
+  return h;
+}
+function legend(mode){
+  if(mode === "x"){ return '<p class="legend">Tape sou yon jou lè aksyon an fèt:<i style="background:var(--x)"></i>X fèt</p>'; }
+  if(mode === "t"){ return '<p class="legend">Tape sou jou a lè aksyon an fèt: lè a ekri poukont li (egzanp 6è). Tape ankò pou efase.</p>'; }
+  return '<p class="legend">Tape sou yon jou: yon fwa<i style="background:var(--ppp)"></i>PPP planifye, de fwa<i style="background:var(--x)"></i>X fèt.</p>';
+}
 
 // ------------------------------------------------------------ path get/set
 function getP(path){ return path.split(".").reduce(function(o,k){ return o == null ? o : o[k]; }, M()); }
@@ -300,164 +313,179 @@ function setP(path, v){
   o[ks[ks.length-1]] = v;
 }
 function rowById(list, id){ for(var i=0;i<list.length;i++){ if(list[i].id === id){ return i; } } return -1; }
-function fld(label, path, type, extra){
+// A header row in the sheet's own shape: bold label left, boxed value right.
+function hrow(label, path, type, extra){
   var v = getP(path); if(v == null){ v = ""; }
-  if(type === "textarea"){ return '<label class="fld"><span>'+label+'</span><textarea data-f="'+path+'">'+esc(v)+'</textarea></label>'; }
-  return '<label class="fld"><span>'+label+'</span><input data-f="'+path+'" type="'+(type||"text")+'" value="'+esc(v)+'"'+(extra||"")+'></label>';
+  return '<tr><th>'+label+'</th><td><input data-f="'+path+'" type="'+(type||"text")+'" value="'+esc(v)+'"'+(extra||"")+'></td></tr>';
+}
+function hval(label, val){ return '<tr><th>'+label+'</th><td><span class="val">'+esc(val)+'</span></td></tr>'; }
+function dfld(label, path, type, cls, extra){
+  var v = getP(path); if(v == null){ v = ""; }
+  return '<label class="'+(cls||"")+'">'+label+'<input data-f="'+path+'" type="'+(type||"text")+'" value="'+esc(v)+'"'+(extra||"")+'></label>';
 }
 
 // ------------------------------------------------------------ pages
 var main = document.getElementById("main"), PAGE = 0, OPEN = {};
 
-function devwaBox(p){ return p.devwa ? '<div class="devwa"><b>Devwa '+p.n+'</b>'+esc(p.devwa)+'</div>' : ""; }
+function title(t){
+  return '<div class="top"><h1>'+esc(t)+'</h1><span class="tag">BOUYON · pou Dan li</span></div>'
+    + '<p class="who">Ranpli pa <b>'+esc(M().non)+'</b> · <button class="link" data-act="chanje">Chanje moun</button></p>';
+}
+function devwaBox(p){ return p.devwa ? '<div class="devwa"><b>DEVWA '+p.n+'</b>'+esc(p.devwa)+'</div>' : ""; }
 
 function pKomanse(){
-  var m = M(), h = '<h1>Byenveni, '+esc(m.non)+'</h1>'
-    + '<p>Sa se plan jeneral operasyon an. Ou sèvi avè l kòm checklist chak jou, chak semenn, chak mwa. Ou bati l ou menm, yon paj chak fwa: chak paj se yon devwa.</p>'
-    + '<div class="card"><b>Kijan li mache</b><ol style="margin:6px 0 0;padding-left:20px;font-size:15px">'
-    + '<li>Tout sa ou ekri sove sou telefòn nan poukont li, menm san siyal.</li>'
-    + '<li>Fè devwa yo nan lòd, 1 rive 5.</li>'
-    + '<li>Lè w fini yon paj, peze <b>Voye devwa a bay Ekip</b> anba paj la. W ap resevwa yon referans.</li>'
-    + '<li>Si plizyè moun sèvi ak menm telefòn nan, chak moun chwazi non pa l anlè.</li></ol></div>'
-    + '<h2>Mwa an kou</h2>' + fld("Mwa", "mwa", "month")
-    + '<h2>Devwa yo</h2>';
+  var m = M(), h = title("Òganizatè TapTap")
+    + '<p>Se plan jeneral pou tout operasyon an. Ou sèvi avè l kòm checklist chak jou, chak semenn, chak mwa. Ou bati l ou menm, yon paj chak fwa. Chak paj se yon devwa.</p>'
+    + '<p>1. Tout sa ou ekri sove sou telefòn nan poukont li, menm san siyal.<br>2. Fè devwa yo nan lòd, 1 rive 5.<br>'
+    + '3. Lè w fini yon paj, peze <b>Voye devwa a bay Ekip</b> anba paj la. W ap resevwa yon referans.<br>'
+    + '4. Si plizyè moun sèvi ak menm telefòn nan, chak moun chwazi non pa l.<br>5. Paj "Egzanp lapen" la montre kijan yon kalandriye ranpli.</p>'
+    + '<table class="hd">' + hrow("Mwa an kou", "mwa", "month") + '</table>'
+    + '<table class="lis"><thead><tr><th>Devwa</th><th>Paj</th><th>Kote li ye</th></tr></thead><tbody>';
   PAJ.forEach(function(p, i){
     if(!p.n){ return; }
     var v = m.voye[p.n];
-    h += '<a class="card" style="display:flex;justify-content:space-between;text-decoration:none;color:inherit" href="#'+i+'"><span><b>Devwa '+p.n+'</b> · '+esc(p.t)+'</span>'
-      + (v && v.ref ? '<span class="ok">✓ '+esc(v.ref)+'</span>' : v ? '<span class="wait">ap tann siyal</span>' : '<span>›</span>') + '</a>';
+    h += '<tr><td>'+p.n+'</td><td><a href="#'+i+'">'+esc(p.t)+'</a></td><td>'
+      + (v && v.ref ? '<span class="ok">✓ '+esc(v.ref)+'</span>' : v ? '<span class="wait">ap tann siyal</span>' : '—') + '</td></tr>';
   });
-  h += '<h2>Nouvo mwa</h2><p style="font-size:14px;color:var(--muted)">Kòmanse yon nouvo mwa: tach ak aksyon yo rete, jou yo, nivo yo ak detay chak jou yo efase.</p>'
+  h += '</tbody></table>'
+    + '<p class="legend" style="margin-top:14px">Kòmanse yon nouvo mwa: tach ak aksyon yo rete; jou yo, nivo yo ak detay chak jou yo efase.</p>'
     + '<button class="go sec" data-act="nouvo-mwa">Kòmanse yon nouvo mwa</button>';
   return h;
 }
 
 function pPlan(){
-  var m = M(), p = m.plan, list = p.tach, h = devwaBox(PAJ[1]);
+  var m = M(), p = m.plan, list = p.tach, h = title("Plan travay") + devwaBox(PAJ[1]);
   var bid = 0, dep = 0, fini = 0;
   list.forEach(function(t){ bid += num(t.bidje); dep += num(t.depans); if(t.nivo === "fini"){ fini++; } });
-  h += '<div class="card">' + fld("Non patnè", "plan.patne") + fld("Lokalite", "plan.lokalite")
-    + fld("Kontra an kou", "plan.kontra") + fld("Peryòd pwodiksyon", "plan.peryod") + '</div>'
-    + '<div class="stats"><div class="stat"><b>'+fmt(bid)+'</b><span>Bidje (USD)</span></div>'
-    + '<div class="stat"><b>'+fmt(dep)+'</b><span>Depans</span></div>'
-    + '<div class="stat"><b>'+(list.length ? Math.round(100*fini/list.length) : 0)+'%</b><span>Reyalizasyon</span></div></div>'
-    + legend() + weekBar();
-  var faz = []; list.forEach(function(t){ if(faz.indexOf(t.faz) < 0){ faz.push(t.faz); } });
-  PLAN.forEach(function(ph){ if(faz.indexOf(ph[0]) < 0){ faz.push(ph[0]); } });
+  h += '<table class="hd">' + hrow("Non patnè", "plan.patne") + hrow("Lokalite", "plan.lokalite")
+    + hrow("Kontra an kou", "plan.kontra") + hrow("Peryòd pwodiksyon", "plan.peryod")
+    + hval("Mwa an kou", mwaTx())
+    + hval("Bidje total (USD)", fmt(bid)) + hval("Depans total", fmt(dep))
+    + hval("Pousantaj reyalizasyon", (list.length ? Math.round(100*fini/list.length) : 0)+"%") + '</table>'
+    + legend("pp") + weekBar() + '<table class="g">' + gridHead("TACH") + '<tbody>';
+  var faz = []; PLAN.forEach(function(ph){ faz.push(ph[0]); });
+  list.forEach(function(t){ if(faz.indexOf(t.faz) < 0){ faz.push(t.faz); } });
   faz.forEach(function(f){
-    h += '<h2>'+esc(f)+'</h2>';
+    h += '<tr class="sec"><td colspan="8">'+esc(f)+'</td></tr>';
     list.forEach(function(t, i){
       if(t.faz !== f){ return; }
-      var base = "plan.tach."+i, open = OPEN[t.id];
-      var chip = t.nivo === "fini" ? '<span class="chip fini">Fini</span>' : t.nivo === "apfet" ? '<span class="chip apfet">Ap fèt</span>' : '<span class="chip">Poko</span>';
-      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(t.t)+'" placeholder="Non tach la"></div>'+chip+'</div>'
-        + '<div class="sub">'+(t.resp ? "Responsab: "+esc(t.resp) : "Pa gen responsab")+(t.pita ? " · Pita: "+esc(pitaTx(t.pita)) : "")+'</div>'
-        + dayGrid(base+".d", t.d, "pp")
-        + (open ? '<div class="more">'
-            + '<div class="row2">'+fld("Responsab", base+".resp")+selNivo(base, t.nivo)+'</div>'
-            + '<div class="row2">'+fld("Bidje mwa (USD)", base+".bidje", "number", ' inputmode="decimal"')+fld("Depans avan", base+".depans", "number", ' inputmode="decimal"')+'</div>'
-            + selPita(base, t.pita) + fld("Komantè", base+".kom")
-            + '<div class="acts"><button class="del" data-del="plan.tach" data-id="'+t.id+'">Retire tach sa a</button><button class="link" data-open="'+t.id+'">Fèmen</button></div></div>'
-          : '<div class="acts"><span></span><button class="link" data-open="'+t.id+'">Detay</button></div>')
-        + '</div>';
+      var base = "plan.tach."+i, nv = {poko:"Poko kòmanse", apfet:"Ap fèt", fini:"Fini"}[t.nivo] || "";
+      var sub = [t.resp || "pa gen responsab", nv, t.bidje ? "$"+t.bidje : "", t.pita ? pitaTx(t.pita) : ""].filter(Boolean).join(" · ");
+      h += '<tr><td class="nm"><textarea rows="2" data-f="'+base+'.t" placeholder="Non tach la">'+esc(t.t)+'</textarea>'
+        + '<div class="sub">'+esc(sub)+' · <button class="link" data-open="'+t.id+'">'+(OPEN[t.id] ? "fèmen" : "detay")+'</button></div></td>'
+        + dayCells(base+".d", t.d, "pp") + '</tr>';
+      if(OPEN[t.id]){
+        h += '<tr class="det"><td colspan="8"><div class="f">'
+          + dfld("Responsab", base+".resp") + selNivo(base, t.nivo)
+          + dfld("Bidje mwa (USD)", base+".bidje", "number", "", ' inputmode="decimal"')
+          + dfld("Depans avan", base+".depans", "number", "", ' inputmode="decimal"')
+          + selPita(base, t.pita) + dfld("Komantè", base+".kom", "text", "full")
+          + '<div class="full"><button class="del" data-del="plan.tach" data-id="'+t.id+'">Retire tach sa a</button></div></div></td></tr>';
+      }
     });
-    h += '<button class="add" data-add="plan" data-sek="'+esc(f)+'">+ Ajoute yon tach</button>';
+    h += '<tr class="add"><td colspan="8"><button class="addb" data-add="plan" data-sek="'+esc(f)+'">+ Ajoute yon tach</button></td></tr>';
   });
-  return h + sendBox(1);
+  return h + '</tbody></table>' + sendBox(1);
 }
 function selNivo(base, v){
-  return '<label class="fld"><span>A ki nivo li ye</span><select data-f="'+base+'.nivo">'
+  return '<label>A ki nivo li ye<select data-f="'+base+'.nivo">'
     + [["poko","Poko kòmanse"],["apfet","Ap fèt"],["fini","Fini"]].map(function(o){ return '<option value="'+o[0]+'"'+(v===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")
     + '</select></label>';
 }
-function pitaTx(v){ return v ? v.charAt(0)+"e mwa apre, semèn "+v.slice(2) : ""; }
+function pitaTx(v){ return v ? v.charAt(0)+"e mwa apre S"+v.slice(2) : ""; }
 function selPita(base, v){
   var o = '<option value="">—</option>';
   for(var mm = 1; mm <= 6; mm++){ for(var s = 1; s <= 4; s++){ var k = mm+"S"+s; o += '<option value="'+k+'"'+(v===k?" selected":"")+'>'+mm+'e mwa apre · S'+s+'</option>'; } }
-  return '<label class="fld"><span>Si se pou pita: ki mwa, ki semèn</span><select data-f="'+base+'.pita">'+o+'</select></label>';
+  return '<label class="full">Si se pou pita: ki mwa, ki semèn<select data-f="'+base+'.pita">'+o+'</select></label>';
 }
 
 function pKal(){
-  var list = M().kal.rows, h = devwaBox(PAJ[2]) + legend() + weekBar();
+  var list = M().kal.rows, h = title("Kalandriye aksyon") + devwaBox(PAJ[2]) + legend("pp") + weekBar()
+    + '<table class="g">' + gridHead("Aksyon teknik · chak kilè") + '<tbody>';
   KAL.forEach(function(s){
-    h += '<h2>'+esc(s[0])+'</h2>';
+    h += '<tr class="sec"><td colspan="8">'+esc(s[0])+'</td></tr>';
     list.forEach(function(r, i){
       if(r.sek !== s[0]){ return; }
       var base = "kal.rows."+i;
-      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(r.t)+'" placeholder="Aksyon teknik"></div>'
-        + '<button class="del" data-del="kal.rows" data-id="'+r.id+'" aria-label="Retire">✕</button></div>'
-        + '<label class="fld" style="margin:6px 0 0"><span>Chak kilè</span><input data-f="'+base+'.k" value="'+esc(r.k)+'" placeholder="1 fwa pa jou, 1 fwa pa semenn…"></label>'
-        + dayGrid(base+".d", r.d, "pp") + '</div>';
+      h += '<tr><td class="nm"><textarea rows="2" data-f="'+base+'.t" placeholder="Aksyon teknik">'+esc(r.t)+'</textarea>'
+        + '<input class="mini" data-f="'+base+'.k" value="'+esc(r.k)+'" placeholder="Chak kilè: 1 fwa pa jou…">'
+        + '<button class="del" data-del="kal.rows" data-id="'+r.id+'">retire</button></td>'
+        + dayCells(base+".d", r.d, "pp") + '</tr>';
     });
-    h += '<button class="add" data-add="kal" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button>';
+    h += '<tr class="add"><td colspan="8"><button class="addb" data-add="kal" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button></td></tr>';
   });
   var n = list.filter(function(r){ return r.t.trim(); }).length;
-  h += '<p class="legend">'+n+' aksyon ekri. Devwa a mande omwen 15.</p>';
-  return h + sendBox(2);
+  return h + '</tbody></table><p class="legend">'+n+' aksyon ekri. Devwa a mande omwen 15.</p>' + sendBox(2);
 }
 
 function pMgr(){
-  var list = M().mgr.rows, h = devwaBox(PAJ[3]) + '<p class="legend">Tape sou yon jou: X = fèt</p>' + weekBar();
+  var list = M().mgr.rows, h = title("Checklist manadjè") + devwaBox(PAJ[3]) + legend("x") + weekBar()
+    + '<table class="g">' + gridHead("Aksyon · responsab") + '<tbody>';
   MGR.forEach(function(s){
-    h += '<h2>'+esc(s[0])+'</h2>';
+    h += '<tr class="sec"><td colspan="8">'+esc(s[0])+'</td></tr>';
     list.forEach(function(r, i){
       if(r.sek !== s[0]){ return; }
       var base = "mgr.rows."+i;
-      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(r.t)+'" placeholder="Aksyon pa w"></div>'
-        + '<button class="del" data-del="mgr.rows" data-id="'+r.id+'" aria-label="Retire">✕</button></div>'
-        + '<label class="fld" style="margin:6px 0 0"><span>Responsab</span><input data-f="'+base+'.resp" value="'+esc(r.resp)+'"></label>'
-        + dayGrid(base+".d", r.d, "x") + '</div>';
+      h += '<tr><td class="nm"><textarea rows="2" data-f="'+base+'.t" placeholder="Aksyon pa w">'+esc(r.t)+'</textarea>'
+        + '<input class="mini" data-f="'+base+'.resp" value="'+esc(r.resp)+'" placeholder="Responsab">'
+        + '<button class="del" data-del="mgr.rows" data-id="'+r.id+'">retire</button></td>'
+        + dayCells(base+".d", r.d, "x") + '</tr>';
     });
-    h += '<button class="add" data-add="mgr" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button>';
+    h += '<tr class="add"><td colspan="8"><button class="addb" data-add="mgr" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button></td></tr>';
   });
-  return h + sendBox(3);
+  return h + '</tbody></table>' + sendBox(3);
 }
 
 function pKont(){
-  var m = M(), k = m.kont, h = devwaBox(PAJ[4]);
-  h += '<div class="card">' + fld("Non kontraktyèl", "kont.non") + fld("Lokalite", "kont.lokalite") + fld("Sipèvize", "kont.sipevize")
-    + '<div class="row2">' + fld("Kantite (bèt, plant, pwodwi)", "kont.kantite") + fld("Ras / kalite", "kont.ras") + '</div></div>'
-    + '<p class="legend">Tcheke chak jou aktivite ki fèt lè l fin fèt. Tape sou jou a: lè a ekri poukont li. Tape ankò pou efase.</p>' + weekBar();
+  var m = M(), k = m.kont, h = title("Checklist kontraktyèl") + devwaBox(PAJ[4]);
+  h += '<table class="hd">' + hrow("Non kontraktyèl", "kont.non") + hrow("Lokalite", "kont.lokalite") + hrow("Sipèvize", "kont.sipevize")
+    + hval("Mwa", mwaTx())
+    + hrow("Kantite (bèt, plant, pwodwi)", "kont.kantite") + hrow("Ras / kalite", "kont.ras") + '</table>'
+    + legend("t") + weekBar() + '<table class="g">' + gridHead("Aksyon · chak kilè") + '<tbody>';
   var any = false;
   KAL.forEach(function(s){
     var rows = m.kal.rows.filter(function(r){ return r.sek === s[0] && r.t.trim(); });
     if(!rows.length){ return; }
     any = true;
-    h += '<h2>'+esc(s[0])+'</h2>';
+    h += '<tr class="sec"><td colspan="8">'+esc(s[0])+'</td></tr>';
     rows.forEach(function(r){
       if(!k.d[r.id]){ k.d[r.id] = {}; }
-      h += '<div class="task"><div class="name">'+esc(r.t)+'</div><div class="sub">'+esc(r.k || "")+'</div>'
-        + dayGrid("kont.d."+r.id, k.d[r.id], "t") + '</div>';
+      h += '<tr><td class="nm">'+esc(r.t)+'<div class="sub">'+esc(r.k || "")+'</div></td>' + dayCells("kont.d."+r.id, k.d[r.id], "t") + '</tr>';
     });
   });
-  if(!any){ h += '<div class="card">Kalandriye aksyon an vid. Ranpli Devwa 2 anvan: aksyon yo ap parèt isit la poukont yo.</div>'; }
-  return h + sendBox(4);
+  if(!any){ h += '<tr><td colspan="8">Kalandriye aksyon an vid. Ranpli Devwa 2 anvan: aksyon yo ap parèt isit la poukont yo.</td></tr>'; }
+  return h + '</tbody></table>' + sendBox(4);
 }
 
 function pJou(){
-  var list = M().jou, h = devwaBox(PAJ[5]), tot = 0;
+  var list = M().jou, h = title("Detay chak jou") + devwaBox(PAJ[5]), tot = 0;
   list.forEach(function(j){ tot += num(j.kob); });
-  h += '<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><b>'+list.length+'</b><span>Jou ranpli</span></div>'
-    + '<div class="stat"><b>'+fmt(tot)+'</b><span>Total depans (goud)</span></div></div>';
+  h += '<div class="scroll"><table class="jou"><thead><tr><th>Dat</th><th>A ki pousantaj jounen an pase</th><th>Rezime reyalizasyon jounen an an chif</th>'
+    + '<th>Kòb ki depanse jou sa a (goud)</th><th>Yon detay ki make jounen an</th><th>Lòt detay</th><th></th></tr></thead><tbody>';
   list.forEach(function(j, i){
-    var base = "jou."+i;
-    h += '<div class="card"><div class="row2">'+fld("Dat", base+".dat", "date")+fld("A ki pousantaj jounen an pase (%)", base+".pct", "number", ' inputmode="numeric" min="0" max="100"')+'</div>'
-      + fld("Rezime reyalizasyon jounen an an chif", base+".chif", "textarea")
-      + fld("Kòb ki depanse jou sa a (goud)", base+".kob", "number", ' inputmode="decimal"')
-      + fld("Yon detay ki make jounen an", base+".detay", "textarea") + fld("Lòt detay", base+".lot")
-      + '<div class="acts"><span></span><button class="del" data-del="jou" data-id="'+j.id+'">Retire jou sa a</button></div></div>';
+    var b = "jou."+i;
+    h += '<tr><td><input data-f="'+b+'.dat" type="date" value="'+esc(j.dat)+'"></td>'
+      + '<td><input data-f="'+b+'.pct" type="number" inputmode="numeric" min="0" max="100" value="'+esc(j.pct)+'" placeholder="%"></td>'
+      + '<td><textarea data-f="'+b+'.chif" rows="2">'+esc(j.chif)+'</textarea></td>'
+      + '<td><input data-f="'+b+'.kob" type="number" inputmode="decimal" value="'+esc(j.kob)+'"></td>'
+      + '<td><textarea data-f="'+b+'.detay" rows="2">'+esc(j.detay)+'</textarea></td>'
+      + '<td><textarea data-f="'+b+'.lot" rows="2">'+esc(j.lot)+'</textarea></td>'
+      + '<td class="x"><button class="del" data-del="jou" data-id="'+j.id+'" aria-label="Retire">✕</button></td></tr>';
   });
-  h += '<button class="add" data-add="jou">+ Ajoute jodi a</button>';
+  h += '<tr class="tot"><td></td><td></td><td style="text-align:right">Total depans</td><td>'+fmt(tot)+'</td><td colspan="3"></td></tr></tbody></table></div>'
+    + '<button class="addb" data-add="jou" style="margin-top:6px">+ Ajoute jodi a</button>';
   return h + sendBox(5);
 }
 
 function pLapen(){
-  var h = '<h1>Egzanp: lapen</h1><p class="legend" style="margin-bottom:10px">Kalandriye aksyon Dan pou pwodiksyon lapen. Se yon egzanp pou w gade, pa pou w ranpli.</p><table class="ex">';
+  var h = title("Egzanp: kalandriye aksyon pou lapen")
+    + '<p class="legend">Paj sa a se yon egzanp. Pa ekri ladan l. Sèvi avè l pou ranpli pwòp Kalandriye aksyon pa w.</p>'
+    + '<table class="ex"><thead><tr><th>Aksyon teknik</th><th>Chak kilè</th></tr></thead><tbody>';
   LAPEN.forEach(function(s){
-    h += '<tr class="h"><td colspan="2">'+esc(s[0])+'</td></tr>';
+    h += '<tr class="sec"><td colspan="2">'+esc(s[0])+'</td></tr>';
     s[1].forEach(function(a){ h += '<tr><td>'+esc(a[0])+'</td><td>'+esc(a[1])+'</td></tr>'; });
   });
-  return h + '</table>';
+  return h + '</tbody></table>';
 }
 
 // ------------------------------------------------------------ send to Ekip
@@ -539,14 +567,16 @@ function alertBox(n, msg){ var el = document.getElementById("st"+n); if(el){ el.
 // ------------------------------------------------------------ people
 function pickPerson(){
   document.getElementById("tabs").innerHTML = "";
-  document.getElementById("who").innerHTML = "";
-  var names = Object.keys(DB.moun), h = '<h1>Kiyès k ap ranpli?</h1>';
+  var names = Object.keys(DB.moun);
+  var h = '<div class="top"><h1>Òganizatè TapTap</h1><span class="tag">BOUYON · pou Dan li</span></div>'
+    + '<h1 style="font-size:16px">Kiyès k ap ranpli?</h1>';
   if(names.length){
-    h += '<div class="people">'+names.map(function(n){ return '<button data-moun="'+esc(n)+'">'+esc(n)+'</button>'; }).join("")+'</div><h2>Oswa yon nouvo moun</h2>';
+    h += '<div class="people">' + names.map(function(n){ return '<button data-moun="'+esc(n)+'">'+esc(n)+'</button>'; }).join("")
+      + '</div><p><b>Oswa yon nouvo moun</b></p>';
   }
-  h += '<div class="card">'+'<label class="fld"><span>Non w</span><input id="nn" autocomplete="name"></label>'
-    + '<label class="fld"><span>Telefòn (si w genyen)</span><input id="nt" type="tel" inputmode="tel"></label>'
-    + '<button class="go" id="nk">Kòmanse</button><p id="ne" style="color:var(--red)"></p></div>';
+  h += '<table class="hd"><tr><th>Non w</th><td><input id="nn" autocomplete="name"></td></tr>'
+    + '<tr><th>Telefòn (si w genyen)</th><td><input id="nt" type="tel" inputmode="tel"></td></tr></table>'
+    + '<button class="go" id="nk">Kòmanse</button><p id="ne" class="err"></p>';
   main.innerHTML = h;
   document.getElementById("nk").onclick = function(){
     var n = document.getElementById("nn").value.trim(), t = document.getElementById("nt").value.trim();
@@ -561,7 +591,6 @@ var RENDER = [pKomanse, pPlan, pKal, pMgr, pKont, pJou, pLapen];
 function render(){
   if(!DB.aktif || !M()){ return pickPerson(); }
   var m = M();
-  document.getElementById("who").innerHTML = '<b>'+esc(m.non)+'</b><button class="link" data-act="chanje">Chanje moun</button>';
   document.getElementById("tabs").innerHTML = PAJ.map(function(p, i){
     var ok = p.n && m.voye[p.n] && m.voye[p.n].ref ? ' <span class="ok">✓</span>' : "";
     return '<a href="#'+i+'" class="'+(i===PAGE?"on":"")+'">'+(p.n ? p.n+". " : "")+esc(p.t)+ok+'</a>';
@@ -621,6 +650,7 @@ main.addEventListener("click", function(e){
   }
   if(t.hasAttribute("data-send")){ send(+t.getAttribute("data-send")); return; }
   var act = t.getAttribute("data-act");
+  if(act === "chanje"){ DB.aktif = ""; save(true); pickPerson(); return; }
   if(act === "nouvo-mwa"){
     m.mwa = thisMonth(); WEEK = null;
     m.plan.tach.forEach(function(x){ x.d = {}; x.nivo = "poko"; x.depans = ""; });
@@ -628,9 +658,6 @@ main.addEventListener("click", function(e){
     m.kont.d = {}; m.jou = []; m.voye = {};
     save(true); location.hash = "#0"; render();
   }
-});
-document.getElementById("who").addEventListener("click", function(e){
-  if(e.target.getAttribute("data-act") === "chanje"){ DB.aktif = ""; save(true); pickPerson(); }
 });
 main.addEventListener("click", function(e){
   var b = e.target.closest ? e.target.closest("[data-moun]") : null;
