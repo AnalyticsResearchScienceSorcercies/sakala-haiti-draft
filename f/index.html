@@ -301,11 +301,14 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
       (f.step!=null?' step="'+esc(f.step)+'"':"") +
       (type==="tel"?' inputmode="tel"':"") + ">");
   }
+  // The question goes through wrapFld like every other field. It did not until
+  // 2026-10-02, so every radio and checkbox drew its options with no question
+  // above them: a column of "Wi / Non" nobody could answer on purpose.
   function choice(f, type) {
-    return (f.options||[]).map(function (x, i) {
+    return wrapFld(f, (f.options||[]).map(function (x, i) {
       return '<label class="opt"><input type="'+type+'" name="'+esc(f.key)+'" value="'+esc(x.v)+'"'+
         (f.required && type==="radio" && i===0 ? " required":"") + "><span>"+esc(x.t)+"</span></label>";
-    }).join("");
+    }).join(""));
   }
 
   // ==========================================================
