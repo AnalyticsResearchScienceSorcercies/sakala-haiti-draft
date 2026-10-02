@@ -915,6 +915,11 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
         if (f.jou === "vandredi") d.setDate(d.getDate() + 4);
         e.value = isoDay(d);
       }
+      // le: "kounye" -- a time that starts on the minute the form was opened.
+      if (f.le === "kounye") {
+        var n = new Date();
+        e.value = ("0" + n.getHours()).slice(-2) + ":" + ("0" + n.getMinutes()).slice(-2);
+      }
       var m = f.sonje ? (mem[f.sonje] || {})[f.key] : null;
       if (m && m.v != null && m.v !== "") {
         if (f.semen) {
@@ -973,6 +978,21 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
           cents += (neg ? -1 : 1) * Math.round(n * 100);
         });
         out.value = any ? cents / 100 : "";
+      });
+      // nan_le: {soti, rive, minit, dat} on a yes/no radio -- "filed within the
+      // hour?" answered from the two times the person already typed. It counts
+      // as late when the incident date is not today. Still editable.
+      F.forEach(function (f) {
+        var c = f.nan_le;
+        if (!c) return;
+        var a = byName(c.soti), b = byName(c.rive), dk = c.dat ? byName(c.dat) : null;
+        if (!a || !b || !a.value || !b.value) return;
+        var m = function (v) { var p = v.split(":"); return (+p[0]) * 60 + (+p[1]); };
+        var mins = m(b.value) - m(a.value);
+        var jodi = !dk || !dk.value || dk.value === isoDay(new Date());
+        var ok = jodi && mins >= 0 && mins <= (c.minit || 60);
+        var r = document.querySelector('#f input[name="' + f.key + '"][value="' + (ok ? (c.wi || "wi") : (c.non || "non")) + '"]');
+        if (r) r.checked = true;
       });
     }
     var form = document.getElementById("f");
