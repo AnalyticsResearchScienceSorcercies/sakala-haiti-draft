@@ -892,6 +892,21 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
 
   function wireAuto() {
     var F = allFields(), mem = sread(), lendi = lendiDe(new Date());
+    // A link can choose for the person: /f/?s=devwa-modil&modil=4 opens the
+    // homework form on Modil 4. Only fields the form declares, never `s`, and
+    // only select, radio and plain text, so a link cannot sign or upload.
+    var qp = new URLSearchParams(location.search);
+    F.forEach(function (f) {
+      if (f.key === "s" || !qp.has(f.key)) return;
+      var v = qp.get(f.key);
+      if (f.type === "radio") {
+        var r = document.querySelector('#f input[name="' + f.key + '"][value="' + v.replace(/"/g, "") + '"]');
+        if (r) r.checked = true;
+      } else if (f.type === "select" || f.type === "text" || f.type === "number") {
+        var e = byName(f.key);
+        if (e && !e.value) e.value = v;
+      }
+    });
     F.forEach(function (f) {
       var e = byName(f.key);
       if (!e || e.value) return;
