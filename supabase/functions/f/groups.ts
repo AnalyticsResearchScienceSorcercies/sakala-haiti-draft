@@ -182,3 +182,25 @@ export function applyProducts(fields: Field[], repons: Record<string, unknown>) 
     repons[f.key] = ok ? round2(p) : null;
   }
 }
+
+// A signed total on an ordinary field, 2026-10-02: net pay is gross plus
+// refunds minus savings. Terms are field keys; a leading "-" subtracts. A
+// blank optional term counts as 0 (no refund this month is a zero, not a gap),
+// but if every term is blank the total stays null. Runs after applyProducts,
+// so a term can be a computed product. Accumulates in centimes. Overwritten.
+export function applyTotals(fields: Field[], repons: Record<string, unknown>) {
+  for (const f of fields) {
+    if (f.type === "group" || !Array.isArray(f.total_of)) continue;
+    let cents = 0;
+    let any = false;
+    for (const raw of f.total_of as unknown[]) {
+      const t = String(raw);
+      const neg = t.startsWith("-");
+      const n = repons[neg ? t.slice(1) : t];
+      if (typeof n !== "number" || !Number.isFinite(n)) continue;
+      any = true;
+      cents += (neg ? -1 : 1) * Math.round(n * 100);
+    }
+    repons[f.key] = any ? cents / 100 : null;
+  }
+}

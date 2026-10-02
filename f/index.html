@@ -268,7 +268,7 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     time:     function(f){ return input(f,"time"); },
     email:    function(f){ return input(f,"email"); },
     currency: function(f){
-      if (Array.isArray(f.product_of)) {
+      if (Array.isArray(f.product_of) || Array.isArray(f.total_of)) {
         return wrapFld(Object.assign({}, f, { required: false }),
           '<div class="cur"><span class="unit">' + esc(f.currency || "HTG") + "</span>" +
           '<input type="number" name="'+esc(f.key)+'" class="kalkil" readonly tabindex="-1"></div>' +
@@ -857,9 +857,10 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
   }
 
   // ------------------- auto numbers, 2026-10-02 -------------------
-  // Field properties, all optional. Only product_of reaches the server, which
+  // Field properties, all optional. Only product_of and total_of reach the server, which
   // recomputes it and overwrites whatever the phone sent:
   //   product_of: ["key", 130]  a figure = those fields x those constants, live
+  //   total_of: ["a", "b", "-c"] a figure = a + b - c, blanks counting as 0
   //   sonje: "group"            remembered on this phone, filled in next time
   //   semen: true               (with sonje) a week number that moves itself on:
   //                             the last one saved + the whole weeks since
@@ -924,30 +925,44 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
       src.addEventListener("input", pick);
       pick();
     });
-    F.forEach(function (f) {
-      if (!Array.isArray(f.product_of)) return;
-      var out = byName(f.key);
-      if (!out) return;
-      function calc() {
+    // Products first, then signed totals, because a total can add up a
+    // product (net pay = hours x 130 + refunds - savings). One pass on every
+    // keystroke anywhere in the form: a computed field changes without an
+    // input event of its own, so per-field listeners would miss the chain.
+    function num(k) {
+      var e = byName(k);
+      return !e || e.value === "" ? null : Number(e.value);
+    }
+    function autoCalc() {
+      F.forEach(function (f) {
+        if (!Array.isArray(f.product_of)) return;
+        var out = byName(f.key);
+        if (!out) return;
         var p = 1, ok = true;
         f.product_of.forEach(function (k) {
-          var n;
-          if (typeof k === "number") { n = k; }
-          else {
-            var e = byName(k);
-            if (!e || e.value === "") { ok = false; return; }
-            n = Number(e.value);
-          }
-          if (!isFinite(n)) ok = false; else p *= n;
+          var n = typeof k === "number" ? k : num(k);
+          if (n === null || !isFinite(n)) ok = false; else p *= n;
         });
         out.value = ok ? Math.round(p * 100) / 100 : "";
-      }
-      f.product_of.forEach(function (k) {
-        var e = typeof k === "number" ? null : byName(k);
-        if (e) e.addEventListener("input", calc);
       });
-      calc();
-    });
+      F.forEach(function (f) {
+        if (!Array.isArray(f.total_of)) return;
+        var out = byName(f.key);
+        if (!out) return;
+        var cents = 0, any = false;
+        f.total_of.forEach(function (t) {
+          t = String(t);
+          var neg = t.charAt(0) === "-", n = num(neg ? t.slice(1) : t);
+          if (n === null || !isFinite(n)) return;
+          any = true;
+          cents += (neg ? -1 : 1) * Math.round(n * 100);
+        });
+        out.value = any ? cents / 100 : "";
+      });
+    }
+    var form = document.getElementById("f");
+    if (form) form.addEventListener("input", autoCalc);
+    autoCalc();
   }
 
   // Saved only once a response is sent or safely queued, so a form someone

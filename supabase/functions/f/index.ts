@@ -13,7 +13,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { Field, initUploads, issueUpload, spendUploads, takeFile } from "./upload.ts";
-import { applyProducts, applySums, normGroup } from "./groups.ts";
+import { applyProducts, applySums, applyTotals, normGroup } from "./groups.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -256,7 +256,8 @@ Deno.serve(async (req: Request) => {
     // A computed total is filled in after the loop, so it is always present and
     // there is nothing for the person to have forgotten. Checking it here would
     // fail a good submission whose browser never ran the client recalculation.
-    if (f.required && empty && typeof f.sum_of !== "string" && !Array.isArray(f.product_of)) {
+    if (f.required && empty && typeof f.sum_of !== "string" && !Array.isArray(f.product_of) &&
+        !Array.isArray(f.total_of)) {
       manke.push(f.label || f.key);
     }
     repons[f.key] = v;
@@ -266,6 +267,7 @@ Deno.serve(async (req: Request) => {
   // of the order the schema puts the group and its total in.
   applySums(fields, repons);
   applyProducts(fields, repons);
+  applyTotals(fields, repons);
 
   if (manke.length) return bad("Chan sa yo obligatwa: " + manke.join(", "));
 
