@@ -2,117 +2,29 @@
 <html lang="ht">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Job Power — Send 0</title>
-<link rel="canonical" href="https://konkret-haiti.com/f/?s=send0">
-<style>
-:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--accent:#8a1c1c;--muted:#6b645c}
-*{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);
- font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
- padding:20px 16px 64px}
-.wrap{max-width:640px;margin:0 auto}
-header{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:24px}
-h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
-.sub{color:var(--muted);font-size:14px;margin:0}
-.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 20px;text-align:center}
-a.go{display:block;padding:15px;background:var(--ink);color:#fbf9f5;text-decoration:none;
- border-radius:8px;font-size:17px;font-weight:700;margin-top:18px}
-.queued{background:#fff6e0;border:1px solid #b07d1a;color:#7a5610;
- border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>Job Power — Send 0</h1>
-    <p class="sub">Kondisyon yo · senk kesyon anvan w kontinye</p>
-  </header>
-
-  <div id="q" class="queued" hidden></div>
-
-  <div class="card">
-    <p id="msg">N ap mennen w sou fòm nan…</p>
-    <a class="go" id="go" href="/f/?s=send0">Klike la a pou kontinye</a>
-  </div>
-</div>
-
+<meta http-equiv="refresh" content="1; url=/ekip/manyel/#send-0-kondisyon-kr">
+<title>Kondisyon yo</title>
+<!-- Retired 2026-10-02: the Send 0 quiz form is closed (its 11 August
+     responses are kept) and the terms live in the Manyèl, whose kiz asks the
+     same five questions. Old links and QR codes land on the terms. The old
+     page installed a service worker for offline use; it is removed here so a
+     phone cannot keep serving the retired quiz from its cache. -->
 <script>
-// ==========================================================================
-// This page used to BE the Send 0 form. As of 2026-08-22 the form is a row in
-// the database, drawn by the shared renderer at /f/?s=send0, the same way
-// every other form works. This URL stays alive forever because it is printed
-// inside the manual and encoded in the QR code, so it must never 404.
-//
-// No meta refresh here on purpose. A refresh fires on a timer and would cut
-// off the queue flush below, which is the one thing on this page that can
-// lose somebody's submission. JS does the redirect once the queue is clear,
-// and the button underneath is the no-JS path.
-// ==========================================================================
 (function () {
-  var DEST = "/f/?s=send0";
-  var OLD_API = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/send0";
-  var QKEY = "send0_kew";
-  var qbox = document.getElementById("q");
-  var msg = document.getElementById("msg");
-
-  // Retire the old service worker and its cache. Without this a returning
-  // phone can serve the cached copy of the previous form out of send0-v1 and
-  // sit there answering questions that no longer match the manual.
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations()
-      .then(function (rs) {
-        rs.forEach(function (r) {
-          if (r.scope.indexOf("/send0/") !== -1) r.unregister();
-        });
-      })
-      .catch(function () {});
-  }
-  if (window.caches && caches.delete) caches.delete("send0-v1").catch(function () {});
-
-  function qread() {
-    try { return JSON.parse(localStorage.getItem(QKEY) || "[]"); } catch (e) { return []; }
-  }
-  function qwrite(a) {
-    try { localStorage.setItem(QKEY, JSON.stringify(a)); return true; } catch (e) { return false; }
-  }
-
-  // Anything still sitting in the old offline queue was answered against the
-  // old form, so it goes to the old endpoint that scored it. That function is
-  // still deployed for exactly this. Same drain rule as before: a 4xx is a
-  // decision on the merits and gets dropped, a network failure stays queued.
-  function flush() {
-    var a = qread();
-    if (!a.length) return Promise.resolve(true);
-    return fetch(OLD_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(a[0])
-    }).then(function (r) {
-      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
-    }).then(function (o) {
-      if (o.ok || (o.j && o.j.error)) { qwrite(qread().slice(1)); return flush(); }
-      return false;
-    }).catch(function () { return false; });
-  }
-
-  function leave() { location.replace(DEST); }
-
-  if (!qread().length) return leave();
-
-  // Something is queued. Say so in Kreyòl and do not redirect until it is
-  // either sent or we know we are offline, because leaving early orphans it.
-  qbox.textContent = "Gen repons ki sove sou telefòn nan. N ap voye yo anvan nou kontinye…";
-  qbox.hidden = false;
-
-  flush().then(function (done) {
-    if (done) return leave();
-    qbox.textContent = "Pa gen entènèt. Repons ki sove a ap rete sou telefòn nan. " +
-      "Louvri paj sa a ankò lè entènèt la tounen.";
-    msg.textContent = "Ou ka kontinye sou fòm nan kanmenm.";
-  });
+  function go() { location.replace("/ekip/manyel/" + location.search + "#send-0-kondisyon-kr"); }
+  try {
+    if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+      navigator.serviceWorker.getRegistrations().then(function (rs) {
+        return Promise.all(rs.filter(function (r) { return r.scope.indexOf("/send0/") >= 0; })
+                             .map(function (r) { return r.unregister(); }));
+      }).then(go, go);
+      return;
+    }
+  } catch (e) {}
+  go();
 })();
 </script>
-</body>
+</head>
+<body><p><a href="/ekip/manyel/#send-0-kondisyon-kr">Kondisyon yo kounye a nan Manyèl la. Klike la a.</a></p></body>
 </html>
