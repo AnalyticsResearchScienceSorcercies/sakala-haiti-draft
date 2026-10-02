@@ -522,9 +522,15 @@ function snapshot(n){
     data = m.jou;
     data.forEach(function(j){ lines.push("- "+(j.dat||"?")+" · "+(j.pct||"?")+"% · "+(j.chif||"")+" · "+(j.kob||0)+" goud"); });
   }
-  var json = JSON.stringify(data), out = {rezime: lines.join("\n").slice(0, 3900)};
-  for(var i = 0; i < CHUNKS; i++){ out["done_"+(i+1)] = json.slice(i*CHUNK, (i+1)*CHUNK); }
-  out.too_big = json.length > CHUNK*CHUNKS;
+  // The server trims each text field, so a cut that lands next to a space
+  // would delete it. Every cut is moved back until both sides are non-space.
+  var json = JSON.stringify(data), out = {rezime: lines.join("\n").slice(0, 3900)}, at = 0;
+  for(var i = 0; i < CHUNKS; i++){
+    var end = Math.min(json.length, at + CHUNK);
+    while(end < json.length && end > at + 1 && (/\s/.test(json.charAt(end)) || /\s/.test(json.charAt(end-1)))){ end--; }
+    out["done_"+(i+1)] = json.slice(at, end); at = end;
+  }
+  out.too_big = at < json.length;
   return out;
 }
 function qread(){ try { return JSON.parse(localStorage.getItem(KQ) || "[]"); } catch(e){ return []; } }
