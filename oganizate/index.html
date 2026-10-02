@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="ht">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Òganizatè TapTap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Òganizatè TapTap, 2026-10-02. Dan's "Fich planifikasyon Dosmond" as five
+   homework pages a trainee fills on a phone. Everything saves on the phone
+   as it is typed and works with no signal; each page has one button that
+   sends a copy to Ekip (form oganizate-devwa). No account anywhere: several
+   trainees can share a phone and pick their name at the top. */
+:root{
+  --bg:#F4EFE2; --card:#FFFDF7; --ink:#0a0a0a; --muted:#5b5446; --line:#E3D5B8;
+  --prussian:#003153; --red:#DC143C; --green:#006A4E; --ppp:#CFE2F3; --x:#CDE8D6;
+  --soon:#9A6A00; --soon-bg:#FFF4CC;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 "Roboto Slab",Georgia,serif}
+.app{max-width:560px;margin:0 auto;padding:0 14px 60px}
+.draft{background:var(--soon-bg);color:var(--soon);font-size:12px;text-align:center;padding:5px 14px;margin:0 -14px}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 8px;gap:10px}
+.brand{font-family:Anton,Impact,sans-serif;font-size:22px;color:var(--prussian);letter-spacing:.4px}
+.who{font-size:14px;text-align:right}
+.who b{display:block}
+button,select,input,textarea{font:inherit}
+.link{background:none;border:0;color:var(--prussian);text-decoration:underline;cursor:pointer;padding:2px;font-size:14px}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;margin:0 -14px;padding-left:14px;padding-right:14px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;text-decoration:none;color:var(--prussian);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:14px;white-space:nowrap}
+nav.tabs a.on{background:var(--prussian);color:#fff;border-color:var(--prussian)}
+nav.tabs a .ok{color:var(--green);font-weight:700}
+nav.tabs a.on .ok{color:#9be7b9}
+h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:28px;line-height:1.1;margin:8px 0 6px}
+h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.devwa{background:var(--soon-bg);border-radius:10px;padding:12px 14px;font-size:15px;margin:6px 0 14px}
+.devwa b{display:block;color:var(--soon);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+.fld{display:block;margin-bottom:10px}
+.fld span{display:block;font-size:13px;color:var(--muted);margin-bottom:3px}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff}
+.fld textarea{min-height:64px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center}
+.stat b{display:block;font-size:18px}
+.stat span{font-size:12px;color:var(--muted)}
+.wk{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2;border-bottom:1px solid var(--line);margin-bottom:8px}
+.wk button{background:var(--card);border:1px solid var(--line);border-radius:8px;width:42px;height:38px;font-size:20px;color:var(--prussian);cursor:pointer}
+.wk .lbl{text-align:center;font-weight:700}
+.wk .lbl small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.task{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 10px 8px;margin-bottom:8px}
+.task .top{display:flex;gap:8px;align-items:flex-start}
+.task .name{flex:1;font-weight:700;font-size:15px}
+.task .name input{width:100%;border:0;border-bottom:1px dashed var(--line);background:none;font-weight:700;padding:2px 0}
+.task .sub{color:var(--muted);font-size:13px}
+.chip{font-size:12px;border-radius:999px;padding:2px 8px;white-space:nowrap;border:1px solid var(--line)}
+.chip.fini{background:var(--x);border-color:#9fd3b4}
+.chip.apfet{background:var(--ppp);border-color:#a9c8e6}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.days .dh{font-size:11px;color:var(--muted);text-align:center}
+.days button{height:38px;border:1px solid var(--line);border-radius:7px;background:#fff;font-size:13px;font-weight:700;cursor:pointer;padding:0}
+.days button.P{background:var(--ppp);color:var(--prussian)}
+.days button.X{background:var(--x);color:var(--green)}
+.days button.T{background:var(--x);color:var(--green);font-size:12px}
+.days button:disabled{background:transparent;border-style:dashed;opacity:.35;cursor:default}
+.days button.today{outline:2px solid var(--red);outline-offset:1px}
+.more{margin-top:8px;border-top:1px solid var(--line);padding-top:8px}
+.acts{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:6px}
+.del{background:none;border:0;color:var(--red);font-size:13px;cursor:pointer;padding:4px}
+.add{width:100%;padding:11px;background:var(--card);border:1px dashed var(--line);border-radius:10px;font-weight:700;color:var(--prussian);cursor:pointer;margin:2px 0 8px}
+.go{width:100%;padding:14px;border:0;border-radius:12px;background:var(--prussian);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.go.sec{background:var(--card);color:var(--prussian);border:1px solid var(--prussian)}
+.send{margin-top:22px;background:var(--card);border:2px solid var(--prussian);border-radius:14px;padding:14px}
+.send p{margin:8px 0 0;font-size:14px}
+.ok{color:var(--green);font-weight:700}
+.wait{color:var(--soon);font-weight:700}
+.legend{font-size:13px;color:var(--muted);margin:4px 0 0}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin:0 4px 0 8px}
+.people button{display:block;width:100%;text-align:left;padding:14px;margin-bottom:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-weight:700;cursor:pointer}
+.ex td{padding:6px 8px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+.ex td:last-child{color:var(--muted);white-space:nowrap}
+.ex .h td{font-weight:700;color:var(--prussian);background:#EDE6D3}
+table.ex{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="draft">BOUYON · pou Dan li</div>
+  <header>
+    <div class="brand">ÒGANIZATÈ TAPTAP</div>
+    <div class="who" id="who"></div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="main"></main>
+</div>
+<script>
+(function(){
+"use strict";
+var VOYE = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/f/oganizate-devwa";
+var KEY = "oganizate.v1", KQ = "oganizate.voye.v1", VESYON = "2026-10-02";
+var CHUNK = 3900, CHUNKS = 6;
+
+// ------------------------------------------------------------ seeds
+// Dan's task list, his order, spelling standardized. [phase, [task, responsab, week code]]
+var PLAN = [
+  ["Antant ak patnè", [["Klarifye modèl kolaborasyon ak patnè"],["Rankont prezantasyon modèl ak patnè a"],
+    ["Prezantasyon ak revizyon pwotokòl antant"],["Ankèt ak idantifikasyon resous nesesè bò kote patnè a"],
+    ["Rankont klarifikasyon pou pase nan siyati pwotokòl"],["Siyati pwotokòl antant"]]],
+  ["Rekritman Asosye Manadjè", [["Idantifikasyon modèl pwodiksyon"],["Prepare asosye manadjè pou metrize modèl"],
+    ["Idantifikasyon kandida pou vin Asosye Manadjè"],["Rankont oryantasyon ak prezantasyon modèl bay kandida"],
+    ["Pataj fòm aplikasyon pou vin Asosye Manadjè"],["Desizyon prekalifikasyon pou vin Asosye Manadjè"]]],
+  ["Fòmasyon ak sètifikasyon", [["Fòmasyon aspiran Asosye Manadjè","","1S1"],["Egzamen sètifikasyon Asosye Manadjè","","1S2"],
+    ["Klarifikasyon anplis sou modèl epi fidbak Asosye Manadjè","","1S2"],["Siyati kontra ak Asosye Manadjè pou lanse pwodiksyon","","1S2"],
+    ["Rankont fidbak ak revizyon","","1S2"]]],
+  ["Preparasyon lansman", [["Prepare baz administratif pou lanse pwodiksyon"],
+    ["Prezantasyon modèl bay aktè enfliyan nan kominote (legliz, CASEC, direktè, machann, elatriye)","","1S3"],
+    ["Resevwa sijesyon sou pwodwi ak sèvis ki ka rantre lajan rapid apre 3 mwa","","1S3"],
+    ["Resevwa sijesyon pou jèn ki pi vilnerab ki ta dwe premye benefisyè kontra","","1S3"],
+    ["Prepare kont eksplwatasyon pou analiz fezabilite","","1S3"],
+    ["Rankont oryantasyon ak klarifikasyon modèl pou aspiran kolaboratè yo","","1S3"],
+    ["Postè afich franchiz la aksepte","","1S3"],["Finalize rekritman kontraktyèl kolaboratè yo","","1S3"],
+    ["Siyati kontra ak kontraktyèl kolaboratè yo","","1S3"],["Rankont fidbak ak revizyon","","1S3"],["Pwomosyon etap sou rezo sosyal"]]],
+  ["Lansman ak pwodiksyon", [["Lanse pwodiksyon"],["Fòmasyon kontini pou kontraktyèl kolaboratè yo"],
+    ["Envitasyon pou aktè nan kominote nan lansman pwodiksyon"],["Kowòdinasyon akizisyon materyèl ak entran"],
+    ["Kowòdinasyon sèvis amenajman espas"],["Kowòdinasyon aktivite jounalye"],["Kowòdinasyon peman sèvis ak lòt acha"],
+    ["Pwomosyon etap sou rezo sosyal"]]],
+  ["Òganize rekòlt ak distribisyon", [["Fòmasyon kontini pou kontraktyèl kolaboratè yo","Asosye"],
+    ["Envitasyon pou aktè nan kominote nan jou rekòlt","Asosye"],["Envitasyon machann nan jou rekòlt","Asosye"],
+    ["Konfime livrezon ak kèk kliyan","Asosye"],["Rankont fidbak ak revizyon","SAO"],["Pwomosyon etap sou rezo sosyal","Asosye"]]],
+  ["Evalyasyon", [["Revize modèl pou amelyore"],["Rankont evalyasyon","SAO"],["Desizyon sou kisa ki mande chanje","Taptap"],
+    ["Rekòmanse ak pwochen pati pwodiksyon","Taptap"]]]
+];
+var KAL = [
+  ["Preparasyon pou pwodiksyon", [["Validasyon espas pwodiksyon","yon sèl fwa"],["Akizisyon zouti ak lòt materyèl","yon sèl fwa"]]],
+  ["Netwayaj ak amenajman espas", [["Repare kote ki vle kraze","1 fwa pa semenn"]]],
+  ["Entran ak apwovizyonman", []],
+  ["Travay pwodiksyon chak jou", []],
+  ["Swivi kwasans ak kalite", []],
+  ["Antretyen", [["Reparasyon zouti","1 fwa pa semenn"]]],
+  ["Sante ak sekirite", []],
+  ["Rekòlt ak vant", []],
+  ["Evalyasyon, rapò ak vizibilite", [["Tcheke checklist","1 fwa pa jou"],["Pran nòt sou nouvo kesyon si genyen","1 fwa pa jou"],
+    ["Voye lis nouvo kesyon","1 fwa pa jou"],["Pataje rapò ak sipèvizè","1 fwa pa mwa"],
+    ["Poste pwa ak etap enpòtan sou rezo","1 fwa pa semenn"],["Analiz ak rechèch","1 fwa pa mwa"]]]
+];
+var MGR = [
+  ["Aksyon jounalye", ["Gade sa ki gen nan plan ak kalandriye","Tcheke nouvo pwen ijan ki pou ajoute","Vizit obsèvasyon routin maten",
+    "Vizit obsèvasyon routin midi","Vizit obsèvasyon routin aswè","Deside aksyon jounen enpòtan","Deside sou lis repatisyon tach ekip",
+    "Tcheke tout zouti ak materyèl disponib","Ranpli fich prezans","Tcheke jounal apranti yo","Lanse seri fòmasyon pou apranti asiste",
+    "Bay konsèy tach ak tout moun","Obsève operasyon pou bay nòt patisipasyon","Pran foto ki kaptivan",
+    "Poste yon foto sou Facebook pou pibliye moman jounen an","Sekirize zouti ak lòt materyèl itilize","Remèsye ekip epi bay fidbak"]],
+  ["Aksyon semenn", ["Voye rapò semenn nan bay ekspè Konkret","Pase vizite kliyan pou ba yo nouvèl pwogrè w",
+    "Pase vizite kèk notab pou di yo jan timoun yo ap avanse","Pase achte entran ki nesesè pou semenn nan","Pase men nan reparasyon zouti"]],
+  ["Aksyon mansyèl", ["Ranpli fòm mwa","Fasilite pewòl"]]
+];
+var LAPEN = [
+  ["Preparasyon pou pwodiksyon", [["Validasyon espas pwodiksyon","yon sèl fwa"],["Plasman kaj","yon sèl fwa"],["Akizisyon zouti ak lòt materyèl","yon sèl fwa"]]],
+  ["Netwayaj ak amenajman espas", [["Obsèvasyon kaj ak anviwònman","2 fwa pa jou / 6è-7è"],["Asire pa gen foumi ak ti bèt","2 fwa pa jou / 6è-7è"],
+    ["Asire dechè ak rès manje pa rete","1 fwa pa jou / 6è"],["Repare kote ki vle kraze","1 fwa pa semenn"]]],
+  ["Pwodiksyon manje", [["Alimante ti jaden lapen","1 fwa pa jou"],["Kolekte manje jaden","1 fwa pa jou"]]],
+  ["Swivi kwasans", [["Tcheke gwosè reponn","1 fwa pa semenn"],["Pran pwa","1 fwa pa semenn"]]],
+  ["Apwovizyonman manje anplis", [["Kolekte manje kote ki aksepte","1 fwa chak 2 jou"],["Netwayaj manje kolekte","1 fwa chak jou"],
+    ["Rekòlt manje ki fèt nan jaden","1 fwa chak jou"],["Preparasyon manje","1 fwa chak jou"],["Estokaj manje","1 fwa chak jou"]]],
+  ["Alimantasyon", [["Manje maten plis dlo pwòp","1 fwa pa jou"],["Manje apremidi plis dlo pwòp","1 fwa pa jou"]]],
+  ["Antretyen", [["Reparasyon zouti","1 fwa pa semenn"],["Reparasyon kaj","1 fwa pa semenn"],["Chanjman pay ki rete an dechè","1 fwa pa jou"]]],
+  ["Sante", [["Tcheke maladi / tous, dyare","1 fwa pa jou"],["Tretman prevantif / pousyè","1 fwa pa jou"],
+    ["Pwodwi solisyon foumi ak ti bèt","1 fwa pa semenn"],["Tretman sentòm","1 fwa pa semenn"]]],
+  ["Repwodiksyon", [["Prepare nich an galon","1 fwa pa 3 mwa"],["Tcheke risk konsangwinite","1 fwa pa 3 mwa"],
+    ["Kwazman","1 fwa pa 4 mwa"],["Amenajman pou akouchman","1 fwa pa 4 mwa"]]],
+  ["Evalyasyon, rapò ak vizibilite", [["Tcheke checklist","1 fwa pa jou"],["Pran nòt sou nouvo kesyon si genyen","1 fwa pa jou"],
+    ["Voye lis nouvo kesyon","1 fwa pa jou"],["Pataje rapò ak sipèvizè","1 fwa pa mwa"],
+    ["Poste pwa ak etap enpòtan sou rezo","1 fwa pa semenn"],["Analiz ak rechèch","1 fwa pa mwa"]]]
+];
+
+var PAJ = [
+  {t:"Kòmanse"},
+  {t:"Plan travay", n:1, devwa:"Ranpli antèt la. Li lis tach yo: retire sa ki pa al ak antrepriz ou, ajoute sa ki manke. Pou chak tach, mete responsab la, bidje a, epi tape sou jou ou planifye yo. Yon tap = PPP (planifye). De tap = X (fèt)."},
+  {t:"Kalandriye aksyon", n:2, devwa:"Pati sa a menm jan ak plan travay la, men li dekoupe aksyon ki pi detaye ki gen pou fèt nan dat byen espesifik. Anba chak tit, ekri aksyon teknik antrepriz ou, chak kilè yo fèt, epi tape sou jou yo. Omwen 15 aksyon. Gade paj Egzanp lapen an si w bloke."},
+  {t:"Checklist manadjè", n:3, devwa:"Mete non responsab chak aksyon. Ajoute 2 aksyon pa w nan chak seksyon. Tape sou jou a chak fwa ou fè aksyon an, pandan 5 jou travay."},
+  {t:"Checklist kontraktyèl", n:4, devwa:"Ou pa bezwen ekri aksyon yo: paj sa a pran yo nan Kalandriye aksyon an. Ranpli antèt la epi bay yon apranti l pou 5 jou travay. Lè yon aksyon fèt, tape sou jou a: li ekri lè a poukont li (egzanp 6è)."},
+  {t:"Detay chak jou", n:5, devwa:"Ranpli yon liy chak jou pandan 5 jou travay youn dèyè lòt. Rezime an chif: egzanp \"12 kaj netwaye, 3 kliyan vizite\". Kòb: sèlman sa ki soti nan pòch pwojè a jou sa a."},
+  {t:"Egzanp lapen"}
+];
+
+// ------------------------------------------------------------ helpers
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function pad(n){ return ("0"+n).slice(-2); }
+function today(){ var d = new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function thisMonth(){ return today().slice(0,7); }
+function num(v){ var n = Number(String(v||"").replace(/[^0-9.\-]/g,"")); return isFinite(n) ? n : 0; }
+function fmt(n){ return Math.round(n).toLocaleString("fr-FR"); }
+
+function seedPlan(){
+  var out = [];
+  PLAN.forEach(function(ph){ ph[1].forEach(function(t){
+    out.push({id:uid(), faz:ph[0], t:t[0], resp:t[1]||"", bidje:"", depans:"", nivo:"poko", kom:"", pita:t[2]||"", d:{}});
+  }); });
+  return out;
+}
+function seedKal(){
+  var out = [];
+  KAL.forEach(function(s){
+    s[1].forEach(function(a){ out.push({id:uid(), sek:s[0], t:a[0], k:a[1], d:{}}); });
+    out.push({id:uid(), sek:s[0], t:"", k:"", d:{}});
+  });
+  return out;
+}
+function seedMgr(){
+  var out = [];
+  MGR.forEach(function(s){
+    s[1].forEach(function(a){ out.push({id:uid(), sek:s[0], t:a, resp:"", d:{}}); });
+    out.push({id:uid(), sek:s[0], t:"", resp:"", d:{}});
+    out.push({id:uid(), sek:s[0], t:"", resp:"", d:{}});
+  });
+  return out;
+}
+function fresh(non, tel){
+  return { non:non, tel:tel, kle:uid(), mwa:thisMonth(),
+    plan:{ patne:"", lokalite:"", kontra:"", peryod:"", tach:seedPlan() },
+    kal:{ rows:seedKal() }, mgr:{ rows:seedMgr() },
+    kont:{ non:"", lokalite:"", sipevize:"", kantite:"", ras:"", d:{} },
+    jou:[], voye:{} };
+}
+
+// ------------------------------------------------------------ storage
+var DB;
+function load(){ try { DB = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){ DB = null; }
+  if(!DB || typeof DB !== "object" || !DB.moun){ DB = {aktif:"", moun:{}}; } }
+var saveT = null;
+function save(now){
+  clearTimeout(saveT);
+  var w = function(){ try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch(e){} };
+  if(now){ w(); } else { saveT = setTimeout(w, 250); }
+}
+function M(){ return DB.moun[DB.aktif]; }
+
+// ------------------------------------------------------------ weeks
+// A "week" is Monday to Sunday. Week 1 is the one holding the 1st of the
+// month; days that belong to the next or previous month are greyed out.
+function weeksOf(ym){
+  var y = +ym.slice(0,4), m = +ym.slice(5,7) - 1;
+  var first = new Date(y, m, 1), last = new Date(y, m+1, 0).getDate();
+  var start = new Date(first); start.setDate(1 - (first.getDay()+6)%7);
+  var out = [];
+  for(var w = 0; w < 6; w++){
+    var days = [];
+    for(var i = 0; i < 7; i++){
+      var d = new Date(start); d.setDate(start.getDate() + w*7 + i);
+      days.push(d.getMonth() === m ? d.getDate() : 0);
+    }
+    if(days.some(function(x){ return x; })){ out.push(days); }
+  }
+  return out;
+}
+var WEEK = null;
+function curWeek(){
+  var ws = weeksOf(M().mwa);
+  if(WEEK === null){
+    WEEK = 0;
+    if(M().mwa === thisMonth()){
+      var td = new Date().getDate();
+      ws.forEach(function(w, i){ if(w.indexOf(td) >= 0){ WEEK = i; } });
+    }
+  }
+  if(WEEK >= ws.length){ WEEK = ws.length - 1; }
+  return {ws:ws, i:WEEK, days:ws[WEEK]};
+}
+var DH = ["L","M","M","J","V","S","D"];
+function weekBar(){
+  var c = curWeek(), real = c.days.filter(function(x){ return x; });
+  var mn = ["janvye","fevriye","mas","avril","me","jen","jiyè","out","septanm","oktòb","novanm","desanm"][+M().mwa.slice(5,7)-1];
+  return '<div class="wk"><button data-wk="-1" aria-label="Semèn anvan"'+(c.i===0?" disabled":"")+'>‹</button>'
+    + '<div class="lbl">Semèn '+(c.i+1)+'<small>'+real[0]+' – '+real[real.length-1]+' '+mn+'</small></div>'
+    + '<button data-wk="1" aria-label="Semèn apre"'+(c.i===c.ws.length-1?" disabled":"")+'>›</button></div>';
+}
+// mode: "pp" = blank → P → X, "x" = blank → X, "t" = blank → the hour now
+function dayGrid(path, d, mode){
+  var c = curWeek(), td = (M().mwa === thisMonth()) ? new Date().getDate() : 0, h = "";
+  DH.forEach(function(x){ h += '<div class="dh">'+x+'</div>'; });
+  c.days.forEach(function(day){
+    if(!day){ h += '<button disabled></button>'; return; }
+    var v = d[day] || "", cls = v === "P" ? "P" : v === "X" ? "X" : v ? "T" : "";
+    var txt = v === "P" ? "PPP" : v === "X" ? "X" : v ? v : day;
+    h += '<button class="'+cls+(day===td?" today":"")+'" data-cell="'+path+'" data-day="'+day+'" data-mode="'+mode+'" title="'+day+'">'+esc(txt)+'</button>';
+  });
+  return '<div class="days">'+h+'</div>';
+}
+function legend(){ return '<p class="legend">Tape sou yon jou:<i style="background:var(--ppp)"></i>PPP planifye<i style="background:var(--x)"></i>X fèt</p>'; }
+
+// ------------------------------------------------------------ path get/set
+function getP(path){ return path.split(".").reduce(function(o,k){ return o == null ? o : o[k]; }, M()); }
+function setP(path, v){
+  var ks = path.split("."), o = M();
+  for(var i = 0; i < ks.length-1; i++){ o = o[ks[i]]; if(o == null){ return; } }
+  o[ks[ks.length-1]] = v;
+}
+function rowById(list, id){ for(var i=0;i<list.length;i++){ if(list[i].id === id){ return i; } } return -1; }
+function fld(label, path, type, extra){
+  var v = getP(path); if(v == null){ v = ""; }
+  if(type === "textarea"){ return '<label class="fld"><span>'+label+'</span><textarea data-f="'+path+'">'+esc(v)+'</textarea></label>'; }
+  return '<label class="fld"><span>'+label+'</span><input data-f="'+path+'" type="'+(type||"text")+'" value="'+esc(v)+'"'+(extra||"")+'></label>';
+}
+
+// ------------------------------------------------------------ pages
+var main = document.getElementById("main"), PAGE = 0, OPEN = {};
+
+function devwaBox(p){ return p.devwa ? '<div class="devwa"><b>Devwa '+p.n+'</b>'+esc(p.devwa)+'</div>' : ""; }
+
+function pKomanse(){
+  var m = M(), h = '<h1>Byenveni, '+esc(m.non)+'</h1>'
+    + '<p>Sa se plan jeneral operasyon an. Ou sèvi avè l kòm checklist chak jou, chak semenn, chak mwa. Ou bati l ou menm, yon paj chak fwa: chak paj se yon devwa.</p>'
+    + '<div class="card"><b>Kijan li mache</b><ol style="margin:6px 0 0;padding-left:20px;font-size:15px">'
+    + '<li>Tout sa ou ekri sove sou telefòn nan poukont li, menm san siyal.</li>'
+    + '<li>Fè devwa yo nan lòd, 1 rive 5.</li>'
+    + '<li>Lè w fini yon paj, peze <b>Voye devwa a bay Ekip</b> anba paj la. W ap resevwa yon referans.</li>'
+    + '<li>Si plizyè moun sèvi ak menm telefòn nan, chak moun chwazi non pa l anlè.</li></ol></div>'
+    + '<h2>Mwa an kou</h2>' + fld("Mwa", "mwa", "month")
+    + '<h2>Devwa yo</h2>';
+  PAJ.forEach(function(p, i){
+    if(!p.n){ return; }
+    var v = m.voye[p.n];
+    h += '<a class="card" style="display:flex;justify-content:space-between;text-decoration:none;color:inherit" href="#'+i+'"><span><b>Devwa '+p.n+'</b> · '+esc(p.t)+'</span>'
+      + (v && v.ref ? '<span class="ok">✓ '+esc(v.ref)+'</span>' : v ? '<span class="wait">ap tann siyal</span>' : '<span>›</span>') + '</a>';
+  });
+  h += '<h2>Nouvo mwa</h2><p style="font-size:14px;color:var(--muted)">Kòmanse yon nouvo mwa: tach ak aksyon yo rete, jou yo, nivo yo ak detay chak jou yo efase.</p>'
+    + '<button class="go sec" data-act="nouvo-mwa">Kòmanse yon nouvo mwa</button>';
+  return h;
+}
+
+function pPlan(){
+  var m = M(), p = m.plan, list = p.tach, h = devwaBox(PAJ[1]);
+  var bid = 0, dep = 0, fini = 0;
+  list.forEach(function(t){ bid += num(t.bidje); dep += num(t.depans); if(t.nivo === "fini"){ fini++; } });
+  h += '<div class="card">' + fld("Non patnè", "plan.patne") + fld("Lokalite", "plan.lokalite")
+    + fld("Kontra an kou", "plan.kontra") + fld("Peryòd pwodiksyon", "plan.peryod") + '</div>'
+    + '<div class="stats"><div class="stat"><b>'+fmt(bid)+'</b><span>Bidje (USD)</span></div>'
+    + '<div class="stat"><b>'+fmt(dep)+'</b><span>Depans</span></div>'
+    + '<div class="stat"><b>'+(list.length ? Math.round(100*fini/list.length) : 0)+'%</b><span>Reyalizasyon</span></div></div>'
+    + legend() + weekBar();
+  var faz = []; list.forEach(function(t){ if(faz.indexOf(t.faz) < 0){ faz.push(t.faz); } });
+  PLAN.forEach(function(ph){ if(faz.indexOf(ph[0]) < 0){ faz.push(ph[0]); } });
+  faz.forEach(function(f){
+    h += '<h2>'+esc(f)+'</h2>';
+    list.forEach(function(t, i){
+      if(t.faz !== f){ return; }
+      var base = "plan.tach."+i, open = OPEN[t.id];
+      var chip = t.nivo === "fini" ? '<span class="chip fini">Fini</span>' : t.nivo === "apfet" ? '<span class="chip apfet">Ap fèt</span>' : '<span class="chip">Poko</span>';
+      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(t.t)+'" placeholder="Non tach la"></div>'+chip+'</div>'
+        + '<div class="sub">'+(t.resp ? "Responsab: "+esc(t.resp) : "Pa gen responsab")+(t.pita ? " · Pita: "+esc(pitaTx(t.pita)) : "")+'</div>'
+        + dayGrid(base+".d", t.d, "pp")
+        + (open ? '<div class="more">'
+            + '<div class="row2">'+fld("Responsab", base+".resp")+selNivo(base, t.nivo)+'</div>'
+            + '<div class="row2">'+fld("Bidje mwa (USD)", base+".bidje", "number", ' inputmode="decimal"')+fld("Depans avan", base+".depans", "number", ' inputmode="decimal"')+'</div>'
+            + selPita(base, t.pita) + fld("Komantè", base+".kom")
+            + '<div class="acts"><button class="del" data-del="plan.tach" data-id="'+t.id+'">Retire tach sa a</button><button class="link" data-open="'+t.id+'">Fèmen</button></div></div>'
+          : '<div class="acts"><span></span><button class="link" data-open="'+t.id+'">Detay</button></div>')
+        + '</div>';
+    });
+    h += '<button class="add" data-add="plan" data-sek="'+esc(f)+'">+ Ajoute yon tach</button>';
+  });
+  return h + sendBox(1);
+}
+function selNivo(base, v){
+  return '<label class="fld"><span>A ki nivo li ye</span><select data-f="'+base+'.nivo">'
+    + [["poko","Poko kòmanse"],["apfet","Ap fèt"],["fini","Fini"]].map(function(o){ return '<option value="'+o[0]+'"'+(v===o[0]?" selected":"")+'>'+o[1]+'</option>'; }).join("")
+    + '</select></label>';
+}
+function pitaTx(v){ return v ? v.charAt(0)+"e mwa apre, semèn "+v.slice(2) : ""; }
+function selPita(base, v){
+  var o = '<option value="">—</option>';
+  for(var mm = 1; mm <= 6; mm++){ for(var s = 1; s <= 4; s++){ var k = mm+"S"+s; o += '<option value="'+k+'"'+(v===k?" selected":"")+'>'+mm+'e mwa apre · S'+s+'</option>'; } }
+  return '<label class="fld"><span>Si se pou pita: ki mwa, ki semèn</span><select data-f="'+base+'.pita">'+o+'</select></label>';
+}
+
+function pKal(){
+  var list = M().kal.rows, h = devwaBox(PAJ[2]) + legend() + weekBar();
+  KAL.forEach(function(s){
+    h += '<h2>'+esc(s[0])+'</h2>';
+    list.forEach(function(r, i){
+      if(r.sek !== s[0]){ return; }
+      var base = "kal.rows."+i;
+      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(r.t)+'" placeholder="Aksyon teknik"></div>'
+        + '<button class="del" data-del="kal.rows" data-id="'+r.id+'" aria-label="Retire">✕</button></div>'
+        + '<label class="fld" style="margin:6px 0 0"><span>Chak kilè</span><input data-f="'+base+'.k" value="'+esc(r.k)+'" placeholder="1 fwa pa jou, 1 fwa pa semenn…"></label>'
+        + dayGrid(base+".d", r.d, "pp") + '</div>';
+    });
+    h += '<button class="add" data-add="kal" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button>';
+  });
+  var n = list.filter(function(r){ return r.t.trim(); }).length;
+  h += '<p class="legend">'+n+' aksyon ekri. Devwa a mande omwen 15.</p>';
+  return h + sendBox(2);
+}
+
+function pMgr(){
+  var list = M().mgr.rows, h = devwaBox(PAJ[3]) + '<p class="legend">Tape sou yon jou: X = fèt</p>' + weekBar();
+  MGR.forEach(function(s){
+    h += '<h2>'+esc(s[0])+'</h2>';
+    list.forEach(function(r, i){
+      if(r.sek !== s[0]){ return; }
+      var base = "mgr.rows."+i;
+      h += '<div class="task"><div class="top"><div class="name"><input data-f="'+base+'.t" value="'+esc(r.t)+'" placeholder="Aksyon pa w"></div>'
+        + '<button class="del" data-del="mgr.rows" data-id="'+r.id+'" aria-label="Retire">✕</button></div>'
+        + '<label class="fld" style="margin:6px 0 0"><span>Responsab</span><input data-f="'+base+'.resp" value="'+esc(r.resp)+'"></label>'
+        + dayGrid(base+".d", r.d, "x") + '</div>';
+    });
+    h += '<button class="add" data-add="mgr" data-sek="'+esc(s[0])+'">+ Ajoute yon aksyon</button>';
+  });
+  return h + sendBox(3);
+}
+
+function pKont(){
+  var m = M(), k = m.kont, h = devwaBox(PAJ[4]);
+  h += '<div class="card">' + fld("Non kontraktyèl", "kont.non") + fld("Lokalite", "kont.lokalite") + fld("Sipèvize", "kont.sipevize")
+    + '<div class="row2">' + fld("Kantite (bèt, plant, pwodwi)", "kont.kantite") + fld("Ras / kalite", "kont.ras") + '</div></div>'
+    + '<p class="legend">Tcheke chak jou aktivite ki fèt lè l fin fèt. Tape sou jou a: lè a ekri poukont li. Tape ankò pou efase.</p>' + weekBar();
+  var any = false;
+  KAL.forEach(function(s){
+    var rows = m.kal.rows.filter(function(r){ return r.sek === s[0] && r.t.trim(); });
+    if(!rows.length){ return; }
+    any = true;
+    h += '<h2>'+esc(s[0])+'</h2>';
+    rows.forEach(function(r){
+      if(!k.d[r.id]){ k.d[r.id] = {}; }
+      h += '<div class="task"><div class="name">'+esc(r.t)+'</div><div class="sub">'+esc(r.k || "")+'</div>'
+        + dayGrid("kont.d."+r.id, k.d[r.id], "t") + '</div>';
+    });
+  });
+  if(!any){ h += '<div class="card">Kalandriye aksyon an vid. Ranpli Devwa 2 anvan: aksyon yo ap parèt isit la poukont yo.</div>'; }
+  return h + sendBox(4);
+}
+
+function pJou(){
+  var list = M().jou, h = devwaBox(PAJ[5]), tot = 0;
+  list.forEach(function(j){ tot += num(j.kob); });
+  h += '<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><b>'+list.length+'</b><span>Jou ranpli</span></div>'
+    + '<div class="stat"><b>'+fmt(tot)+'</b><span>Total depans (goud)</span></div></div>';
+  list.forEach(function(j, i){
+    var base = "jou."+i;
+    h += '<div class="card"><div class="row2">'+fld("Dat", base+".dat", "date")+fld("A ki pousantaj jounen an pase (%)", base+".pct", "number", ' inputmode="numeric" min="0" max="100"')+'</div>'
+      + fld("Rezime reyalizasyon jounen an an chif", base+".chif", "textarea")
+      + fld("Kòb ki depanse jou sa a (goud)", base+".kob", "number", ' inputmode="decimal"')
+      + fld("Yon detay ki make jounen an", base+".detay", "textarea") + fld("Lòt detay", base+".lot")
+      + '<div class="acts"><span></span><button class="del" data-del="jou" data-id="'+j.id+'">Retire jou sa a</button></div></div>';
+  });
+  h += '<button class="add" data-add="jou">+ Ajoute jodi a</button>';
+  return h + sendBox(5);
+}
+
+function pLapen(){
+  var h = '<h1>Egzanp: lapen</h1><p class="legend" style="margin-bottom:10px">Kalandriye aksyon Dan pou pwodiksyon lapen. Se yon egzanp pou w gade, pa pou w ranpli.</p><table class="ex">';
+  LAPEN.forEach(function(s){
+    h += '<tr class="h"><td colspan="2">'+esc(s[0])+'</td></tr>';
+    s[1].forEach(function(a){ h += '<tr><td>'+esc(a[0])+'</td><td>'+esc(a[1])+'</td></tr>'; });
+  });
+  return h + '</table>';
+}
+
+// ------------------------------------------------------------ send to Ekip
+function sendBox(n){
+  var v = M().voye[n], st;
+  if(v && v.ref){ st = '<p class="ok">✓ Rive nan Ekip · Referans '+esc(v.ref)+' · '+esc(v.dat)+'</p><p>Ou ka voye l ankò si ou chanje l.</p>'; }
+  else if(v){ st = '<p class="wait">Sove sou telefòn nan. L ap pati poukont li lè w gen siyal.</p>'; }
+  else { st = '<p>Lè w fini paj sa a, voye l. Sipèvizè w ap wè l nan Ekip.</p>'; }
+  return '<div class="send"><button class="go" data-send="'+n+'">Voye devwa '+n+' bay Ekip</button><div id="st'+n+'">'+st+'</div></div>';
+}
+function snapshot(n){
+  var m = M(), data, lines = [];
+  if(n === 1){
+    data = m.plan;
+    lines.push("Patnè: "+(data.patne||"—")+" · Lokalite: "+(data.lokalite||"—")+" · Kontra: "+(data.kontra||"—")+" · Mwa: "+m.mwa);
+    data.tach.forEach(function(t){
+      var dd = Object.keys(t.d).filter(function(k){ return t.d[k]; }).map(function(k){ return k+t.d[k]; }).join(" ");
+      if(t.resp || t.bidje || t.depans || t.nivo !== "poko" || t.kom || dd){
+        lines.push("- "+t.t+" | "+(t.resp||"?")+" | "+({poko:"poko",apfet:"ap fèt",fini:"fini"}[t.nivo])+(t.bidje?" | $"+t.bidje:"")+(dd?" | "+dd:"")+(t.kom?" | "+t.kom:""));
+      }
+    });
+  } else if(n === 2){
+    data = m.kal;
+    data.rows.forEach(function(r){ if(r.t.trim()){ lines.push("- ["+r.sek+"] "+r.t+" · "+(r.k||"?")+" · "+Object.keys(r.d).filter(function(k){ return r.d[k]; }).map(function(k){ return k+r.d[k]; }).join(" ")); } });
+  } else if(n === 3){
+    data = m.mgr;
+    data.rows.forEach(function(r){ if(r.t.trim()){ lines.push("- "+r.t+" | "+(r.resp||"?")+" | jou fèt: "+Object.keys(r.d).filter(function(k){ return r.d[k]; }).join(",")); } });
+  } else if(n === 4){
+    data = {kont:m.kont, aksyon:m.kal.rows.filter(function(r){ return r.t.trim(); }).map(function(r){ return {id:r.id, t:r.t}; })};
+    lines.push("Kontraktyèl: "+(m.kont.non||"—")+" · Sipèvize: "+(m.kont.sipevize||"—"));
+    data.aksyon.forEach(function(a){ var d = m.kont.d[a.id] || {}; var ks = Object.keys(d).filter(function(k){ return d[k]; });
+      if(ks.length){ lines.push("- "+a.t+": "+ks.map(function(k){ return k+"("+d[k]+")"; }).join(" ")); } });
+  } else {
+    data = m.jou;
+    data.forEach(function(j){ lines.push("- "+(j.dat||"?")+" · "+(j.pct||"?")+"% · "+(j.chif||"")+" · "+(j.kob||0)+" goud"); });
+  }
+  var json = JSON.stringify(data), out = {rezime: lines.join("\n").slice(0, 3900)};
+  for(var i = 0; i < CHUNKS; i++){ out["done_"+(i+1)] = json.slice(i*CHUNK, (i+1)*CHUNK); }
+  out.too_big = json.length > CHUNK*CHUNKS;
+  return out;
+}
+function qread(){ try { return JSON.parse(localStorage.getItem(KQ) || "[]"); } catch(e){ return []; } }
+function qwrite(a){ try { localStorage.setItem(KQ, JSON.stringify(a)); } catch(e){} }
+var FLY = false;
+function flush(){
+  if(FLY || !window.fetch){ return; }
+  var a = qread(); if(!a.length){ return; }
+  var item = a[0]; FLY = true;
+  fetch(VOYE, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(item.p)})
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, s:r.status, j:j}; }); })
+    .then(function(x){
+      FLY = false;
+      if(x.ok && x.j && x.j.ok){
+        qwrite(qread().filter(function(o){ return o.id !== item.id; }));
+        var who = DB.moun[item.non];
+        if(who){ who.voye[item.n] = {ref: x.j.referans || "ok", dat: today()}; save(true); }
+        render(); flush();
+      } else if(x.s >= 400 && x.s < 500){
+        // A refusal will not fix itself on retry. Drop it and say so.
+        qwrite(qread().filter(function(o){ return o.id !== item.id; }));
+        var w2 = DB.moun[item.non]; if(w2){ delete w2.voye[item.n]; save(true); }
+        var el = document.getElementById("st"+item.n);
+        if(el){ el.innerHTML = '<p style="color:var(--red)">Ekip pa t aksepte l: '+esc((x.j && x.j.error) || "erè")+'</p>'; }
+      }
+    })
+    .catch(function(){ FLY = false; });
+}
+function send(n){
+  var m = M(), s = snapshot(n), p = PAJ.filter(function(x){ return x.n === n; })[0];
+  if(s.too_big){ alertBox(n, "Paj sa a twò gwo pou voye. Retire kèk liy vid epi eseye ankò."); return; }
+  var payload = {non:m.non, tel:m.tel || "", devwa:n, paj:p.t, mwa:m.mwa, vesyon:VESYON, kle:m.kle};
+  for(var k in s){ if(k !== "too_big"){ payload[k] = s[k]; } }
+  var a = qread().filter(function(o){ return !(o.non === m.non && o.n === n); });
+  a.push({id:uid(), non:m.non, n:n, p:payload}); qwrite(a);
+  m.voye[n] = {pending:true}; save(true); render(); flush();
+}
+function alertBox(n, msg){ var el = document.getElementById("st"+n); if(el){ el.innerHTML = '<p style="color:var(--red)">'+esc(msg)+'</p>'; } }
+
+// ------------------------------------------------------------ people
+function pickPerson(){
+  document.getElementById("tabs").innerHTML = "";
+  document.getElementById("who").innerHTML = "";
+  var names = Object.keys(DB.moun), h = '<h1>Kiyès k ap ranpli?</h1>';
+  if(names.length){
+    h += '<div class="people">'+names.map(function(n){ return '<button data-moun="'+esc(n)+'">'+esc(n)+'</button>'; }).join("")+'</div><h2>Oswa yon nouvo moun</h2>';
+  }
+  h += '<div class="card">'+'<label class="fld"><span>Non w</span><input id="nn" autocomplete="name"></label>'
+    + '<label class="fld"><span>Telefòn (si w genyen)</span><input id="nt" type="tel" inputmode="tel"></label>'
+    + '<button class="go" id="nk">Kòmanse</button><p id="ne" style="color:var(--red)"></p></div>';
+  main.innerHTML = h;
+  document.getElementById("nk").onclick = function(){
+    var n = document.getElementById("nn").value.trim(), t = document.getElementById("nt").value.trim();
+    if(!n){ document.getElementById("ne").textContent = "Mete non w anvan."; return; }
+    if(!DB.moun[n]){ DB.moun[n] = fresh(n, t); }
+    DB.aktif = n; save(true); location.hash = "#0"; render();
+  };
+}
+
+// ------------------------------------------------------------ render + events
+var RENDER = [pKomanse, pPlan, pKal, pMgr, pKont, pJou, pLapen];
+function render(){
+  if(!DB.aktif || !M()){ return pickPerson(); }
+  var m = M();
+  document.getElementById("who").innerHTML = '<b>'+esc(m.non)+'</b><button class="link" data-act="chanje">Chanje moun</button>';
+  document.getElementById("tabs").innerHTML = PAJ.map(function(p, i){
+    var ok = p.n && m.voye[p.n] && m.voye[p.n].ref ? ' <span class="ok">✓</span>' : "";
+    return '<a href="#'+i+'" class="'+(i===PAGE?"on":"")+'">'+(p.n ? p.n+". " : "")+esc(p.t)+ok+'</a>';
+  }).join("");
+  var y = window.scrollY;
+  main.innerHTML = RENDER[PAGE]();
+  window.scrollTo(0, y);
+  var on = document.querySelector("nav.tabs a.on"); if(on && on.scrollIntoView){ on.scrollIntoView({inline:"center", block:"nearest"}); }
+}
+function route(){
+  var n = parseInt(location.hash.replace("#",""), 10);
+  if(isNaN(n) || n < 0 || n >= PAJ.length){ n = 0; }
+  if(n !== PAGE){ PAGE = n; window.scrollTo(0,0); }
+  render();
+}
+
+// Typing never re-renders: a re-render would steal the cursor mid-word.
+// Only the few figures that depend on what was typed are refreshed.
+main.addEventListener("input", function(e){
+  var t = e.target, path = t.getAttribute && t.getAttribute("data-f");
+  if(!path){ return; }
+  setP(path, t.value); save();
+  if(path === "mwa"){ WEEK = null; }
+});
+main.addEventListener("change", function(e){
+  var t = e.target, path = t.getAttribute && t.getAttribute("data-f");
+  if(!path){ return; }
+  setP(path, t.value); save(true);
+  if(/\.(nivo|bidje|depans|pita|resp|kob)$/.test(path) || path === "mwa"){ render(); }
+});
+main.addEventListener("click", function(e){
+  var t = e.target.closest ? e.target.closest("button,[data-act]") : null;
+  if(!t){ return; }
+  var m = M();
+  if(t.hasAttribute("data-cell")){
+    var d = getP(t.getAttribute("data-cell")) || {}, day = t.getAttribute("data-day"), mode = t.getAttribute("data-mode"), v = d[day] || "";
+    if(mode === "pp"){ d[day] = v === "" ? "P" : v === "P" ? "X" : ""; }
+    else if(mode === "x"){ d[day] = v ? "" : "X"; }
+    else { d[day] = v ? "" : new Date().getHours()+"è"; }
+    if(!d[day]){ delete d[day]; }
+    setP(t.getAttribute("data-cell"), d); save(true); render(); return;
+  }
+  if(t.hasAttribute("data-wk")){ WEEK = Math.max(0, (WEEK||0) + (+t.getAttribute("data-wk"))); render(); return; }
+  if(t.hasAttribute("data-open")){ var id = t.getAttribute("data-open"); OPEN[id] = !OPEN[id]; render(); return; }
+  if(t.hasAttribute("data-del")){
+    var list = getP(t.getAttribute("data-del")), i = rowById(list, t.getAttribute("data-id"));
+    if(i >= 0){ list.splice(i, 1); save(true); render(); }
+    return;
+  }
+  if(t.hasAttribute("data-add")){
+    var a = t.getAttribute("data-add"), sek = t.getAttribute("data-sek");
+    if(a === "plan"){ var nt = {id:uid(), faz:sek, t:"", resp:"", bidje:"", depans:"", nivo:"poko", kom:"", pita:"", d:{}}; insertAfterLast(m.plan.tach, "faz", sek, nt); OPEN[nt.id] = true; }
+    if(a === "kal"){ insertAfterLast(m.kal.rows, "sek", sek, {id:uid(), sek:sek, t:"", k:"", d:{}}); }
+    if(a === "mgr"){ insertAfterLast(m.mgr.rows, "sek", sek, {id:uid(), sek:sek, t:"", resp:"", d:{}}); }
+    if(a === "jou"){ m.jou.push({id:uid(), dat:today(), pct:"", chif:"", kob:"", detay:"", lot:""}); }
+    save(true); render(); return;
+  }
+  if(t.hasAttribute("data-send")){ send(+t.getAttribute("data-send")); return; }
+  var act = t.getAttribute("data-act");
+  if(act === "nouvo-mwa"){
+    m.mwa = thisMonth(); WEEK = null;
+    m.plan.tach.forEach(function(x){ x.d = {}; x.nivo = "poko"; x.depans = ""; });
+    m.kal.rows.forEach(function(x){ x.d = {}; }); m.mgr.rows.forEach(function(x){ x.d = {}; });
+    m.kont.d = {}; m.jou = []; m.voye = {};
+    save(true); location.hash = "#0"; render();
+  }
+});
+document.getElementById("who").addEventListener("click", function(e){
+  if(e.target.getAttribute("data-act") === "chanje"){ DB.aktif = ""; save(true); pickPerson(); }
+});
+main.addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest("[data-moun]") : null;
+  if(b){ DB.aktif = b.getAttribute("data-moun"); WEEK = null; save(true); location.hash = "#0"; route(); }
+});
+function insertAfterLast(list, key, val, item){
+  var at = -1; list.forEach(function(x, i){ if(x[key] === val){ at = i; } });
+  list.splice(at < 0 ? list.length : at + 1, 0, item);
+}
+
+load();
+window.addEventListener("hashchange", route);
+window.addEventListener("online", flush);
+route();
+flush();
+})();
+</script>
+</body>
+</html>
