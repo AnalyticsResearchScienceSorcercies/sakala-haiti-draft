@@ -163,3 +163,22 @@ export function applySums(fields: Field[], repons: Record<string, unknown>) {
     repons[f.key] = cents / 100;
   }
 }
+
+// A computed figure on an ordinary field, 2026-10-02: "Total goud touche" is
+// hours x 130, and nobody should have to do that sum on a phone in the sun.
+// Each factor is a field key or a plain number (the rate). Same rule as
+// product_of inside a row: recomputed here and OVERWRITTEN, never compared.
+// A missing or non-numeric factor stores null rather than a guessed zero.
+export function applyProducts(fields: Field[], repons: Record<string, unknown>) {
+  for (const f of fields) {
+    if (f.type === "group" || !Array.isArray(f.product_of)) continue;
+    let p = 1;
+    let ok = (f.product_of as unknown[]).length > 0;
+    for (const k of f.product_of as unknown[]) {
+      const n = typeof k === "number" ? k : repons[String(k)];
+      if (typeof n !== "number" || !Number.isFinite(n)) { ok = false; break; }
+      p *= n;
+    }
+    repons[f.key] = ok ? round2(p) : null;
+  }
+}

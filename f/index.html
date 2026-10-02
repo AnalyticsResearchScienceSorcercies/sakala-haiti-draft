@@ -85,6 +85,7 @@ canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crossh
 .cur .unit{display:flex;align-items:center;padding:0 12px;background:var(--paper);
  border-right:1px solid var(--line);font-weight:700;font-size:14px;color:var(--muted)}
 .cur input{border:0;border-radius:0}
+.cur input.kalkil{background:#F1EFE8;font-weight:700;color:#111}
 
 /* file: pick a photo or a PDF, upload it before the form is sent */
 .up{border:1px solid var(--line);border-radius:6px;background:var(--card);padding:10px}
@@ -242,6 +243,12 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     time:     function(f){ return input(f,"time"); },
     email:    function(f){ return input(f,"email"); },
     currency: function(f){
+      if (Array.isArray(f.product_of)) {
+        return wrapFld(Object.assign({}, f, { required: false }),
+          '<div class="cur"><span class="unit">' + esc(f.currency || "HTG") + "</span>" +
+          '<input type="number" name="'+esc(f.key)+'" class="kalkil" readonly tabindex="-1"></div>' +
+          '<p class="hint">Kalkile otomatikman.</p>');
+      }
       return wrapFld(f, '<div class="cur"><span class="unit">' + esc(f.currency || "HTG") + "</span>" +
         '<input type="number" name="'+esc(f.key)+'"'+(f.required?" required":"") +
         ' inputmode="decimal" min="'+(f.min!=null?esc(f.min):"0")+'" step="'+esc(f.step||"0.01")+'"></div>'); },
@@ -601,6 +608,114 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     wireSignatures();
     wireFiles();
     showQueue();
+    wireAuto();
+  }
+
+  // ------------------- auto numbers, 2026-10-02 -------------------
+  // Field properties, all optional. Only product_of reaches the server, which
+  // recomputes it and overwrites whatever the phone sent:
+  //   product_of: ["key", 130]  a figure = those fields x those constants, live
+  //   sonje: "group"            remembered on this phone, filled in next time
+  //   semen: true               (with sonje) a week number that moves itself on:
+  //                             the last one saved + the whole weeks since
+  //   jou: "lendi"|"vandredi"   a date that starts on this week's Monday/Friday
+  //   pa_semen: "key"           a select picked from a week number, using each
+  //                             option's semen: [from, to]
+  // Everything filled in stays editable. A guess the person can see and fix
+  // beats a blank they have to work out.
+  var SK = "fom_sonje";
+  function allFields() {
+    var a = [];
+    (DEF.schema.sections || []).forEach(function (sec) {
+      (sec.fields || []).forEach(function (f) { a.push(f); });
+    });
+    return a;
+  }
+  function byName(k) { return document.querySelector('#f [name="' + k + '"]'); }
+  function lendiDe(d) {
+    var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    x.setDate(x.getDate() - (x.getDay() + 6) % 7);
+    return x;
+  }
+  function isoDay(d) {
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function sread() { try { return JSON.parse(localStorage.getItem(SK) || "{}"); } catch (e) { return {}; } }
+  function swrite(o) { try { localStorage.setItem(SK, JSON.stringify(o)); } catch (e) {} }
+
+  function wireAuto() {
+    var F = allFields(), mem = sread(), lendi = lendiDe(new Date());
+    F.forEach(function (f) {
+      var e = byName(f.key);
+      if (!e || e.value) return;
+      if (f.jou === "lendi" || f.jou === "vandredi") {
+        var d = new Date(lendi);
+        if (f.jou === "vandredi") d.setDate(d.getDate() + 4);
+        e.value = isoDay(d);
+      }
+      var m = f.sonje ? (mem[f.sonje] || {})[f.key] : null;
+      if (m && m.v != null && m.v !== "") {
+        if (f.semen) {
+          var p = String(m.t || "").split("-");
+          var then = p.length === 3 ? new Date(+p[0], +p[1] - 1, +p[2]) : lendi;
+          e.value = Number(m.v) + Math.max(0, Math.round((lendi - then) / 6048e5));
+        } else {
+          e.value = m.v;
+        }
+      }
+    });
+    F.forEach(function (f) {
+      if (!f.pa_semen) return;
+      var src = byName(f.pa_semen), dst = byName(f.key);
+      if (!src || !dst) return;
+      function pick() {
+        var n = Number(src.value);
+        if (!n) return;
+        (f.options || []).forEach(function (o) {
+          if (o.semen && n >= o.semen[0] && n <= o.semen[1]) dst.value = o.v;
+        });
+      }
+      src.addEventListener("input", pick);
+      pick();
+    });
+    F.forEach(function (f) {
+      if (!Array.isArray(f.product_of)) return;
+      var out = byName(f.key);
+      if (!out) return;
+      function calc() {
+        var p = 1, ok = true;
+        f.product_of.forEach(function (k) {
+          var n;
+          if (typeof k === "number") { n = k; }
+          else {
+            var e = byName(k);
+            if (!e || e.value === "") { ok = false; return; }
+            n = Number(e.value);
+          }
+          if (!isFinite(n)) ok = false; else p *= n;
+        });
+        out.value = ok ? Math.round(p * 100) / 100 : "";
+      }
+      f.product_of.forEach(function (k) {
+        var e = typeof k === "number" ? null : byName(k);
+        if (e) e.addEventListener("input", calc);
+      });
+      calc();
+    });
+  }
+
+  // Saved only once a response is sent or safely queued, so a form someone
+  // abandoned halfway never becomes next week's default.
+  function sonjeSave(payload) {
+    var mem = sread(), t = isoDay(lendiDe(new Date())), any = false;
+    allFields().forEach(function (f) {
+      var v = payload[f.key];
+      if (!f.sonje || v == null || v === "") return;
+      mem[f.sonje] = mem[f.sonje] || {};
+      mem[f.sonje][f.key] = { v: v, t: t };
+      any = true;
+    });
+    if (any) swrite(mem);
   }
 
   function wireRatings() {
@@ -930,14 +1045,15 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     function reset(){ btn.disabled=false; btn.textContent = DEF.schema.submit_label||"Voye"; }
 
     if (navigator.onLine === false) {
-      if (qpush(payload)) banked(); else { note("err","Pa gen plas pou sove repons lan."); reset(); }
+      if (qpush(payload)) { sonjeSave(payload); banked(); } else { note("err","Pa gen plas pou sove repons lan."); reset(); }
       return;
     }
     post(payload).then(function (o) {
       if (!o.ok) { note("err", o.j.error || "Gen yon pwoblèm."); reset(); return; }
+      sonjeSave(payload);
       done(o.j);
     }).catch(function () {
-      if (qpush(payload)) banked(); else { note("err","Koneksyon an pa mache."); reset(); }
+      if (qpush(payload)) { sonjeSave(payload); banked(); } else { note("err","Koneksyon an pa mache."); reset(); }
     });
   }
 
