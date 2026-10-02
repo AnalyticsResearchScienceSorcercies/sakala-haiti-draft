@@ -530,6 +530,15 @@ function render(){
   document.body.classList.remove('inline');
   var h = location.hash.replace(/^#/, '');
   var w = get();
+  // A key link opened on a page that is already loaded arrives as a hash
+  // change, not a load, so it is caught here as well as at boot.
+  var km = /^k=([0-9a-f]{64})$/.exec(h);
+  if(km){
+    kleSet(km[1]); KLE = km[1]; MWEN = null;
+    history.replaceState(null, '', location.pathname);
+    jesyonBoot().then(render);
+    return;
+  }
   if(h.indexOf('jesyon') === 0 && jesyonRoute(h)){ return; }
   if(h.indexOf('ouvri/') === 0){ return ouvri(h.slice(6)); }
   PREV = h;
