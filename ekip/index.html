@@ -59,6 +59,27 @@ h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
 body.inline footer{display:none}
 body.inline .app{padding-bottom:0}
 footer i{font-style:italic;color:var(--soon)}
+.filt{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+.filt input,.filt select{flex:1 1 140px;min-width:0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:inherit;font-size:15px}
+.kv{display:grid;grid-template-columns:minmax(0,40%) 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kv .k{color:var(--muted)}
+.kv .v{overflow-wrap:anywhere}
+.mut{color:var(--muted);font-size:14px}
+img.sig{max-width:220px;background:#fff;border:1px solid var(--line);border-radius:6px}
+.scroll{overflow-x:auto}
+table.mini{border-collapse:collapse;font-size:13px}
+table.mini th,table.mini td{border:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+.pre{white-space:pre-wrap;font-size:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;max-height:60vh;overflow:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.card .d{color:var(--muted);font-size:14px;margin:2px 0 6px}
+ol.chenn{margin:8px 0;padding-left:20px;font-size:14px}
+ol.chenn li.apwouve{color:var(--green)}
+ol.chenn li.refize{color:var(--red)}
+.sign{margin-top:10px;display:grid;gap:8px}
+.sign .in{padding:10px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+canvas.pad{width:100%;height:150px;background:#fff;border:1px solid var(--line);border-radius:10px;touch-action:none}
+.go2{background:var(--prussian);color:#fff}
+.item.jes{border-color:var(--prussian);border-width:2px}
 footer{margin-top:36px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
 footer a{color:var(--muted)}
 </style>
@@ -172,6 +193,10 @@ function seek(){
 function home(w){
   bar(w);
   var h = '<h1>'+({manadje:'Sa pou fè', apranti:'Byenveni', kowo:'Sit yo ak lajan'})[w]+'</h1>';
+  if(jesyonOk()){
+    h += '<div class="list"><a class="item jes" href="#jesyon"><span class="tx"><span class="t">Jesyon</span><br>'
+      + '<span class="d">Rezilta ak apwobasyon · '+esc(MWEN.non)+'</span></span><span class="go">›</span></a></div>';
+  }
   if(w === 'apranti'){
     h += '<div class="note">Devwa lakay ou: rakonte manadjè w li an pèsòn nan pwochen seyans lan. Pa gen fòm pou sa.</div>';
   }
@@ -226,10 +251,286 @@ function ouvri(id){
     + '<iframe class="frame" src="'+x.u+'" title="'+esc(x.t)+'"></iframe>';
 }
 
+// =================================================================== JESYON
+// The back office, as a section of the hub (2026-10-02). It shows only on a
+// phone that carries a personal build key (opened once from a #k=… link) until
+// Wesley's login replaces the key. Without a key nothing here is drawn and the
+// server answers nothing.
+var API = 'https://itnmcxemdpauemsnesln.supabase.co/functions/v1/jesyon';
+var KLE = null, MWEN = null, FOMS = null, REZ = {}, APW = null;
+function kleGet(){ try{ return localStorage.getItem('ekip.kle'); }catch(e){ return null; } }
+function kleSet(v){ try{ v ? localStorage.setItem('ekip.kle', v) : localStorage.removeItem('ekip.kle'); }catch(e){} }
+(function(){
+  var m = /^#k=([0-9a-f]{64})$/.exec(location.hash);
+  if(m){ kleSet(m[1]); history.replaceState(null, '', location.pathname); }
+  KLE = kleGet();
+})();
+function api(path, opt){
+  opt = opt || {};
+  var h = {'x-ekip-kle': KLE};
+  if(opt.body){ h['content-type'] = 'application/json'; }
+  return fetch(API + path, {method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined})
+    .then(function(r){ return r.json().then(function(j){ if(!r.ok){ throw new Error(j.error || ('Erè ' + r.status)); } return j; }); });
+}
+function jesyonOk(){ return !!(KLE && MWEN); }
+function jesyonBoot(){
+  if(!KLE){ return Promise.resolve(); }
+  return api('').then(function(me){ MWEN = me; }).catch(function(e){
+    if(/konekte/.test(e.message)){ kleSet(null); KLE = null; }
+  });
+}
+function wait(){ main.innerHTML = '<a class="back" href="#">‹ Retounen</a><p class="lead" style="margin-top:20px">Ap chaje…</p>'; }
+function oops(e){ main.innerHTML = '<a class="back" href="#">‹ Retounen</a><div class="note" style="border-color:var(--red);margin-top:16px">'+esc(e.message || e)+'</div>'; }
+function dt(s){ if(!s){ return '—'; } var d = new Date(s); return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}); }
+function jbar(t){ var w = get(); if(w){ bar(w); } return '<a class="back" href="#jesyon">‹ Jesyon</a><h1>'+esc(t)+'</h1>'; }
+
+// --- where each form sits in the results list
+var JGWOUP = [
+  ['Chak jou ak chak semèn', ['prezans-chak-jou','rapo-jou','sek-lendi','sek-vandredi','rapo-ensidan']],
+  ['Lajan', ['rekizisyon-fem','rapo-depans-mwa','rekizisyon-pewol']],
+  ['Aprann ak devwa', ['manyel-kiz','devwa-modil','oganizate-devwa']],
+  ["Sit D'Osmond", ['dosmond-entevyou-manadje','dosmond-potre-apranti','dosmond-vot-apranti']],
+  ['Pòt antre', ['jwenn-travay','patne-lokal']]
+];
+
+function jesyonHome(){
+  var h = jbar('Jesyon').replace('<a class="back" href="#jesyon">‹ Jesyon</a>', '<a class="back" href="#">‹ Retounen</a>')
+    + '<p class="lead">Konekte kòm <b>'+esc(MWEN.non)+'</b>'+(MWEN.wol.length ? ' · '+esc(MWEN.wol.join(', ')) : '')+'.</p>'
+    + '<div class="list">'
+    + '<a class="item" href="#jesyon/rezilta"><span class="tx"><span class="t">Rezilta</span><br><span class="d">Tout sa ki voye nan chak fòm, ak foto yo.</span></span><span class="go">›</span></a>'
+    + '<a class="item" href="#jesyon/apwobasyon"><span class="tx"><span class="t">Apwobasyon</span><br><span class="d">Demann lajan ki ap tann de siyati.</span></span><span class="go">›</span></a>'
+    + '</div><p class="lead" style="margin-top:24px;font-size:13px">Kle bati tanporè. <a href="#" id="kle-off">Retire kle a sou telefòn sa a</a></p>';
+  main.innerHTML = h;
+  document.getElementById('kle-off').onclick = function(e){ e.preventDefault(); kleSet(null); KLE = null; MWEN = null; location.hash = ''; render(); };
+}
+
+function jesyonRezilta(){
+  if(!FOMS){ wait(); return api('/fom').then(function(d){ FOMS = d; jesyonRezilta(); }).catch(oops); }
+  var by = {}; FOMS.forEach(function(f){ by[f.slug] = f; });
+  var used = {}, h = jbar('Rezilta');
+  function card(f){
+    used[f.slug] = 1;
+    return '<a class="item" href="#jesyon/fom/'+f.slug+'"><span class="tx"><span class="t">'+esc(f.tit)+'</span><br><span class="d">'
+      + (f.n ? f.n+' repons · dènye: '+dt(f.denye) : 'Poko gen repons') + '</span></span><span class="go">'+(f.n||'')+' ›</span></a>';
+  }
+  JGWOUP.forEach(function(g){
+    var xs = g[1].map(function(s){ return by[s]; }).filter(function(f){ return f && f.eta === 'live'; });
+    if(xs.length){ h += '<h2>'+esc(g[0])+'</h2><div class="list">'+xs.map(card).join('')+'</div>'; }
+  });
+  var rest = FOMS.filter(function(f){ return !used[f.slug] && f.eta === 'live'; });
+  if(rest.length){ h += '<h2>Lòt fòm</h2><div class="list">'+rest.map(card).join('')+'</div>'; }
+  var closed = FOMS.filter(function(f){ return f.eta !== 'live' && f.n; });
+  if(closed.length){ h += '<h2>Fèmen, ak repons ki rete</h2><div class="list">'+closed.map(card).join('')+'</div>'; }
+  main.innerHTML = h;
+}
+
+// --- one form's responses
+function val(f, v){
+  if(v == null || v === ''){ return ''; }
+  if(Array.isArray(v)){
+    if(f && f.type === 'group'){ return v.length + ' liy'; }
+    return v.join(', ');
+  }
+  if(typeof v === 'object'){ return v.path ? '📎 fichye' : JSON.stringify(v); }
+  if(typeof v === 'string' && v.indexOf('data:image/') === 0){ return '✍ siyati'; }
+  return String(v);
+}
+function summary(d, r){
+  var bits = [];
+  for(var i = 0; i < d.fields.length && bits.length < 3; i++){
+    var f = d.fields[i], v = val(f, r.repons[f.key]);
+    if(v && f.type !== 'signature' && f.type !== 'date' && !/^done_/.test(f.key)){ bits.push(v.length > 60 ? v.slice(0, 60)+'…' : v); }
+  }
+  return bits.join(' · ');
+}
+function jesyonFom(slug){
+  if(!REZ[slug]){ wait(); return api('/rezilta/'+encodeURIComponent(slug)).then(function(d){ REZ[slug] = d; jesyonFom(slug); }).catch(oops); }
+  var d = REZ[slug], st = jesyonFom.st = jesyonFom.st || {};
+  var sites = {}; d.rows.forEach(function(r){ var s = r.repons.sit || r.repons.lokalite; if(s){ sites[s] = 1; } });
+  var h = jbar(d.tit) + '<p class="lead">'+d.rows.length+' repons'+(d.eta !== 'live' ? ' · fòm nan fèmen' : '')+'</p>'
+    + '<div class="filt"><input id="jq" placeholder="Chèche (non, referans, mo…)" value="'+esc(st.q||'')+'">'
+    + (Object.keys(sites).length ? '<select id="js"><option value="">Tout sit</option>'+Object.keys(sites).sort().map(function(s){ return '<option'+(st.s===s?' selected':'')+'>'+esc(s)+'</option>'; }).join('')+'</select>' : '')
+    + '<input id="jde" type="date" value="'+esc(st.de||'')+'" title="Depi"><input id="ja" type="date" value="'+esc(st.a||'')+'" title="Jiska">'
+    + '<button class="chip" id="jcsv">CSV</button></div><div class="list" id="jl"></div>';
+  main.innerHTML = h;
+  function rows(){
+    var q = (st.q||'').toLowerCase();
+    return d.rows.filter(function(r){
+      var day = (r.created_at||'').slice(0,10);
+      if(st.s && (r.repons.sit || r.repons.lokalite) !== st.s){ return false; }
+      if(st.de && day < st.de){ return false; }
+      if(st.a && day > st.a){ return false; }
+      if(q && (JSON.stringify(r.repons) + ' ' + (r.referans||'')).toLowerCase().indexOf(q) < 0){ return false; }
+      return true;
+    });
+  }
+  function draw(){
+    var xs = rows();
+    document.getElementById('jl').innerHTML = xs.length ? xs.map(function(r){
+      return '<a class="item" href="#jesyon/r/'+slug+'/'+r.id+'"><span class="tx"><span class="t">'+esc(r.referans || dt(r.created_at))+'</span>'
+        + (r.esko != null ? ' <span class="tag bouyon">'+r.esko+'%</span>' : '')
+        + (r.eta_apwobasyon ? ' <span class="tag '+(r.eta_apwobasyon==='apwouve'?'bouyon':'vini')+'">'+esc(r.eta_apwobasyon)+'</span>' : '')
+        + '<br><span class="d">'+(r.referans ? dt(r.created_at)+' · ' : '')+esc(summary(d, r))+'</span></span><span class="go">›</span></a>';
+    }).join('') : '<p class="lead">Anyen pa koresponn.</p>';
+  }
+  ['jq','js','jde','ja'].forEach(function(id){
+    var e = document.getElementById(id); if(!e){ return; }
+    e.addEventListener('input', function(){ st.q = val0('jq'); st.s = val0('js'); st.de = val0('jde'); st.a = val0('ja'); draw(); });
+  });
+  function val0(id){ var e = document.getElementById(id); return e ? e.value : ''; }
+  document.getElementById('jcsv').onclick = function(){ csv(d, rows()); };
+  draw();
+}
+function csv(d, rows){
+  var cols = d.fields.filter(function(f){ return !/^done_/.test(f.key) && f.type !== 'signature'; });
+  var head = ['referans','dat'].concat(cols.map(function(f){ return f.label; }));
+  var q = function(s){ s = s == null ? '' : String(s); return /[",\n;]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  var lines = [head.map(q).join(',')].concat(rows.map(function(r){
+    return [r.referans||'', r.created_at].concat(cols.map(function(f){
+      var v = r.repons[f.key];
+      if(Array.isArray(v) && f.type === 'group'){ return JSON.stringify(v); }
+      if(v && typeof v === 'object' && v.path){ return v.non || 'fichye'; }
+      return Array.isArray(v) ? v.join('; ') : v;
+    })).map(q).join(',');
+  }));
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], {type:'text/csv;charset=utf-8'}));
+  a.download = d.slug + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+// --- one response, every field labelled
+function jesyonRepons(slug, id){
+  if(!REZ[slug]){ wait(); return api('/rezilta/'+encodeURIComponent(slug)).then(function(d){ REZ[slug] = d; jesyonRepons(slug, id); }).catch(oops); }
+  var d = REZ[slug], r = d.rows.filter(function(x){ return x.id === id; })[0];
+  if(!r){ return oops('Repons sa a pa la.'); }
+  var w = get(); if(w){ bar(w); }
+  var h = '<a class="back" href="#jesyon/fom/'+slug+'">‹ '+esc(d.tit)+'</a><h1>'+esc(r.referans || 'Repons')+'</h1>'
+    + '<p class="lead">'+dt(r.created_at)+(r.esko != null ? ' · nòt '+r.esko+'%' : '')+(r.eta_apwobasyon ? ' · '+esc(r.eta_apwobasyon) : '')+'</p>';
+  var sek = null, chunks = '';
+  d.fields.forEach(function(f){
+    var v = r.repons[f.key];
+    if(/^done_\d$/.test(f.key)){ chunks += (v || ''); return; }
+    if(f.seksyon !== sek){ sek = f.seksyon; if(sek){ h += '<h2>'+esc(sek)+'</h2>'; } }
+    h += '<div class="kv"><div class="k">'+esc(f.label === f.seksyon ? '' : f.label)+'</div><div class="v">'+show(f, v, slug, f.key)+'</div></div>';
+  });
+  if(chunks){
+    var pretty = chunks; try{ pretty = JSON.stringify(JSON.parse(chunks), null, 2); }catch(e){}
+    h += '<h2>Done konplè paj la</h2><details><summary>Louvri</summary><pre class="pre">'+esc(pretty)+'</pre></details>';
+  }
+  main.innerHTML = h;
+  Array.prototype.forEach.call(main.querySelectorAll('[data-fichye]'), function(b){
+    b.onclick = function(){
+      b.disabled = true; b.textContent = 'Ap louvri…';
+      api('/fichye', {method:'POST', body:{path:b.getAttribute('data-fichye')}})
+        .then(function(o){ window.open(o.url, '_blank', 'noopener'); b.textContent = 'Gade fichye a ↗'; b.disabled = false; })
+        .catch(function(e){ b.textContent = e.message; });
+    };
+  });
+}
+function show(f, v, slug, key){
+  if(v == null || v === '' || (Array.isArray(v) && !v.length)){ return '<span class="mut">—</span>'; }
+  if(typeof v === 'string' && v.indexOf('data:image/') === 0){ return '<img class="sig" src="'+esc(v)+'" alt="siyati">'; }
+  if(v && typeof v === 'object' && !Array.isArray(v) && v.path){
+    return '<button class="chip" data-fichye="'+esc(v.path)+'">Gade fichye a ↗</button> <span class="mut">'+esc(v.non||'')+'</span>';
+  }
+  if(f.type === 'group' && Array.isArray(v)){
+    var cols = (f.fields || []).map(function(c){ return c; });
+    return '<div class="scroll"><table class="mini"><tr>'+cols.map(function(c){ return '<th>'+esc(c.label||c.key)+'</th>'; }).join('')+'</tr>'
+      + v.map(function(row){ return '<tr>'+cols.map(function(c){ return '<td>'+esc(row[c.key] == null ? '' : row[c.key])+'</td>'; }).join('')+'</tr>'; }).join('')+'</table></div>';
+  }
+  if(slug === 'manyel-kiz' && key === 'detay'){
+    try{ var o = JSON.parse(v); return Object.keys(o).map(function(q){ return esc(q)+': '+(o[q] ? '<b>'+o[q]+' move</b>' : 'premye kou'); }).join(' · '); }catch(e){}
+  }
+  if(Array.isArray(v)){ return esc(v.join(', ')); }
+  return esc(String(v)).replace(/\n/g, '<br>');
+}
+
+// --- approvals
+function jesyonApw(){
+  wait();
+  api('/apwobasyon').then(function(d){ APW = d; drawApw(); }).catch(oops);
+}
+function money(it){
+  var out = [];
+  it.fields.forEach(function(f){
+    var v = it.repons[f.key];
+    if((f.type === 'currency') && v != null && v !== ''){ out.push(esc(f.label)+': <b>'+Number(v).toLocaleString('fr-FR')+'</b>'); }
+  });
+  return out.slice(0, 4).join('<br>');
+}
+function chain(it){
+  return '<ol class="chenn">'+it.chenn.map(function(s){
+    var c = s.desizyon === 'apwouve' ? '✓' : s.desizyon === 'refize' ? '✗' : '…';
+    return '<li class="'+s.desizyon+'">'+c+' '+esc(s.tit || s.wol)+(s.non ? ' · '+esc(s.non) : '')+(s.fet_le ? ' · '+dt(s.fet_le) : '')+(s.not_yo ? '<br><i>'+esc(s.not_yo)+'</i>' : '')+'</li>';
+  }).join('')+'</ol>';
+}
+function drawApw(){
+  var d = APW, h = jbar('Apwobasyon');
+  h += '<h2>K ap tann ('+d.tann.length+')</h2>';
+  h += d.tann.length ? '<div class="list">'+d.tann.map(function(it){
+    return '<div class="card"><div class="t"><b>'+esc(it.fom_tit)+'</b> '+(it.referans ? '<span class="tag bouyon">'+esc(it.referans)+'</span>' : '')+'</div>'
+      + '<div class="d">'+dt(it.created_at)+' · <a href="#jesyon/r/'+it.fom_slug+'/'+it.repons_id+'">wè tout repons lan</a></div>'
+      + '<p>'+money(it)+'</p>' + chain(it)
+      + (it.mwen_ka_siyen ? '<button class="chip" data-siyen="'+it.repons_id+'">Siyen etap sa a: '+esc(it.kounye.tit || it.kounye.wol)+'</button>'
+                         : '<p class="mut">'+esc(it.poukisa_non || '')+'</p>')
+      + '<div id="sp-'+it.repons_id+'"></div></div>';
+  }).join('')+'</div>' : '<p class="lead">Anyen p ap tann.</p>';
+  h += '<h2>Deja deside</h2>' + (d.fini.length ? '<div class="list">'+d.fini.map(function(it){
+    return '<div class="card"><div class="t"><b>'+esc(it.fom_tit)+'</b> '+(it.referans ? '<span class="tag bouyon">'+esc(it.referans)+'</span>' : '')+' <span class="tag '+(it.eta==='apwouve'?'bouyon':'vini')+'">'+esc(it.eta)+'</span></div>'
+      + '<div class="d">'+dt(it.created_at)+'</div>'+chain(it)+'</div>';
+  }).join('')+'</div>' : '<p class="lead">Poko gen anyen.</p>');
+  main.innerHTML = h;
+  Array.prototype.forEach.call(main.querySelectorAll('[data-siyen]'), function(b){
+    b.onclick = function(){ signPanel(b.getAttribute('data-siyen')); b.remove(); };
+  });
+}
+function signPanel(id){
+  var box = document.getElementById('sp-'+id);
+  box.innerHTML = '<div class="sign">'
+    + '<label><input type="radio" name="dz-'+id+'" value="apwouve" checked> Apwouve</label> '
+    + '<label><input type="radio" name="dz-'+id+'" value="refize"> Refize</label>'
+    + '<input class="in" id="nn-'+id+'" value="'+esc(MWEN.non)+'" placeholder="Non w">'
+    + '<textarea class="in" id="nt-'+id+'" rows="2" placeholder="Nòt (si w vle)"></textarea>'
+    + '<canvas class="pad" id="pd-'+id+'"></canvas><div class="mut">Siyen ak dwèt ou nan bwat la · <a href="#" id="cl-'+id+'">efase</a></div>'
+    + '<button class="chip go2" id="ok-'+id+'">Voye siyati a</button><p id="er-'+id+'" class="mut"></p></div>';
+  var cv = document.getElementById('pd-'+id), cx = cv.getContext('2d'), drew = false, down = false;
+  function fit(){ var r = cv.getBoundingClientRect(); cv.width = r.width * 2; cv.height = r.height * 2; cx.scale(2, 2); cx.lineWidth = 2.2; cx.lineCap = 'round'; cx.strokeStyle = '#0a0a0a'; }
+  fit();
+  function pt(e){ var r = cv.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
+  cv.addEventListener('pointerdown', function(e){ down = true; var p = pt(e); cx.beginPath(); cx.moveTo(p.x, p.y); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', function(e){ if(!down){ return; } var p = pt(e); cx.lineTo(p.x, p.y); cx.stroke(); drew = true; });
+  cv.addEventListener('pointerup', function(){ down = false; });
+  document.getElementById('cl-'+id).onclick = function(e){ e.preventDefault(); cx.clearRect(0, 0, cv.width, cv.height); drew = false; };
+  document.getElementById('ok-'+id).onclick = function(){
+    var er = document.getElementById('er-'+id);
+    if(!drew){ er.textContent = 'Siyen anvan ou voye.'; return; }
+    var dz = (box.querySelector('input[name="dz-'+id+'"]:checked') || {}).value;
+    this.disabled = true; er.textContent = 'Ap voye…';
+    api('/apwobasyon/'+id, {method:'POST', body:{desizyon: dz, non: document.getElementById('nn-'+id).value,
+      not_yo: document.getElementById('nt-'+id).value, siyati: cv.toDataURL('image/png')}})
+      .then(function(){ FOMS = null; REZ = {}; jesyonApw(); })
+      .catch(function(e){ er.textContent = e.message; document.getElementById('ok-'+id).disabled = false; });
+  };
+}
+
+function jesyonRoute(h){
+  if(!jesyonOk()){ location.hash = ''; return false; }
+  var p = h.split('/');
+  if(h === 'jesyon'){ jesyonHome(); }
+  else if(p[1] === 'rezilta'){ jesyonRezilta(); }
+  else if(p[1] === 'fom' && p[2]){ jesyonFom(p[2]); }
+  else if(p[1] === 'r' && p[2] && p[3]){ jesyonRepons(p[2], p[3]); }
+  else if(p[1] === 'apwobasyon'){ jesyonApw(); }
+  else { jesyonHome(); }
+  return true;
+}
+
 function render(){
   document.body.classList.remove('inline');
   var h = location.hash.replace(/^#/, '');
   var w = get();
+  if(h.indexOf('jesyon') === 0 && jesyonRoute(h)){ return; }
   if(h.indexOf('ouvri/') === 0){ return ouvri(h.slice(6)); }
   PREV = h;
   if(h.indexOf('kat/') === 0){ return kat(h.slice(4)); }
@@ -240,6 +541,7 @@ function render(){
 document.getElementById('home').onclick = function(e){ e.preventDefault(); location.hash=''; render(); };
 window.addEventListener('hashchange', render);
 render();
+jesyonBoot().then(function(){ if(KLE){ render(); } });
 })();
 </script>
 </body>
