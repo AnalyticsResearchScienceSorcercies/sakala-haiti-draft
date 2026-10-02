@@ -1,0 +1,1890 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Konkret — Team</title>
+<style>
+/* Admin is English. Forms the field sees stay Kreyòl. */
+:root{--ink:#12100e;--paper:#fbf9f5;--line:#d9d2c6;--ok:#1f6f3d;--bad:#8a1c1c;
+ --warn:#7a5610;--muted:#6b645c;--card:#fff;--head:#efeae0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+ font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:20px 14px 80px}
+.wrap{max-width:1000px;margin:0 auto}
+a{color:inherit}
+h1{font-size:22px;margin:0 0 2px}
+h3{font-size:15px;margin:0 0 10px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 22px}
+/* The bar already owns the page's h1. This is the screen's name, not a second
+   top-level heading. */
+.pgt{flex:1;font-size:19px;font-weight:700;margin:0;text-transform:none;
+ letter-spacing:0;border:0;padding:0}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:26px 0 10px;
+ padding-bottom:6px;border-bottom:2px solid var(--ink)}
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;
+ padding-bottom:12px;border-bottom:3px solid var(--ink)}
+.bar h1{flex:1 1 auto;font-size:20px}
+.who{font-size:13px;color:var(--muted)}
+.lnk{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;
+ background:0;border:0;padding:0;font-family:inherit}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.mod{display:block;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);
+ border-radius:9px;padding:16px;cursor:pointer;font:inherit;color:inherit}
+.mod:hover{border-color:var(--ink)}
+.mod .t{font-weight:700;font-size:16px;margin-bottom:3px}
+.mod .d{color:var(--muted);font-size:13px}
+.mod[disabled]{opacity:.5;cursor:not-allowed}
+.mod[disabled]:hover{border-color:var(--line)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.card .n{font-size:30px;font-weight:800;line-height:1.1}
+.card .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);
+ border-radius:8px;overflow:hidden;font-size:14px}
+th{background:var(--head);text-align:left;padding:9px 10px;font-size:12px;
+ text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.pass{color:var(--ok);font-weight:700}.fail{color:var(--bad);font-weight:700}
+.meter{height:8px;background:#e6dfd2;border-radius:4px;overflow:hidden;margin-top:5px}
+.meter span{display:block;height:100%;background:var(--bad)}
+.scroll{overflow-x:auto}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:34px;
+ text-align:center;color:var(--muted)}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--muted);
+ white-space:nowrap}
+.pill.live{border-color:var(--ok);color:var(--ok);font-weight:700}
+.pill.bouyon{border-color:var(--warn);color:var(--warn);font-weight:700}
+.pill.feme{opacity:.7}
+/* Not a state a language is in ... a language that does not exist. */
+.pill.gap{border-color:var(--bad);color:var(--bad);font-weight:700}
+
+label{display:block;font-weight:600;font-size:13px;margin:0 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;
+ font-size:15px;font-family:inherit;background:var(--card);color:var(--ink)}
+textarea{resize:vertical;min-height:70px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.row>div{flex:1 1 190px}
+.row.tight>div{flex:0 0 auto}
+.inline{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
+.inline input{width:17px;height:17px;accent-color:var(--ink);margin:0}
+
+button.go{padding:11px 18px;background:var(--ink);color:var(--paper);border:0;border-radius:7px;
+ font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+/* A control looks like a control whatever tag it is. Half these are <a>
+   (they open a new tab) and one is a <span> (nothing to open yet); scoping
+   this to button.alt left the three most-used actions on the lessons screen
+   looking like plain text next to a bordered Edit nobody clicks. */
+.alt{display:inline-flex;align-items:center;justify-content:center;
+ padding:9px 14px;background:var(--card);color:var(--ink);border:1px solid var(--line);
+ border-radius:7px;font-size:14px;font-weight:600;line-height:1.2;cursor:pointer;
+ font-family:inherit;text-decoration:none}
+.alt:not(.off):not([disabled]):hover{border-color:var(--ink)}
+.alt.file{padding:4px 9px;font-size:12px}
+.alt.danger{color:var(--bad);border-color:var(--bad)}
+.alt.off,button[disabled]{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* A select in a control row is one control among several, not a form field.
+   The global width:100% made it claim the whole line and knocked the button
+   it belongs to onto the next one. Fixed width, not shrink-to-fit, so the
+   button does not slide sideways every time the choice changes. */
+.acts select{width:auto;min-width:170px;max-width:100%;padding:7px 10px;font-size:14px}
+
+.sec{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px;margin-bottom:14px}
+.sechead{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.sechead .n{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);flex:1}
+.fld{border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:6px;
+ padding:12px;margin-bottom:10px;background:var(--paper)}
+.fldhead{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.fldhead .n{font-size:12px;color:var(--muted);flex:1}
+.mini{font-size:12px;color:var(--muted);margin:-6px 0 10px}
+
+/* ---- approvals ---- */
+.item{background:var(--card);border:1px solid var(--line);border-radius:9px;
+ padding:15px;margin-bottom:12px}
+.item.mine{border-left:4px solid var(--ink)}
+.item h3{margin:0 0 3px;font-size:16px}
+.item .meta{color:var(--muted);font-size:13px;margin:0 0 10px}
+.facts{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 12px}
+.facts div{font-size:13px}
+.facts .k{color:var(--muted);display:block;font-size:11px;
+ text-transform:uppercase;letter-spacing:.04em}
+.facts .v{font-weight:700;font-size:15px}
+.chain{display:flex;gap:0;flex-wrap:wrap;margin:0 0 12px}
+.step{display:flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--line);
+ font-size:13px;background:var(--paper)}
+.step:first-child{border-radius:6px 0 0 6px}
+.step:last-child{border-radius:0 6px 6px 0}
+.step+.step{border-left:0}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.step.ok .dot{background:var(--ok)}
+.step.no .dot{background:var(--bad)}
+.step.now{border-color:var(--ink);font-weight:700;background:var(--card)}
+.step.now .dot{background:var(--warn)}
+.blocked{color:var(--muted);font-size:13px;font-style:italic}
+.sigpad{border:1px solid var(--line);border-radius:6px;background:var(--card);overflow:hidden}
+.sigpad.drawn{border-color:var(--ink)}
+canvas.pad{display:block;width:100%;height:140px;touch-action:none;cursor:crosshair}
+.padbar{display:flex;align-items:center;gap:10px;padding:7px 10px;
+ border-top:1px solid var(--line);background:var(--paper)}
+.padbar .lbl{flex:1;font-size:12px;color:var(--muted)}
+.kv{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:16px}
+.kv th{width:34%;text-align:left;padding:7px 10px 7px 0;font-weight:600;
+ background:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--muted);
+ vertical-align:top}
+.kv td{padding:7px 0;border-top:1px solid var(--line)}
+.kv th{border-top:1px solid var(--line)}
+.sigimg{max-width:220px;border:1px solid var(--line);border-radius:4px;background:#fff}
+
+.note{border-radius:6px;padding:12px;margin:0 0 16px;font-size:14px;font-weight:600}
+.note.err{background:#fdecec;border:1px solid var(--bad);color:var(--bad)}
+.note.ok{background:#e9f5ed;border:1px solid var(--ok);color:var(--ok)}
+.note.warn{background:#fff6e0;border:1px solid var(--warn);color:var(--warn)}
+.sticky{position:sticky;bottom:0;background:var(--paper);border-top:1px solid var(--line);
+ padding:12px 0;margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:13px}
+
+/* ---- lessons, picked ------------------------------------------------
+   One send is one thing you teach, and it exists in as many languages as it
+   has been translated into. Two dropdowns, module then language, and one
+   panel for whatever they land on. The list this replaced showed every
+   module at once, which answered "what is blocking" for whoever built the
+   corpus and asked everybody else to read eight cards to reach one lesson. */
+.picks{margin-bottom:16px}
+.pane{background:var(--card);border:1px solid var(--line);border-radius:9px;
+ padding:2px 15px 15px}
+.pane .note{margin-top:12px}
+.addlang{padding:14px 0 2px}
+
+/* one language of one module */
+.var{padding:14px 0;border-bottom:1px solid var(--line)}
+.var:last-child{border-bottom:0;padding-bottom:2px}
+.var .vh{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:5px}
+.var .lg{flex:none;font-size:11px;font-weight:800;letter-spacing:.07em;
+ border:1px solid var(--ink);border-radius:4px;padding:2px 6px}
+.var .vt{font-weight:700;font-size:14.5px}
+/* The separator hangs off the end of the fact before it, never stands on its
+   own -- a free-standing dot in a wrapping flex row lands at the start of the
+   next line, which reads as a bullet nobody wrote. Each fact is nowrap so
+   "gate send1-gate" cannot split across two lines either. */
+.var .vm{color:var(--muted);font-size:12.5px;margin:0 0 10px;
+ display:flex;gap:0 7px;flex-wrap:wrap;align-items:baseline}
+.var .vm .f{white-space:nowrap}
+.var .vm .f:not(:last-child)::after{content:"·";margin-left:7px;opacity:.5}
+/* Orange means it blocks. A draft that has not been filmed yet is a to-do,
+   and painting every to-do the same colour as a real hole spends the signal. */
+.var .vm .no{color:var(--warn);font-weight:700}
+.var .acts .alt{font-size:13px;padding:7px 12px}
+/* The one language that can actually go out. Everything else is a draft by
+   rule, not by accident, so the eye should find KR first. */
+.var.kr{border-left:3px solid var(--ok);padding-left:12px;margin-left:-15px;
+ padding-right:0;border-bottom-left-radius:0}
+.addlang{padding:12px 0 2px}
+
+/* The editor's two halves. Same blocks, two deliveries, one row ... so they
+   are two tabs of one form and not two screens, and Save writes both. */
+.tabs{display:flex;gap:0;margin:18px 0 14px;border-bottom:2px solid var(--ink)}
+.tabs button{padding:10px 18px;border:1px solid var(--line);border-bottom:0;
+ background:var(--paper);color:var(--muted);font:inherit;font-weight:700;
+ font-size:14px;cursor:pointer;border-radius:8px 8px 0 0;margin-bottom:-2px}
+.tabs button + button{margin-left:6px}
+.tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tabs .ct{font-weight:400;opacity:.75;font-variant-numeric:tabular-nums}
+.tabnote{color:var(--muted);font-size:13px;margin:-4px 0 14px}
+
+form.login{max-width:330px;margin:60px auto;background:var(--card);border:1px solid var(--line);
+ border-radius:10px;padding:22px}
+form.login input{margin-bottom:13px}
+form.login button{width:100%}
+[hidden]{display:none!important}
+@media(prefers-color-scheme:dark){
+ /* The status colours carry most of the meaning on this screen, and the
+    daylight versions land at 2.6:1 on a dark card. Lift all three. */
+ :root{--ink:#f2ede4;--paper:#16140f;--line:#3d3830;--muted:#a49b8e;--card:#1f1c16;--head:#2b271f;
+  --ok:#5fbf83;--warn:#e0a83c;--bad:#f08a8a}
+ .fld{background:#16140f}
+ button.go{background:#f2ede4;color:#16140f}
+ .note.err{background:#2e1a1a}.note.ok{background:#16261b}.note.warn{background:#2b2312}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<form class="login" id="login">
+  <h1>Konkret — Team</h1>
+  <p class="sub">Internal area</p>
+  <p class="note err" id="lerr" hidden></p>
+  <label for="u">Username</label>
+  <input type="text" id="u" autocomplete="username" required>
+  <label for="p">Password</label>
+  <input type="password" id="p" autocomplete="current-password" required>
+  <button class="go" type="submit">Sign in</button>
+</form>
+
+<div id="app" hidden></div>
+
+</div>
+
+<script>
+(function () {
+  var API  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/ekip";
+  var APW  = "https://itnmcxemdpauemsnesln.supabase.co/functions/v1/apwobasyon";
+  var FORM = "https://konkret-haiti.com/f/?s=";
+  var LESON = "https://konkret-haiti.com/l/?s=";
+  var login = document.getElementById("login");
+  var lerr  = document.getElementById("lerr");
+  var app   = document.getElementById("app");
+  var TOKEN = null, ME = null, DRAFT = null, APWDATA = null;
+
+  // Ordered by how often the 25 Konkret Drive form specs actually use them.
+  var TYPES = [
+    ["text","Short text"], ["textarea","Long text"], ["number","Number"],
+    ["date","Date"], ["time","Time"], ["tel","Phone"], ["email","Email"],
+    ["currency","Money (HTG)"], ["rating","Rating 1-5"], ["signature","Signature"],
+    ["file","File / photo"],
+    ["select","Dropdown"], ["radio","Choose one"], ["checkbox","Choose many"]
+  ];
+  var CHOICE = { select:1, radio:1, checkbox:1 };
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function api(route, opts) {
+    opts = opts || {};
+    var h = { Authorization: "Basic " + TOKEN };
+    if (opts.body) h["Content-Type"] = "application/json";
+    var base = opts.base || API;
+    return fetch(base + (route ? "/" + route : ""), {
+      method: opts.method || "GET", headers: h,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (r) {
+      if (r.status === 401) throw new Error("Wrong username or password.");
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j.error || "Something went wrong.");
+        return j;
+      });
+    });
+  }
+
+  // ---- files -------------------------------------------------------------
+  // A file answer is {path, non, kalite, gwose} — a receipt, not the bytes.
+  // The bucket is private, so every view resolves a path into a 120-second
+  // signed URL through the ekip function. The browser holds no storage key,
+  // and a URL that leaks is dead in two minutes.
+  function isFile(v) {
+    return !!v && typeof v === "object" && !Array.isArray(v) && !!v.path;
+  }
+
+  // POST with the path in the body, never GET with the path in the URL.
+  // Learned the hard way: a path ending in ".jpg" made Cloudflare treat the
+  // route as a static asset, cache it, and serve one user's signed URL to
+  // another with the function never running and nothing logged.
+  function fileUrl(path) {
+    return api("fichye", { base: API, method: "POST", body: { path: path } });
+  }
+
+  function fileChip(v) {
+    var img = /^image\//.test(v.kalite || "");
+    return '<button class="alt file" data-file="' + esc(v.path) + '">' +
+      (img ? "View photo" : "Open PDF") + "</button>" +
+      (v.non ? '<div style="color:var(--muted);font-size:12px;margin-top:3px">' +
+        esc(v.non) + "</div>" : "");
+  }
+
+  // Open the tab synchronously or the popup blocker eats it, then point it at
+  // the signed URL once it arrives.
+  function wireFileLinks() {
+    Array.prototype.forEach.call(app.querySelectorAll("[data-file]"), function (b) {
+      b.onclick = function () {
+        var w = window.open("", "_blank");
+        fileUrl(b.getAttribute("data-file")).then(function (j) {
+          if (w) w.location = j.url; else window.location = j.url;
+        }).catch(function (e) {
+          if (w) w.close();
+          note("err", esc(e.message));
+        });
+      };
+    });
+  }
+
+  // One request per image, and only ever on a single-response screen. Doing
+  // this on a 500-row table would be 500 round trips and hundreds of MB.
+  function wireThumbs() {
+    Array.prototype.forEach.call(app.querySelectorAll("[data-thumb]"), function (el) {
+      fileUrl(el.getAttribute("data-thumb")).then(function (j) {
+        var im = new Image();
+        im.className = "sigimg";
+        im.alt = "uploaded file";
+        im.onerror = function () { el.textContent = "(cannot preview this format)"; };
+        im.onload = function () { el.innerHTML = ""; el.appendChild(im); };
+        im.src = j.url;
+      }).catch(function () { el.textContent = "(could not load)"; });
+    });
+  }
+
+  function chrome(inner, back) {
+    return '<div class="bar"><h1>Konkret — Team</h1>' +
+      '<span class="who">' + esc(ME.user) + "</span>" +
+      (back ? '<button class="lnk" id="back">← Back</button>' : "") +
+      '<button class="lnk" id="out">Sign out</button></div>' + inner;
+  }
+  function wire() {
+    var o = document.getElementById("out");
+    if (o) o.onclick = function(){ sessionStorage.removeItem("ekip"); location.hash=""; location.reload(); };
+    var b = document.getElementById("back");
+    if (b) b.onclick = function(){ history.length > 1 ? history.back() : (location.hash = ""); };
+  }
+  function note(cls, msg) {
+    var n = document.getElementById("note");
+    if (!n) return;
+    n.className = "note " + cls; n.innerHTML = msg; n.hidden = false;
+    window.scrollTo(0,0);
+  }
+
+  // =================================================== home
+  function viewHome() {
+    var mods = ME.moduleyo.map(function (m) {
+      return '<button class="mod" data-go="' + m.kle + '"' + (m.pare?"":" disabled") + ">" +
+        '<div class="t">' + esc(m.tit) + "</div><div class=\"d\">" + esc(m.deskripsyon) + "</div>" +
+        (m.pare ? "" : '<div style="margin-top:8px"><span class="pill">not built yet</span></div>') +
+        "</button>";
+    }).join("");
+    app.innerHTML = chrome('<p class="sub">Pick a module</p><div class="grid">' + mods + "</div>", false);
+    wire();
+    Array.prototype.forEach.call(app.querySelectorAll("[data-go]"), function (b) {
+      b.onclick = function(){ location.hash = b.getAttribute("data-go"); };
+    });
+  }
+
+  // =================================================== forms list
+  function viewFomList(d) {
+    var rows = d.fom.map(function (f) {
+      return "<tr><td><strong>" + esc(f.tit) + "</strong>" +
+        (f.deskripsyon ? '<div style="color:var(--muted);font-size:13px">' + esc(f.deskripsyon) + "</div>" : "") +
+        '<div style="margin-top:4px"><code>' + esc(f.slug) + "</code></div></td>" +
+        '<td><span class="pill ' + esc(f.eta) + '">' + ({bouyon:"DRAFT",live:"LIVE",feme:"CLOSED"}[f.eta]||f.eta) + "</span></td>" +
+        "<td>" + f.seksyon + " / " + f.chan + "</td>" +
+        "<td><strong>" + f.repons + "</strong></td>" +
+        '<td class="acts">' +
+          '<button class="alt" data-edit="' + esc(f.slug) + '">Edit</button>' +
+          '<button class="alt" data-resp="' + esc(f.slug) + '">Responses</button>' +
+          '<a class="alt" style="text-decoration:none" href="' + FORM + esc(f.slug) + '" target="_blank" rel="noopener">Open</a>' +
+        "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<div class="acts" style="margin-bottom:16px"><h1 style="flex:1;font-size:19px;margin:0">Forms</h1>' +
+      '<button class="go" id="new">+ New form</button></div>' +
+      (d.fom.length
+        ? '<div class="scroll"><table><thead><tr><th>Form</th><th>Status</th><th>Sec / fields</th>' +
+          "<th>Responses</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div>"
+        : '<div class="empty">No forms yet. Create the first one.</div>'), true);
+    wire();
+    document.getElementById("new").onclick = function(){ location.hash = "fom/new"; };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-edit]"), function (b) {
+      b.onclick = function(){ location.hash = "fom/" + b.getAttribute("data-edit"); };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-resp]"), function (b) {
+      b.onclick = function(){ location.hash = "repons/" + b.getAttribute("data-resp"); };
+    });
+  }
+
+  // =================================================== the builder
+  function blankField(){ return { key:"", type:"text", label:"", required:false, options:[] }; }
+  function blankSection(){ return { legend:"", hint:"", fields:[blankField()] }; }
+
+  function slugify(s) {
+    return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+      .replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,40) || "";
+  }
+  function optsToText(o) {
+    return (o||[]).map(function(x){ return x.v + "|" + x.t; }).join("\n");
+  }
+  // One option per line. "value|text", or just text and we assign a,b,c…
+  function textToOpts(t) {
+    var letters = "abcdefghijklmnopqrstuvwxyz";
+    return String(t||"").split("\n").map(function(l){ return l.trim(); }).filter(Boolean)
+      .map(function (l, i) {
+        var p = l.indexOf("|");
+        if (p > 0) return { v: l.slice(0,p).trim(), t: l.slice(p+1).trim() };
+        return { v: letters[i] || ("o" + i), t: l };
+      });
+  }
+
+  function viewBuilder() {
+    // Adding or reordering a field re-renders the whole editor. Without this
+    // the page jumps to the top every time and you lose your place.
+    var keepScroll = window.scrollY;
+    var d = DRAFT;
+    var s = d.schema;
+    var scored = 0;
+    s.sections.forEach(function(sec){ sec.fields.forEach(function(f){ if (f.answer !== undefined) scored++; }); });
+
+    var secHtml = s.sections.map(function (sec, si) {
+      var fields = sec.fields.map(function (f, fi) {
+        var isChoice = !!CHOICE[f.type];
+        var ans = "";
+        if (isChoice) {
+          if (f.type === "checkbox") {
+            ans = '<div style="margin-bottom:12px"><label>Correct answers (leave all unticked for no scoring)</label>' +
+              (f.options||[]).map(function (o) {
+                var on = Array.isArray(f.answer) && f.answer.indexOf(o.v) >= 0;
+                return '<label class="inline" style="margin-bottom:5px"><input type="checkbox" data-ans="' +
+                  si + "," + fi + '" value="' + esc(o.v) + '"' + (on?" checked":"") + "><span>" +
+                  esc(o.t) + "</span></label>";
+              }).join("") + "</div>";
+          } else {
+            ans = '<div style="margin-bottom:12px"><label>Correct answer</label><select data-ans="' + si + "," + fi + '">' +
+              '<option value="">— no scoring —</option>' +
+              (f.options||[]).map(function (o) {
+                return '<option value="' + esc(o.v) + '"' + (f.answer === o.v ? " selected":"") + ">" +
+                  esc(o.t) + "</option>"; }).join("") + "</select></div>";
+          }
+        }
+        return '<div class="fld">' +
+          '<div class="fldhead"><span class="n">Field ' + (fi+1) + "</span>" +
+            '<button class="alt" data-fup="' + si + "," + fi + '"' + (fi===0?" disabled":"") + ">↑</button>" +
+            '<button class="alt" data-fdn="' + si + "," + fi + '"' + (fi===sec.fields.length-1?" disabled":"") + ">↓</button>" +
+            '<button class="alt danger" data-fdel="' + si + "," + fi + '">Remove</button></div>' +
+          '<div class="row"><div><label>Type</label><select data-t="' + si + "," + fi + '">' +
+            TYPES.map(function(t){ return '<option value="'+t[0]+'"'+(f.type===t[0]?" selected":"")+">"+t[1]+"</option>"; }).join("") +
+          "</select></div>" +
+          '<div><label>Label</label><input data-l="' + si + "," + fi + '" value="' + esc(f.label) + '"></div>' +
+          '<div><label>Key (column name)</label><input data-k="' + si + "," + fi + '" value="' + esc(f.key) + '"></div>' +
+          "</div>" +
+          '<label class="inline" style="margin-bottom:12px"><input type="checkbox" data-r="' + si + "," + fi + '"' +
+            (f.required?" checked":"") + "><span>Required</span></label>" +
+          (f.type === "rating"
+            ? '<div class="row"><div><label>Low</label><input type="number" data-min="' + si + "," + fi +
+                '" value="' + (f.min == null ? 1 : esc(f.min)) + '"></div>' +
+              '<div><label>High</label><input type="number" data-max="' + si + "," + fi +
+                '" value="' + (f.max == null ? 5 : esc(f.max)) + '"></div>' +
+              '<div><label>Label at the low end</label><input data-low="' + si + "," + fi +
+                '" value="' + esc(f.low||"") + '"></div>' +
+              '<div><label>Label at the high end</label><input data-high="' + si + "," + fi +
+                '" value="' + esc(f.high||"") + '"></div></div>'
+            : "") +
+          (f.type === "currency"
+            ? '<div class="row"><div><label>Currency shown</label><input data-cur="' + si + "," + fi +
+                '" value="' + esc(f.currency||"HTG") + '"></div></div>'
+            : "") +
+          (f.type === "signature"
+            ? '<p class="mini">Drawn with a finger on the phone. Stored as an image on the response.</p>'
+            : "") +
+          (f.type === "file"
+            ? '<div class="row"><div><label>What may be uploaded</label>' +
+                '<select data-acc="' + si + "," + fi + '">' +
+                ['<option value="photo">Photos only</option>',
+                 '<option value="pdf">PDF only</option>',
+                 '<option value="any">Photos or PDF</option>'].join("")
+                  .replace('value="' + (f.accept || "any") + '"',
+                           'value="' + (f.accept || "any") + '" selected') +
+                "</select></div>" +
+              '<div><label>Size limit (MB, max 8)</label>' +
+                '<input type="number" min="1" max="8" data-mb="' + si + "," + fi +
+                '" value="' + (f.max_mb == null ? 5 : esc(f.max_mb)) + '"></div></div>' +
+              '<label class="inline" style="margin-bottom:12px"><input type="checkbox" data-cam="' +
+                si + "," + fi + '"' + (f.camera ? " checked" : "") +
+                "><span>Open the camera directly (no gallery)</span></label>" +
+              '<p class="mini">Uploaded straight from the phone into private storage. ' +
+                'Photos are shrunk to 1600px before sending, so a 4 MB phone photo goes over ' +
+                'the wire at about 300 KB. Nothing is stored on the phone.</p>' +
+              '<p class="mini" style="color:var(--bad)"><strong>Do not use this to collect a ' +
+                'photo of a national ID card. Identity documents are checked in person at ' +
+                'enrolment and are not stored here. Receipts and documents only.</strong></p>'
+            : "") +
+          (isChoice
+            ? '<div style="margin-bottom:12px"><label>Options — one per line</label>' +
+              '<p class="mini">Plain text gets values a, b, c… Use <code>value|text</code> to set your own.</p>' +
+              '<textarea data-o="' + si + "," + fi + '" rows="' + Math.max(3,(f.options||[]).length) + '">' +
+              esc(optsToText(f.options)) + "</textarea></div>" + ans
+            : "") +
+        "</div>";
+      }).join("");
+
+      return '<div class="sec"><div class="sechead"><span class="n">Section ' + (si+1) + "</span>" +
+        '<button class="alt" data-sup="' + si + '"' + (si===0?" disabled":"") + ">↑</button>" +
+        '<button class="alt" data-sdn="' + si + '"' + (si===s.sections.length-1?" disabled":"") + ">↓</button>" +
+        '<button class="alt danger" data-sdel="' + si + '">Remove section</button></div>' +
+        '<div class="row"><div><label>Heading</label><input data-sl="' + si + '" value="' + esc(sec.legend||"") + '"></div>' +
+        '<div><label>Hint (optional)</label><input data-sh="' + si + '" value="' + esc(sec.hint||"") + '"></div></div>' +
+        fields +
+        '<button class="alt" data-fadd="' + si + '">+ Add field</button></div>';
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + (d.isNew ? "New form" : "Edit form") + "</h1>" +
+      '<p class="sub">' + (d.isNew ? "Nothing is saved until you press Save." :
+        'Live at <code>' + FORM + esc(d.slug) + "</code>") + "</p>" +
+
+      '<div class="sec"><h3>Basics</h3>' +
+        '<div class="row"><div><label>Title (shown to the person filling it in)</label>' +
+          '<input id="m-tit" value="' + esc(d.tit) + '"></div>' +
+        '<div><label>URL slug</label><input id="m-slug" value="' + esc(d.slug) + '">' +
+          '<p class="mini">konkret-haiti.com/f/?s=<span id="slugecho">' + esc(d.slug) + "</span></p></div></div>" +
+        '<div class="row"><div><label>Internal note (team only)</label>' +
+          '<input id="m-desc" value="' + esc(d.deskripsyon||"") + '"></div>' +
+        '<div><label>Status</label><select id="m-eta">' +
+          ['<option value="bouyon">Draft — nobody can submit</option>',
+           '<option value="live">Live — accepting responses</option>',
+           '<option value="feme">Closed — keeps its data</option>'].join("").replace('value="'+d.eta+'"','value="'+d.eta+'" selected') +
+        "</select></div></div>" +
+        '<div class="row"><div><label>Subtitle under the title (optional)</label>' +
+          '<input id="m-sub" value="' + esc(s.subtitle||"") + '"></div>' +
+        '<div><label>Submit button text</label><input id="m-btn" value="' + esc(s.submit_label||"Voye") + '"></div></div>' +
+      "</div>" +
+
+      "<h2>Questions</h2>" + secHtml +
+      '<button class="alt" id="secadd">+ Add section</button>' +
+
+      '<h2>Scoring</h2><div class="sec">' +
+        (scored
+          ? '<div class="row"><div><label>Pass mark (out of ' + scored + ' scored question' + (scored===1?"":"s") + ')</label>' +
+            '<input type="number" id="m-pass" min="0" max="' + scored + '" value="' +
+              (s.pass_mark == null ? "" : s.pass_mark) + '"><p class="mini">Leave empty for no scoring.</p></div></div>' +
+            '<div class="row"><div><label>Message when they pass</label><input id="m-passmsg" value="' + esc(s.pass_message||"") + '"></div>' +
+            '<div><label>Message when they fail</label><input id="m-failmsg" value="' + esc(s.fail_message||"") + '"></div></div>'
+          : '<p class="mini" style="margin:0">No question has a correct answer set, so this form is not scored. ' +
+            "Set a correct answer on a Choose one / Choose many question to enable scoring.</p>") +
+        '<div class="row" style="margin-top:12px"><div><label>Thank-you message (unscored forms)</label>' +
+          '<input id="m-okmsg" value="' + esc(s.success_message||"") + '"></div></div>' +
+      "</div>" +
+
+      '<div class="sticky"><button class="go" id="save">Save</button>' +
+        '<button class="alt" id="cancel">Cancel</button>' +
+        (d.isNew ? "" : '<a class="alt" style="text-decoration:none;margin-left:auto" href="' +
+          FORM + esc(d.slug) + '" target="_blank" rel="noopener">Preview →</a>') +
+      "</div>", true);
+    wire();
+    bindBuilder();
+    if (keepScroll) window.scrollTo(0, keepScroll);
+  }
+
+  function pair(el, at) { return el.getAttribute(at).split(",").map(Number); }
+
+  function bindBuilder() {
+    var s = DRAFT.schema;
+    function on(sel, ev, fn) {
+      Array.prototype.forEach.call(app.querySelectorAll(sel), function (el) { el[ev] = function(){ fn(el); }; });
+    }
+    // meta
+    var slugIn = document.getElementById("m-slug");
+    document.getElementById("m-tit").oninput = function (e) {
+      DRAFT.tit = e.target.value;
+      if (DRAFT.isNew && !DRAFT.slugTouched) {
+        DRAFT.slug = slugify(e.target.value).replace(/_/g,"-");
+        slugIn.value = DRAFT.slug;
+        document.getElementById("slugecho").textContent = DRAFT.slug;
+      }
+    };
+    slugIn.oninput = function (e) {
+      DRAFT.slugTouched = true;
+      DRAFT.slug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"-");
+      e.target.value = DRAFT.slug;
+      document.getElementById("slugecho").textContent = DRAFT.slug;
+    };
+    document.getElementById("m-desc").oninput = function(e){ DRAFT.deskripsyon = e.target.value; };
+    document.getElementById("m-eta").onchange  = function(e){ DRAFT.eta = e.target.value; };
+    document.getElementById("m-sub").oninput   = function(e){ s.subtitle = e.target.value; };
+    document.getElementById("m-btn").oninput   = function(e){ s.submit_label = e.target.value; };
+    var okm = document.getElementById("m-okmsg");
+    if (okm) okm.oninput = function(e){ s.success_message = e.target.value; };
+    var pm = document.getElementById("m-pass");
+    if (pm) pm.oninput = function(e){ s.pass_mark = e.target.value === "" ? undefined : Number(e.target.value); };
+    var pmsg = document.getElementById("m-passmsg");
+    if (pmsg) pmsg.oninput = function(e){ s.pass_message = e.target.value; };
+    var fmsg = document.getElementById("m-failmsg");
+    if (fmsg) fmsg.oninput = function(e){ s.fail_message = e.target.value; };
+
+    // section text
+    on("[data-sl]","oninput",function(el){ s.sections[+el.getAttribute("data-sl")].legend = el.value; });
+    on("[data-sh]","oninput",function(el){ s.sections[+el.getAttribute("data-sh")].hint = el.value; });
+
+    // field text — no re-render on keystroke, or the caret jumps
+    on("[data-l]","oninput",function(el){
+      var p = pair(el,"data-l"), f = s.sections[p[0]].fields[p[1]];
+      f.label = el.value;
+      // Re-derive on every keystroke until someone edits the key by hand.
+      // Guarding on !f.key froze it after the first character.
+      if (!f.keyTouched) {
+        f.key = slugify(el.value);
+        var k = app.querySelector('[data-k="'+p[0]+","+p[1]+'"]');
+        if (k) k.value = f.key;
+      }
+    });
+    on("[data-k]","oninput",function(el){
+      var p = pair(el,"data-k"), f = s.sections[p[0]].fields[p[1]];
+      f.keyTouched = true;
+      f.key = el.value.toLowerCase().replace(/[^a-z0-9_]/g,"_");
+      el.value = f.key;
+    });
+    on("[data-r]","onchange",function(el){
+      var p = pair(el,"data-r"); s.sections[p[0]].fields[p[1]].required = el.checked; });
+    on("[data-o]","oninput",function(el){
+      var p = pair(el,"data-o"); s.sections[p[0]].fields[p[1]].options = textToOpts(el.value); });
+
+    // rating range + end labels, currency unit
+    on("[data-min]","oninput",function(el){
+      var p = pair(el,"data-min"); s.sections[p[0]].fields[p[1]].min = el.value === "" ? undefined : Number(el.value); });
+    on("[data-max]","oninput",function(el){
+      var p = pair(el,"data-max"); s.sections[p[0]].fields[p[1]].max = el.value === "" ? undefined : Number(el.value); });
+    on("[data-low]","oninput",function(el){
+      var p = pair(el,"data-low"); s.sections[p[0]].fields[p[1]].low = el.value; });
+    on("[data-high]","oninput",function(el){
+      var p = pair(el,"data-high"); s.sections[p[0]].fields[p[1]].high = el.value; });
+    on("[data-cur]","oninput",function(el){
+      var p = pair(el,"data-cur"); s.sections[p[0]].fields[p[1]].currency = el.value; });
+
+    // None of these re-render: they do not change the editor's shape, and a
+    // re-render on every keystroke of the MB box would fight the caret.
+    on("[data-acc]","onchange",function(el){
+      var p = pair(el,"data-acc"); s.sections[p[0]].fields[p[1]].accept = el.value; });
+    on("[data-mb]","oninput",function(el){
+      var p = pair(el,"data-mb");
+      s.sections[p[0]].fields[p[1]].max_mb = el.value === "" ? undefined : Number(el.value); });
+    on("[data-cam]","onchange",function(el){
+      var p = pair(el,"data-cam"); s.sections[p[0]].fields[p[1]].camera = el.checked; });
+
+    // these change the shape, so they re-render
+    on("[data-t]","onchange",function(el){
+      var p = pair(el,"data-t"), f = s.sections[p[0]].fields[p[1]];
+      f.type = el.value;
+      if (!CHOICE[f.type]) { f.options = []; delete f.answer; }
+      else if (f.type === "checkbox" && f.answer !== undefined && !Array.isArray(f.answer)) f.answer = [f.answer];
+      else if (f.type !== "checkbox" && Array.isArray(f.answer)) f.answer = f.answer[0];
+      viewBuilder();
+    });
+    on("[data-ans]","onchange",function(el){
+      var p = pair(el,"data-ans"), f = s.sections[p[0]].fields[p[1]];
+      if (f.type === "checkbox") {
+        var picked = [];
+        Array.prototype.forEach.call(app.querySelectorAll('[data-ans="'+p[0]+","+p[1]+'"]'), function (c) {
+          if (c.checked) picked.push(c.value);
+        });
+        if (picked.length) f.answer = picked; else delete f.answer;
+      } else {
+        if (el.value) f.answer = el.value; else delete f.answer;
+      }
+      viewBuilder();
+    });
+
+    on("[data-fadd]","onclick",function(el){
+      s.sections[+el.getAttribute("data-fadd")].fields.push(blankField()); viewBuilder(); });
+    on("[data-fdel]","onclick",function(el){
+      var p = pair(el,"data-fdel"), sec = s.sections[p[0]];
+      if (sec.fields.length === 1) { note("err","A section needs at least one field."); return; }
+      sec.fields.splice(p[1],1); viewBuilder(); });
+    on("[data-fup]","onclick",function(el){
+      var p = pair(el,"data-fup"), a = s.sections[p[0]].fields;
+      a.splice(p[1]-1,0,a.splice(p[1],1)[0]); viewBuilder(); });
+    on("[data-fdn]","onclick",function(el){
+      var p = pair(el,"data-fdn"), a = s.sections[p[0]].fields;
+      a.splice(p[1]+1,0,a.splice(p[1],1)[0]); viewBuilder(); });
+
+    on("[data-sdel]","onclick",function(el){
+      if (s.sections.length === 1) { note("err","A form needs at least one section."); return; }
+      s.sections.splice(+el.getAttribute("data-sdel"),1); viewBuilder(); });
+    on("[data-sup]","onclick",function(el){
+      var i = +el.getAttribute("data-sup");
+      s.sections.splice(i-1,0,s.sections.splice(i,1)[0]); viewBuilder(); });
+    on("[data-sdn]","onclick",function(el){
+      var i = +el.getAttribute("data-sdn");
+      s.sections.splice(i+1,0,s.sections.splice(i,1)[0]); viewBuilder(); });
+
+    document.getElementById("secadd").onclick = function(){ s.sections.push(blankSection()); viewBuilder(); };
+    document.getElementById("cancel").onclick = function(){ location.hash = "fom"; };
+    document.getElementById("save").onclick = save;
+  }
+
+  function save() {
+    var btn = document.getElementById("save");
+    btn.disabled = true; btn.textContent = "Saving…";
+    var d = DRAFT;
+    var clean = JSON.parse(JSON.stringify(d.schema));
+    clean.sections.forEach(function (sec) {
+      if (!sec.hint) delete sec.hint;
+      sec.fields.forEach(function (f) {
+        delete f.keyTouched;
+        if (!f.required) delete f.required;
+        if (!CHOICE[f.type]) delete f.options;
+        // min and max mean three different things depending on type: a
+        // rating's button range, a number's value range, and a GROUP'S ROW
+        // COUNTS. Stripping them for anything that was not a rating wiped a
+        // correct group's row counts on its first save, silently, and the
+        // only thing standing between that and a corrupted schema was
+        // validate() refusing type "group" at all.
+        if (f.type === "rating") { if (!f.low) delete f.low; if (!f.high) delete f.high; }
+        else if (f.type === "group") { delete f.low; delete f.high; }
+        else { delete f.min; delete f.max; delete f.low; delete f.high; }
+        if (f.type !== "currency") delete f.currency;
+        if (f.type !== "file") { delete f.accept; delete f.max_mb; delete f.camera; }
+        else if (!f.camera) delete f.camera;
+      });
+    });
+    if (clean.pass_mark == null) { delete clean.pass_mark; delete clean.pass_message; delete clean.fail_message; }
+
+    var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, eta:d.eta, schema:clean };
+    api(d.isNew ? "fom" : "fom/" + d.originalSlug, { method: d.isNew ? "POST" : "PUT", body: body })
+      .then(function () {
+        sessionStorage.setItem("ekipmsg", "Saved. " +
+          (d.eta === "live" ? "The form is live at " + FORM + d.slug : "Still a draft — nobody can submit yet."));
+        location.hash = "fom";
+        if ((location.hash || "") === "#fom") route();
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.textContent = "Save";
+        note("err", esc(e.message));
+      });
+  }
+
+  // =================================================== responses
+  // Rows submitted before 2026-08-26 hold a count of whole questions
+  // ("3" out of "5"); rows after it hold a percentage out of 100. Both are
+  // shown in their own units rather than converted, because a 3/5 scored by
+  // exact-set matching does not mean the same thing as 60% scored with
+  // partial credit and pretending otherwise would invent a trend.
+  function score(r) {
+    return r.total === 100 ? r.esko + "%" : r.esko + "/" + r.total;
+  }
+
+  // Item analysis. Which question is losing people, worst first. Computed by
+  // the API from the form's own answer keys, so it can never drift from the
+  // live form the way the deleted Send 0 tab did.
+  function itemAnalysis(d) {
+    if (!d.kesyon || !d.kesyon.length || !d.rows.length) return "";
+    var n = d.rows.length;
+    var rows = d.kesyon.map(function (q) {
+      return "<tr><td>" + esc(q.label) +
+        "<div class='meter'><span style='width:" + q.pct + "%'></span></div></td>" +
+        "<td style='text-align:right;white-space:nowrap'><strong>" + q.pct + "%</strong>" +
+        "<br><span style='color:var(--muted);font-size:12px'>" + q.full + " right</span></td>" +
+        "<td style='text-align:right;white-space:nowrap;color:var(--muted);font-size:13px'>" +
+        q.part + " part<br>" + q.zero + " wrong</td></tr>";
+    }).join("");
+    var r = d.rezime;
+    var cards = r
+      ? '<div class="cards">' +
+        '<div class="card"><div class="n">' + r.eskore + '</div><div class="l">Scored</div></div>' +
+        '<div class="card"><div class="n">' + r.mwayèn + '%</div><div class="l">Average</div></div>' +
+        (r.gen_pòt
+          ? '<div class="card"><div class="n">' + r.pase + '</div><div class="l">Passed</div></div>'
+          : '<div class="card"><div class="n">—</div><div class="l">No pass mark</div></div>') +
+        "</div>"
+      : "";
+    return cards +
+      "<h2>By question, worst first</h2>" +
+      "<div class='scroll'><table><thead><tr><th>Question</th>" +
+      "<th style='text-align:right'>Fully right</th>" +
+      "<th style='text-align:right'>Partial / wrong</th></tr></thead><tbody>" +
+      rows + "</tbody></table></div>" +
+      "<p class='mini'>Partial credit: wrong ticks cancel right ones, floored at zero. " +
+      "A question nobody answers fully is usually the question, not the candidates. " +
+      "n = " + n + ".</p>";
+  }
+
+  function viewRepons(d) {
+    var cols = d.fields.slice(0, 8);
+    // some(), not rows[0] — a form can gain or lose its answer keys, so the
+    // newest row is not a reliable witness for the ones underneath it.
+    var scored = d.rows.some(function (r) { return r.esko != null; });
+    var head = cols.map(function(c){ return "<th>" + esc(c.label) + "</th>"; }).join("");
+    var rows = d.rows.map(function (r) {
+      return "<tr>" + cols.map(function (c) {
+        var v = r.repons[c.key];
+        // Without this an uploaded file renders as "[object Object]".
+        if (isFile(v)) return "<td>" + fileChip(v) + "</td>";
+        if (Array.isArray(v)) v = v.join(", ");
+        return "<td>" + esc(v === "" || v == null ? "—" : v) + "</td>";
+      }).join("") +
+      // THREE states, not two. A scored form with no pass mark has pase ===
+      // null, and painting that red said "failed" about a gate that was never
+      // a door. Only a real verdict gets a colour.
+      (scored ? '<td style="text-align:center">' + (r.esko == null ? "—"
+        : '<span class="' + (r.pase === true ? "pass" : r.pase === false ? "fail" : "") + '">' +
+          score(r) + "</span>") + "</td>" : "") +
+      '<td style="white-space:nowrap;color:var(--muted);font-size:13px">' +
+        esc(String(r.created_at).slice(0,16).replace("T"," ")) + "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + esc(d.tit) + "</h1>" +
+      '<p class="sub">' + d.rows.length + " response" + (d.rows.length===1?"":"s") +
+        ' · <code>' + esc(d.slug) + "</code></p>" +
+      (d.rows.length
+        ? itemAnalysis(d) +
+          '<div class="acts" style="margin-bottom:14px"><button class="alt" id="csv">Download CSV</button></div>' +
+          (d.kesyon && d.kesyon.length ? "<h2>All responses</h2>" : "") +
+          '<div class="scroll"><table><thead><tr>' + head +
+          (scored ? "<th>Score</th>" : "") + "<th>When</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+          (d.fields.length > 8 ? '<p class="mini">Showing the first 8 fields. The CSV has all of them.</p>' : "") +
+          (d.fields.some(function(f){ return f.type === "file"; })
+            ? '<p class="mini">Upload columns hold the storage path, not the file. ' +
+              'Use the buttons above to open one.</p>' : "")
+        : '<div class="empty">No responses yet.</div>'), true);
+    wire();
+    wireFileLinks();
+    var c = document.getElementById("csv");
+    if (c) c.onclick = function(){ downloadCsv(d); };
+  }
+
+  function downloadCsv(d) {
+    function cell(v) {
+      // A file becomes its storage path. Not a signed URL — those die in 120
+      // seconds and a spreadsheet full of dead links is worse than none. Not a
+      // public URL either; that would undo the private bucket. The path is the
+      // stable identifier: paste it into the file route or the Storage
+      // browser and you have the file.
+      if (v && typeof v === "object" && !Array.isArray(v) && v.path) v = v.path;
+      if (Array.isArray(v)) v = v.join("; ");
+      v = v == null ? "" : String(v);
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+    }
+    var head = d.fields.map(function(f){ return cell(f.label); });
+    head.push("score","passed","when");
+    var lines = [head.join(",")];
+    d.rows.forEach(function (r) {
+      var line = d.fields.map(function(f){ return cell(r.repons[f.key]); });
+      line.push(cell(r.esko), cell(r.pase), cell(r.created_at));
+      lines.push(line.join(","));
+    });
+    var blob = new Blob(["﻿" + lines.join("\r\n")], { type:"text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = d.slug + "-responses.csv";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  // =================================================== lessons
+  // A lesson is a deck of slides. Same bargain as the form builder: the style
+  // is written once in the renderer, so nobody editing here can make an ugly
+  // one, and creating a lesson is a save rather than a deploy.
+
+  var LDRAFT = null;
+
+  var SLIDE_KINDS = [
+    ["tit",      "Cover"],
+    ["teks",     "Text"],
+    ["pwen",     "Points"],
+    ["videyo",   "Video"],
+    ["imaj",     "Image"],
+    ["sitasyon", "Quote"],
+    ["fen",      "Ending"]
+  ];
+  function kindName(t) {
+    for (var i = 0; i < SLIDE_KINDS.length; i++) if (SLIDE_KINDS[i][0] === t) return SLIDE_KINDS[i][1];
+    return t;
+  }
+  // Which array the editor is pointed at. Only one tab is on screen, so the
+  // field ids do not need a prefix -- readSlides() always reads whatever is
+  // currently drawn, and switching tabs writes it back first.
+  function curSlides() {
+    return LDRAFT.tab === "liv" ? LDRAFT.liv.slides : LDRAFT.deck.slides;
+  }
+
+  function blankSlide(t) {
+    t = t || "teks";
+    if (t === "pwen") return { type:"pwen", tit:"", pwen:[""] };
+    if (t === "videyo") return { type:"videyo", tit:"", youtube:"", ko:"" };
+    if (t === "fen") return { type:"fen", tit:"", ko:"", fom:"", bouton:"" };
+    return { type:t, tit:"", ko:"" };
+  }
+
+  var LANG_NAME = { KR: "Kreyòl", EN: "English", FR: "Français" };
+  var ETA_NAME = { bouyon: "DRAFT", live: "LIVE", feme: "CLOSED" };
+
+  var ETA_WORD = { bouyon: "Draft", live: "Live", feme: "Closed" };
+
+  // Two dropdowns are one choice: which module, then which of its languages.
+  // The list is held here so the editor can draw the same pair without a
+  // second request, and the choice is held in localStorage so reopening the
+  // screen lands where you left it instead of at the top of a list you have
+  // to find your place in again.
+  var LESONS = null;
+
+  function pickRead() {
+    try { return JSON.parse(localStorage.getItem("ekip:leson:pick") || "null") || {}; }
+    catch (e) { return {}; }
+  }
+  function pickWrite(entryKey, slug) {
+    try {
+      localStorage.setItem("ekip:leson:pick", JSON.stringify({ k: entryKey, slug: slug }));
+    } catch (e) { /* fine */ }
+  }
+
+  function langSort(list) {
+    var o = { KR: 0, EN: 1, FR: 2 };
+    return list.slice().sort(function (a, b) {
+      return (o[a.lang] == null ? 9 : o[a.lang]) - (o[b.lang] == null ? 9 : o[b.lang]);
+    });
+  }
+
+  // Named in English, because the admin side is English and a module called
+  // "Modil 1 - Rekritman Patisipan" names a translation rather than the thing
+  // the translation belongs to.
+  function grpName(list) {
+    var r = { EN: 0, FR: 1, KR: 2 };
+    return list.slice().sort(function (a, b) {
+      return (r[a.lang] == null ? 9 : r[a.lang]) - (r[b.lang] == null ? 9 : r[b.lang]);
+    })[0].tit;
+  }
+
+  // What pairs two rows as the same document in two languages. A numbered
+  // module is grouped by its send number and needs nothing else; gwoup names
+  // the group for anything without a number, and wins where it is set. A row
+  // with neither is a document nothing pairs with, and stands alone.
+  function grpKey(l) {
+    if (l.gwoup) return "g:" + l.gwoup;
+    if (l.send != null) return "s" + l.send;
+    return "l:" + l.slug;
+  }
+
+  function lesonEntries(list) {
+    var by = {}, keys = [];
+    (list || []).forEach(function (l) {
+      var k = grpKey(l);
+      if (!by[k]) { by[k] = []; keys.push(k); }
+      by[k].push(l);
+    });
+
+    var out = keys.map(function (k) {
+      var g = langSort(by[k]), name = grpName(g);
+      var sends = g.map(function (x) { return x.send; })
+                   .filter(function (x) { return x != null; });
+      var send = sends.length ? Math.min.apply(null, sends) : null;
+      var gwoup = g[0].gwoup || null;
+      var alone = k.indexOf("l:") === 0;
+      // Nearly every module title already opens with "Module 3", so prefixing
+      // the send number produced "3 - Module 3 - Safety". Number it only when
+      // the title does not number itself. A document that stands alone carries
+      // its language instead, because that is the only thing telling it apart
+      // from the translation somebody has not paired to it yet.
+      var label = alone ? name + " (" + g[0].lang + ")"
+        : (send != null && !/^\s*(modil|module|modul)\s*\d/i.test(name)
+            ? send + " \u2014 " + name : name);
+      return { key: k, send: send, gwoup: gwoup, doc: send == null,
+               canAdd: send != null || !!gwoup, label: label, list: g };
+    });
+
+    // Numbered modules in order, then everything else by name.
+    out.sort(function (a, b) {
+      if (a.send == null && b.send == null) return a.label.localeCompare(b.label);
+      if (a.send == null) return 1;
+      if (b.send == null) return -1;
+      return a.send - b.send;
+    });
+    return out;
+  }
+
+  function entryAt(entries, key) {
+    for (var i = 0; i < entries.length; i++) if (entries[i].key === key) return entries[i];
+    return null;
+  }
+
+  // Resolve a remembered choice against the list as it is now. A module that
+  // was deleted, or a language that was, must not leave the screen blank.
+  function pickResolve(entries, want) {
+    if (!entries.length) return null;
+    var e = (want && entryAt(entries, want.k)) || entries[0];
+    var l = null, i;
+    if (want && want.slug) {
+      for (i = 0; i < e.list.length; i++) if (e.list[i].slug === want.slug) l = e.list[i];
+    }
+    if (!l) {
+      for (i = 0; i < e.list.length; i++) if (e.list[i].lang === "KR") { l = e.list[i]; break; }
+    }
+    return { entry: e, leson: l || e.list[0] };
+  }
+
+  // The two selects, drawn the same on the list and inside the editor, so
+  // moving between languages is one gesture in both places.
+  function pickHtml(entries, sel, idMod, idDoc) {
+    var mods = entries.filter(function (e) { return !e.doc; });
+    var docs = entries.filter(function (e) { return e.doc; });
+    function opt(e) {
+      return '<option value="' + esc(e.key) + '"' +
+        (e.key === sel.entry.key ? " selected" : "") + ">" + esc(e.label) + "</option>";
+    }
+    var modOpts =
+      (mods.length ? '<optgroup label="Modules">' + mods.map(opt).join("") + "</optgroup>" : "") +
+      (docs.length ? '<optgroup label="Other documents">' + docs.map(opt).join("") + "</optgroup>" : "");
+    var docOpts = sel.entry.list.map(function (l) {
+      return '<option value="' + esc(l.slug) + '"' +
+        (l.slug === sel.leson.slug ? " selected" : "") + ">" +
+        esc((LANG_NAME[l.lang] || l.lang) + " \u00b7 " + (ETA_WORD[l.eta] || l.eta)) + "</option>";
+    }).join("");
+    return '<div class="row picks">' +
+      '<div><label for="' + idMod + '">Module</label>' +
+        '<select id="' + idMod + '">' + modOpts + "</select></div>" +
+      // Not "Language": the editor below has a Language field of its own, and
+      // two of them on one screen is a question about which one you just set.
+      '<div><label for="' + idDoc + '">Document</label>' +
+        '<select id="' + idDoc + '">' + docOpts + "</select></div></div>";
+  }
+
+  // A module can be delivered three ways and every one of them is the same
+  // row: watch it, read it, or stand in front of a camera and say it. The
+  // buttons are in that order because that is the order they get used in.
+  function lesonLinks(l) {
+    var q = LESON + esc(l.slug) + (l.eta === "live" ? "" : "&prevyou=1");
+    function a(href, label, cls) {
+      return '<a class="alt ' + (cls || "") + '" style="text-decoration:none" href="' +
+        href + '" target="_blank" rel="noopener">' + label + "</a>";
+    }
+    return '<div class="acts">' +
+      a(q, l.eta === "live" ? "Slides" : "Slides (preview)") +
+      (l.liv
+        ? a(q + "&mod=liv", "Reading")
+        : '<span class="alt off" title="No reading version written yet">Reading</span>') +
+      a(q + "&mod=eskript", "Script") +
+      '<button class="alt" data-ledit="' + esc(l.slug) + '">Edit</button>' +
+      "</div>";
+  }
+
+  // "3d ago" is enough. The exact minute is in the editor and nobody plans
+  // around it; what the list has to answer is which of these was touched last.
+  function ago(ts) {
+    var t = ts ? new Date(ts).getTime() : NaN;
+    if (!t) return "";
+    var d = (Date.now() - t) / 1000;
+    if (d < 0) d = 0;
+    if (d < 90) return "just now";
+    if (d < 5400) return Math.round(d / 60) + "m ago";
+    if (d < 86400) return Math.round(d / 3600) + "h ago";
+    return Math.round(d / 86400) + "d ago";
+  }
+
+  // A missing piece is orange when it stops the lesson going out and grey when
+  // it is simply the next thing to do. A draft with no gate yet is a Tuesday;
+  // a live module with no gate is a lesson that teaches and then asks nothing.
+  function lesonVar(l, groupName, krStamp) {
+    var live = l.eta === "live", modil = l.send != null;
+    function fact(html, hot) {
+      return '<span class="f' + (hot ? " no" : "") + '">' + html + "</span>";
+    }
+    var bits = [fact("<code>" + esc(l.slug) + "</code>"), fact(l.glise + " slides")];
+    // An empty YouTube box is a hole in the deck whatever the status, so that
+    // one is orange always. The rest only shout once the lesson is live.
+    if (l.videyo_vid) bits.push(fact(l.videyo_vid + " of " + l.videyo + " not filmed", true));
+    else if (l.videyo === 0) bits.push(fact("no video slide", live && modil));
+    else bits.push(fact(l.videyo + " video" + (l.videyo === 1 ? "" : "s")));
+    bits.push(l.fom ? fact("gate <code>" + esc(l.fom) + "</code>")
+                    : fact("no gate", live && modil));
+    bits.push(l.liv ? fact(l.liv + " sections to read")
+                    : fact("no reading version", live));
+    // The screen exists so the three deliveries cannot drift. Drift between
+    // languages was the one kind it could not see: KR moves, the translation
+    // stays where it was, and both rows still read LIVE.
+    if (l.lang !== "KR" && krStamp && l.updated_at &&
+        new Date(l.updated_at).getTime() < new Date(krStamp).getTime()) {
+      bits.push(fact("KR edited since", true));
+    }
+    if (l.updated_at) bits.push(fact("edited " + ago(l.updated_at)));
+
+    // The group heading already carries the module name. Printing it again on
+    // the only row inside is the same sentence twice.
+    var tit = l.tit === groupName ? "" : '<span class="vt">' + esc(l.tit) + "</span>";
+    return '<div class="var' + (l.lang === "KR" ? " kr" : "") + '">' +
+      '<div class="vh"><span class="lg">' + esc(l.lang) + "</span>" + tit +
+      '<span class="pill ' + esc(l.eta) + '">' + (ETA_NAME[l.eta] || esc(l.eta)) + "</span></div>" +
+      '<p class="vm">' + bits.join("") + "</p>" +
+      lesonLinks(l) + "</div>";
+  }
+
+  function viewLesonList(d) {
+    LESONS = d.leson || [];
+    var entries = lesonEntries(LESONS);
+
+    if (!entries.length) {
+      app.innerHTML = chrome(
+        '<div id="note" hidden></div>' +
+        '<div class="acts" style="margin-bottom:16px"><h2 class="pgt">Lessons</h2>' +
+        '<button class="go" id="lnew">+ New lesson</button></div>' +
+        '<div class="empty">No lessons yet. Create the first one.</div>', true);
+      wire();
+      document.getElementById("lnew").onclick = function () { location.hash = "leson/new"; };
+      return;
+    }
+
+    var sel = pickResolve(entries, pickRead());
+    pickWrite(sel.entry.key, sel.leson.slug);
+
+    // A module nobody can open in Kreyol is the one fact worth saying above
+    // the panel, because it is the only one that means no trainee sees this.
+    var noKr = !sel.entry.doc && !sel.entry.list.some(function (l) { return l.lang === "KR"; });
+    var kr = sel.entry.list.filter(function (l) { return l.lang === "KR"; })[0];
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<div class="acts" style="margin-bottom:14px"><h2 class="pgt">Lessons</h2>' +
+      '<button class="go" id="lnew">+ New lesson</button></div>' +
+      pickHtml(entries, sel, "pmod", "pdoc") +
+      (noKr ? '<p class="note warn">This module has no Kreyol version, so no trainee ' +
+              "can open it yet.</p>" : "") +
+      '<div class="pane">' + lesonVar(sel.leson, null, kr ? kr.updated_at : null) + "</div>" +
+      (sel.entry.canAdd
+        ? '<div class="addlang"><button class="alt" id="laddlang">+ Add a language to this ' +
+          (sel.entry.send == null ? "document" : "module") + "</button></div>"
+        // Otherwise there is nothing to add a language TO. Say where the
+        // pairing comes from rather than leave a document with no way out.
+        : '<p class="sub" style="margin:14px 0 0">This document has no send number ' +
+          "and no group, so nothing pairs it with a translation. Open it and give " +
+          "it a group name, then give the translation the same one."), true);
+    wire();
+
+    document.getElementById("lnew").onclick = function () { location.hash = "leson/new"; };
+    var add = document.getElementById("laddlang");
+    if (add) add.onclick = function () {
+      location.hash = "leson/new?" + (sel.entry.send != null
+        ? "send=" + sel.entry.send
+        : "gwoup=" + encodeURIComponent(sel.entry.gwoup));
+    };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-ledit]"), function (b) {
+      b.onclick = function () { location.hash = "leson/" + b.getAttribute("data-ledit"); };
+    });
+
+    // Changing module keeps the language you were reading in if the new module
+    // has it, because working down the modules in one language is how this
+    // gets used and re-picking Kreyol at every step is a click for nothing.
+    document.getElementById("pmod").onchange = function () {
+      var e = entryAt(entries, this.value), keep = null;
+      if (e) for (var i = 0; i < e.list.length; i++) {
+        if (e.list[i].lang === sel.leson.lang) keep = e.list[i];
+      }
+      pickWrite(this.value, keep ? keep.slug : "");
+      viewLesonList({ leson: LESONS });
+    };
+    document.getElementById("pdoc").onchange = function () {
+      pickWrite(sel.entry.key, this.value);
+      viewLesonList({ leson: LESONS });
+    };
+  }
+
+  function fldText(id, label, v, ph) {
+    return '<div class="row"><div><label for="' + id + '">' + esc(label) + "</label>" +
+      '<input id="' + id + '" type="text" value="' + esc(v || "") + '"' +
+      (ph ? ' placeholder="' + esc(ph) + '"' : "") + "></div></div>";
+  }
+  function fldArea(id, label, v, ph, hint) {
+    return '<div class="row"><div><label for="' + id + '">' + esc(label) + "</label>" +
+      '<textarea id="' + id + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : "") + ">" +
+      esc(v || "") + "</textarea>" +
+      (hint ? '<p class="mini">' + hint + "</p>" : "") + "</div></div>";
+  }
+
+  function slideFields(s, i) {
+    var t = s.type;
+    if (t === "tit") {
+      return fldText("s" + i + "_kalite", "Eyebrow", s.kalite, "MODIL 1") +
+        fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_sou_tit", "Subtitle", s.sou_tit);
+    }
+    if (t === "pwen") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldArea("s" + i + "_pwen", "Points", (s.pwen || []).join("\n"), "", "One per line. Max 12.") +
+        '<label class="inline" style="margin-bottom:12px"><input type="checkbox" id="s' + i +
+        '_nimewo"' + (s.nimewo ? " checked" : "") + "><span>Number them</span></label>";
+    }
+    if (t === "videyo") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_youtube", "YouTube id or link", s.youtube) +
+        '<p class="mini">Paste the id or the whole link, either works. Leave it empty ' +
+        "until it is filmed ... the deck saves fine without it and the slide says so.</p>" +
+        fldArea("s" + i + "_ko", "Text under the video", s.ko);
+    }
+    if (t === "imaj") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldText("s" + i + "_url", "Image link", s.url, "/img/...") +
+        fldText("s" + i + "_kap", "Caption", s.kap) +
+        fldText("s" + i + "_alt", "Description for a screen reader", s.alt);
+    }
+    if (t === "sitasyon") {
+      return fldArea("s" + i + "_teks", "The quote", s.teks) +
+        fldText("s" + i + "_ki_moun", "Who said it", s.ki_moun);
+    }
+    if (t === "fen") {
+      return fldText("s" + i + "_tit", "Title", s.tit) +
+        fldArea("s" + i + "_ko", "Text", s.ko) +
+        fldText("s" + i + "_fom", "Gate form slug", s.fom) +
+        fldText("s" + i + "_bouton", "Button", s.bouton) +
+        '<p class="mini">This is the join between the two engines: the ending slide ' +
+        "hands the trainee the gate that unlocks the next send.</p>";
+    }
+    return fldText("s" + i + "_tit", "Title", s.tit) +
+      fldArea("s" + i + "_ko", "Text", s.ko, "", "Blank line for a new paragraph. **bold** works.");
+  }
+
+  // Appended to every slide. Never reaches a trainee -- it shows only in the
+  // filming script, so the deck is both the lesson and the shot list and the
+  // two can never drift apart.
+  function camNote(s, i) {
+    return fldArea("s" + i + "_not_kamera", "Note to camera (only you see this)",
+      s.not_kamera, "", "Shows in the filming script, never in the lesson.");
+  }
+
+  function viewLesonEdit() {
+    var d = LDRAFT;
+    var reading = d.tab === "liv";
+    var slides = curSlides();
+    var word = reading ? "Section" : "Slide";
+
+    var cards = slides.map(function (s, i) {
+      return '<div class="sec"><div class="sechead">' +
+        '<span class="n">' + (i + 1) + ". " + esc(kindName(s.type)) + "</span>" +
+        '<button class="alt" data-lup="' + i + '"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
+        '<button class="alt" data-ldn="' + i + '"' + (i === slides.length - 1 ? " disabled" : "") + ">&darr;</button>" +
+        // A deck must keep one block; a reading version is allowed to go back
+        // to empty, because "not written yet" is a real state for it.
+        '<button class="alt danger" data-lrm="' + i + '"' +
+          (!reading && slides.length < 2 ? " disabled" : "") + ">Remove</button>" +
+        "</div>" + slideFields(s, i) + (reading ? "" : camNote(s, i)) + "</div>";
+    }).join("");
+
+    var tabs = '<div class="tabs">' +
+      '<button type="button" id="tabdeck" class="' + (reading ? "" : "on") + '">Slides ' +
+        '<span class="ct">' + d.deck.slides.length + "</span></button>" +
+      '<button type="button" id="tabliv" class="' + (reading ? "on" : "") + '">Reading ' +
+        '<span class="ct">' + d.liv.slides.length + "</span></button>" +
+      "</div>" +
+      '<p class="tabnote">' + (reading
+        ? "The manual text, drawn as one document instead of paged. Same blocks, " +
+          "same row, so it cannot drift from the deck. Leave it empty and the " +
+          "lesson is slides only ... nothing breaks."
+        : "What a trainee swipes through on a phone. One idea per slide.") +
+      "</p>";
+
+    var kindOpts = SLIDE_KINDS.map(function (k) {
+      return '<option value="' + k[0] + '">' + esc(k[1]) + "</option>";
+    }).join("");
+
+    // The same two dropdowns as the list, so a translator can hold the Kreyol
+    // open in one tab and walk the languages here without going back out to
+    // pick again. Not on a new lesson, which does not exist to move away from.
+    var picker = "";
+    if (!d.isNew && LESONS) {
+      var pents = lesonEntries(LESONS);
+      var psel = pickResolve(pents, { k: null, slug: d.originalSlug });
+      for (var pi = 0; pi < pents.length; pi++) {
+        for (var pj = 0; pj < pents[pi].list.length; pj++) {
+          if (pents[pi].list[pj].slug === d.originalSlug) {
+            psel = { entry: pents[pi], leson: pents[pi].list[pj] };
+          }
+        }
+      }
+      if (psel) picker = pickHtml(pents, psel, "emod", "edoc");
+    }
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 14px">' +
+        (d.isNew ? "New lesson" : esc(d.tit || d.slug)) + "</h1>" + picker +
+      '<div class="sec"><h3>The lesson</h3>' +
+        fldText("ltit", "Title", d.tit) +
+        fldText("lslug", "Link name (slug)", d.slug) +
+        '<div class="row"><div><label for="lsend">Send number</label>' +
+          '<input id="lsend" type="number" min="0" max="7" value="' +
+          (d.send == null ? "" : d.send) + '"></div>' +
+        '<div><label for="llang">Language</label><select id="llang">' +
+          ["KR", "EN", "FR"].map(function (x) {
+            return '<option value="' + x + '"' + (d.lang === x ? " selected" : "") + ">" + x + "</option>";
+          }).join("") +
+        "</select></div>" +
+        '<div><label for="lgwoup">Group</label>' +
+          '<input id="lgwoup" type="text" value="' + esc(d.gwoup || "") +
+          '" placeholder="kondisyon-itilizasyon"></div></div>' +
+        '<p class="mini">Leave the group empty for a numbered module ... the send ' +
+        "number already pairs its languages. Name it for anything with no send " +
+        "number, and give every language of that document the same name, or they " +
+        "stay separate documents on every screen that lists them.</p>" +
+        '<div class="row"><div><label for="leta">Status</label><select id="leta">' +
+          [["bouyon", "Draft"], ["live", "Live"], ["feme", "Closed"]].map(function (x) {
+            return '<option value="' + x[0] + '"' + (d.eta === x[0] ? " selected" : "") + ">" + x[1] + "</option>";
+          }).join("") +
+        "</select>" +
+        '<p class="mini">Only a Kreyol lesson can go live. An English deck stays a draft ' +
+        "until it is translated ... a trainee opens this alone, on a phone.</p></div></div>" +
+      tabs +
+      (cards || '<div class="empty">Nothing written here yet. Add the first section, ' +
+        "or leave it empty and the lesson stays slides only.</div>") +
+      '<div class="acts" style="margin:16px 0">' +
+        '<select id="lkind">' + kindOpts + "</select>" +
+        '<button class="alt" id="ladd">+ Add ' + word.toLowerCase() + "</button>" +
+      "</div>" +
+      '<div class="acts" style="margin-top:20px">' +
+        '<button class="go" id="lsave">Save</button>' +
+        (d.isNew ? "" : '<a class="alt" style="text-decoration:none" href="' + LESON +
+          esc(d.originalSlug) + '&prevyou=1" target="_blank" rel="noopener">Slides</a>' +
+          (d.liv.slides.length ? '<a class="alt" style="text-decoration:none" href="' + LESON +
+            esc(d.originalSlug) + '&mod=liv&prevyou=1" target="_blank" rel="noopener">Reading</a>' : "") +
+          '<a class="alt" style="text-decoration:none" href="' + LESON +
+          esc(d.originalSlug) + '&mod=eskript&prevyou=1" target="_blank" rel="noopener">Filming script</a>') +
+      "</div>", true);
+    wire();
+    wireLesonEdit();
+  }
+
+  function readSlides() {
+    curSlides().forEach(function (s, i) {
+      function g(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.value : undefined; }
+      function c(k) { var e = document.getElementById("s" + i + "_" + k); return e ? e.checked : undefined; }
+      ["tit", "sou_tit", "kalite", "ko", "teks", "url", "kap", "alt",
+       "ki_moun", "fom", "bouton", "youtube", "not_kamera"].forEach(function (k) {
+        var v = g(k);
+        if (v !== undefined) s[k] = v.trim();
+      });
+      if (s.type === "pwen") {
+        var raw = g("pwen") || "";
+        s.pwen = raw.split("\n").map(function (x) { return x.trim(); }).filter(Boolean);
+        s.nimewo = !!c("nimewo");
+      }
+    });
+  }
+
+  function readTop() {
+    var d = LDRAFT;
+    var gw = document.getElementById("lgwoup");
+    d.gwoup = gw ? gw.value.trim().toLowerCase() : "";
+    d.tit = document.getElementById("ltit").value.trim();
+    d.slug = document.getElementById("lslug").value.trim();
+    d.eta = document.getElementById("leta").value;
+    d.lang = document.getElementById("llang").value;
+    var sv = document.getElementById("lsend").value;
+    d.send = sv === "" ? null : Number(sv);
+  }
+
+  function wireLesonEdit() {
+    var d = LDRAFT;
+
+    // Switching tabs writes the open one back first. Losing an edit to a tab
+    // click is the kind of thing somebody stops using a builder over.
+    function tab(name) {
+      return function () {
+        if (d.tab === name) return;
+        readSlides(); readTop();
+        d.tab = name;
+        viewLesonEdit();
+      };
+    }
+    document.getElementById("tabdeck").onclick = tab("deck");
+    document.getElementById("tabliv").onclick = tab("liv");
+
+    document.getElementById("ladd").onclick = function () {
+      readSlides(); readTop();
+      curSlides().push(blankSlide(document.getElementById("lkind").value));
+      viewLesonEdit();
+    };
+    Array.prototype.forEach.call(app.querySelectorAll("[data-lup]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        var i = +b.getAttribute("data-lup"), a = curSlides();
+        a.splice(i - 1, 0, a.splice(i, 1)[0]);
+        viewLesonEdit();
+      };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-ldn]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        var i = +b.getAttribute("data-ldn"), a = curSlides();
+        a.splice(i + 1, 0, a.splice(i, 1)[0]);
+        viewLesonEdit();
+      };
+    });
+    Array.prototype.forEach.call(app.querySelectorAll("[data-lrm]"), function (b) {
+      b.onclick = function () {
+        readSlides(); readTop();
+        curSlides().splice(+b.getAttribute("data-lrm"), 1);
+        viewLesonEdit();
+      };
+    });
+    document.getElementById("lsave").onclick = saveLeson;
+
+    // Slug follows the title until somebody edits the slug by hand, then it
+    // stops moving. A link that changes under a trainee is a dead link.
+    var tit = document.getElementById("ltit"), slug = document.getElementById("lslug");
+    // Moving away from a half-written slide is the one thing this screen can
+    // do that cannot be undone, so it is the one thing that asks first.
+    function goTo(target) {
+      if (!target || target === d.originalSlug) return true;
+      if (lesonDirty() && !confirm(
+        "This lesson has changes you have not saved. Leave them behind?")) return false;
+      LDRAFT = null;
+      location.hash = "leson/" + target;
+      return true;
+    }
+    var em = document.getElementById("emod"), ed = document.getElementById("edoc");
+    if (em) em.onchange = function () {
+      var ents = lesonEntries(LESONS), e = entryAt(ents, this.value);
+      if (!e) return;
+      var keep = null;
+      for (var i = 0; i < e.list.length; i++) if (e.list[i].lang === d.lang) keep = e.list[i];
+      var t = (keep || e.list[0]).slug;
+      pickWrite(e.key, t);
+      if (!goTo(t)) viewLesonEdit();
+    };
+    if (ed) ed.onchange = function () {
+      var v = this.value;
+      pickWrite(pickRead().k || "", v);
+      if (!goTo(v)) viewLesonEdit();
+    };
+
+    slug.addEventListener("input", function () { d.slugTouched = true; });
+    tit.addEventListener("input", function () {
+      if (d.slugTouched) return;
+      slug.value = String(tit.value || "").toLowerCase().normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "").slice(0, 48);
+    });
+  }
+
+  // What the form said when it was loaded. Only reset where the lesson is
+  // actually (re)loaded, never on a redraw -- viewLesonEdit runs again on
+  // every tab switch and every added slide, and taking a snapshot there would
+  // mean nothing was ever unsaved.
+  var LCLEAN = "";
+  // Reading the form back puts keys on a slide that the stored row never had:
+  // a camera note nobody typed, a "number them" box nobody ticked. Comparing
+  // raw objects therefore called every lesson unsaved the moment it loaded.
+  // Compare what is actually written instead ... empty, false and absent are
+  // the same thing, whitespace at the ends is not an edit, and key order is
+  // not information.
+  function lesonNorm(v) {
+    if (Array.isArray(v)) return v.map(lesonNorm);
+    if (v && typeof v === "object") {
+      var o = {};
+      Object.keys(v).sort().forEach(function (k) {
+        if (v[k] === "" || v[k] === false || v[k] == null) return;
+        o[k] = lesonNorm(v[k]);
+      });
+      return o;
+    }
+    return typeof v === "string" ? v.trim() : v;
+  }
+  function lesonSnap() {
+    var d = LDRAFT;
+    if (!d) return "";
+    return JSON.stringify(lesonNorm({ tit: d.tit, slug: d.slug, send: d.send,
+      gwoup: d.gwoup, lang: d.lang, eta: d.eta, deck: d.deck, liv: d.liv }));
+  }
+  function lesonMark() { LCLEAN = lesonSnap(); }
+  function lesonDirty() {
+    if (!LDRAFT || !document.getElementById("lsave")) return false;
+    readSlides(); readTop();
+    return lesonSnap() !== LCLEAN;
+  }
+
+  function saveLeson() {
+    readSlides(); readTop();
+    var d = LDRAFT;
+    var btn = document.getElementById("lsave");
+    btn.disabled = true; btn.textContent = "Saving\u2026";
+
+    var body = { slug:d.slug, tit:d.tit, deskripsyon:d.deskripsyon, send:d.send,
+                 gwoup:d.gwoup || null, lang:d.lang, eta:d.eta, deck:d.deck, liv:d.liv };
+    api(d.isNew ? "leson" : "leson/" + d.originalSlug,
+        { method: d.isNew ? "POST" : "PUT", body: body })
+      .then(function () {
+        sessionStorage.setItem("ekipmsg", "Saved. " +
+          (d.eta === "live" ? "The lesson is live at " + LESON + d.slug
+                            : "Still a draft \u2014 nobody outside can open it yet."));
+        location.hash = "leson";
+        if ((location.hash || "") === "#leson") route();
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.textContent = "Save";
+        note("err", esc(e.message));
+      });
+  }
+
+  // =================================================== approvals
+  // Two-signature control. The rules (sequence, separation of persons,
+  // finality) are enforced in Postgres — this screen only shows state and
+  // collects a signature. It cannot grant an approval the database refuses.
+
+  function money(v) {
+    if (v === "" || v == null) return null;
+    var n = Number(v);
+    return isNaN(n) ? String(v) : n.toLocaleString("en-US");
+  }
+
+  // Pull two or three headline facts out of an arbitrary response so the
+  // queue is readable without opening every item.
+  function headline(it) {
+    var r = it.repons || {}, out = [];
+    var name = r.non || r.non_jen || r.non_moun;
+    if (name) out.push(["Who", esc(name)]);
+    var amt = r.total_mande || r.montan_net || r.goud_touche;
+    if (amt != null && amt !== "") out.push(["Amount", money(amt) + " HTG"]);
+    var place = r.lokalite || r.sit || r.oganizasyon;
+    if (place) out.push(["Site", esc(place)]);
+    return out;
+  }
+
+  function chainHtml(it) {
+    return '<div class="chain">' + it.chenn.map(function (s) {
+      var cls = s.desizyon === "apwouve" ? "ok"
+              : s.desizyon === "refize" ? "no"
+              : (it.kounye && it.kounye.etap === s.etap ? "now" : "");
+      var by = s.desizyon === "tann" ? "waiting"
+             : (s.non || s.pa_ki_moun) + (s.desizyon === "refize" ? " · rejected" : "");
+      return '<div class="step ' + cls + '"><span class="dot"></span><span>' +
+        esc(s.tit) + '<br><span style="color:var(--muted);font-size:12px">' + esc(by) +
+        "</span></span></div>";
+    }).join("") + "</div>";
+  }
+
+  function itemCard(it, actionable) {
+    var facts = headline(it).map(function (f) {
+      return '<div><span class="k">' + f[0] + '</span><span class="v">' + f[1] + "</span></div>";
+    }).join("");
+    return '<div class="item' + (actionable ? " mine" : "") + '">' +
+      "<h3>" + esc(it.fom_tit) + "</h3>" +
+      '<p class="meta">' + esc(String(it.created_at).slice(0, 16).replace("T", " ")) + "</p>" +
+      (facts ? '<div class="facts">' + facts + "</div>" : "") +
+      chainHtml(it) +
+      (actionable
+        ? '<button class="go" data-sign="' + esc(it.repons_id) + '">Review &amp; sign</button>'
+        : it.poukisa_non
+          ? '<p class="blocked">' + esc(it.poukisa_non) + "</p>"
+          : "") +
+      "</div>";
+  }
+
+  function viewApw(d) {
+    APWDATA = d;
+    var mine = d.tann.filter(function (x) { return x.mwen_ka_siyen; });
+    var other = d.tann.filter(function (x) { return !x.mwen_ka_siyen; });
+
+    var body = '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">Approvals</h1>' +
+      '<p class="sub">Signed in as ' + esc(d.mwen.non) + " · roles: " +
+      (d.mwen.wol.length ? esc(d.mwen.wol.join(", ")) : "<em>none</em>") + "</p>";
+
+    body += "<h2>Waiting on you (" + mine.length + ")</h2>";
+    body += mine.length
+      ? mine.map(function (x) { return itemCard(x, true); }).join("")
+      : '<div class="empty">Nothing needs your signature.</div>';
+
+    if (other.length) {
+      body += "<h2>Waiting on someone else (" + other.length + ")</h2>";
+      body += other.map(function (x) { return itemCard(x, false); }).join("");
+    }
+    if (d.fini.length) {
+      body += "<h2>Decided (" + d.fini.length + ")</h2>";
+      body += d.fini.map(function (x) { return itemCard(x, false); }).join("");
+    }
+
+    app.innerHTML = chrome(body, true);
+    wire();
+    Array.prototype.forEach.call(app.querySelectorAll("[data-sign]"), function (b) {
+      b.onclick = function () { location.hash = "siyen/" + b.getAttribute("data-sign"); };
+    });
+  }
+
+  function viewSign(it) {
+    var r = it.repons || {}, lab = it.etikt || {};
+    // This is the screen where a treasurer looks at a receipt before releasing
+    // money, so this one shows the actual image rather than a chip.
+    var rows = Object.keys(r).map(function (k) {
+      var v = r[k];
+      if (v === "" || v == null) return "";
+      var shown;
+      if (isFile(v)) {
+        shown = (/^image\//.test(v.kalite || "")
+          ? '<div data-thumb="' + esc(v.path) + '" style="color:var(--muted);font-size:13px">' +
+            "loading…</div>"
+          : "") +
+          '<div style="margin-top:6px">' + fileChip(v) + "</div>";
+      } else if (typeof v === "string" && v.indexOf("data:image/") === 0) {
+        shown = '<img class="sigimg" src="' + esc(v) + '" alt="signature">';
+      } else {
+        shown = esc(Array.isArray(v) ? v.join(", ") : v);
+      }
+      return "<tr><th>" + esc(lab[k] || k) + "</th><td>" + shown + "</td></tr>";
+    }).join("");
+
+    app.innerHTML = chrome(
+      '<div id="note" hidden></div>' +
+      '<h1 style="font-size:19px;margin:0 0 2px">' + esc(it.fom_tit) + "</h1>" +
+      '<p class="sub">Submitted ' + esc(String(it.created_at).slice(0, 16).replace("T", " ")) + "</p>" +
+      chainHtml(it) +
+      "<h2>What was submitted</h2><div class='scroll'><table class='kv'>" + rows + "</table></div>" +
+      "<h2>" + esc(it.kounye ? it.kounye.tit : "Sign") + "</h2>" +
+      '<div class="sec">' +
+        '<div class="row"><div><label for="s-non">Your name as it should appear</label>' +
+        '<input id="s-non" value="' + esc(APWDATA.mwen.non) + '"></div></div>' +
+        '<label>Signature</label>' +
+        '<div class="sigpad" id="padwrap"><canvas class="pad" id="pad"></canvas>' +
+        '<div class="padbar"><span class="lbl">Sign in the box</span>' +
+        '<button class="alt" type="button" id="padclear">Clear</button></div></div>' +
+        '<div class="row" style="margin-top:14px"><div><label for="s-not">Note (required if you reject)</label>' +
+        '<textarea id="s-not" rows="2"></textarea></div></div>' +
+      "</div>" +
+      '<div class="sticky"><button class="go" id="ok">Approve &amp; sign</button>' +
+        '<button class="alt danger" id="no">Reject</button>' +
+        '<button class="alt" id="cancel" style="margin-left:auto">Cancel</button></div>', true);
+    wire();
+    wireFileLinks();
+    wireThumbs();
+
+    var pad = signaturePad(document.getElementById("pad"),
+      document.getElementById("padwrap"), document.getElementById("padclear"));
+
+    function act(desizyon) {
+      var sig = pad.value();
+      if (!sig) { note("err", "A signature is required."); return; }
+      var nt = document.getElementById("s-not").value.trim();
+      if (desizyon === "refize" && !nt) { note("err", "Say why you are rejecting it."); return; }
+      var ok = document.getElementById("ok"), no = document.getElementById("no");
+      ok.disabled = no.disabled = true;
+      ok.textContent = "Signing…";
+      api(it.repons_id, {
+        base: APW, method: "POST",
+        body: { desizyon: desizyon, non: document.getElementById("s-non").value.trim(),
+                siyati: sig, not_yo: nt }
+      }).then(function (res) {
+        sessionStorage.setItem("ekipmsg",
+          res.eta === "apwouve" ? "Approved. The chain is complete."
+          : res.eta === "refize" ? "Rejected. The chain is closed."
+          : "Signed. " + res.rete + " signature still needed.");
+        location.hash = "apwobasyon";
+      }).catch(function (e) {
+        ok.disabled = no.disabled = false;
+        ok.textContent = "Approve & sign";
+        note("err", esc(e.message));
+      });
+    }
+    document.getElementById("ok").onclick = function () { act("apwouve"); };
+    document.getElementById("no").onclick = function () { act("refize"); };
+    document.getElementById("cancel").onclick = function () { location.hash = "apwobasyon"; };
+  }
+
+  // small signature pad, same approach as the public form renderer
+  function signaturePad(cv, wrap, clearBtn) {
+    var ctx, drawing = false, dirty = false, val = "";
+    function size() {
+      var r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+      cv.width = Math.max(1, Math.round(r.width * dpr));
+      cv.height = Math.max(1, Math.round(r.height * dpr));
+      ctx = cv.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.lineWidth = 2.2; ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.strokeStyle = getComputedStyle(cv).color || "#12100e";
+    }
+    size();
+    function pt(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    cv.addEventListener("pointerdown", function (e) {
+      drawing = true; cv.setPointerCapture(e.pointerId);
+      var p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault();
+    });
+    cv.addEventListener("pointermove", function (e) {
+      if (!drawing) return;
+      var p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+      if (!dirty) { dirty = true; wrap.classList.add("drawn"); }
+      e.preventDefault();
+    });
+    function stop() { if (drawing) { drawing = false; if (dirty) val = cv.toDataURL("image/png"); } }
+    cv.addEventListener("pointerup", stop);
+    cv.addEventListener("pointercancel", stop);
+    cv.addEventListener("pointerleave", stop);
+    if (clearBtn) clearBtn.onclick = function () {
+      var r = cv.getBoundingClientRect();
+      ctx.clearRect(0, 0, r.width, r.height);
+      dirty = false; val = ""; wrap.classList.remove("drawn");
+    };
+    return { value: function () { return val; } };
+  }
+
+  // =================================================== other modules
+  function viewDok(d) {
+    var body = "";
+    Object.keys(d.kategori).forEach(function (k) {
+      body += "<h2>" + esc(k) + "</h2><div class='scroll'><table><thead><tr>" +
+        "<th>Document</th><th>Lang</th><th>Version</th></tr></thead><tbody>" +
+        d.kategori[k].map(function (r) {
+          return "<tr><td><a href='" + esc(r.url) + "' target='_blank' rel='noopener'><strong>" +
+            esc(r.tit) + "</strong></a>" +
+            (r.deskripsyon ? "<div style='color:var(--muted);font-size:13px'>" + esc(r.deskripsyon) + "</div>" : "") +
+            "</td><td><span class='pill'>" + esc(r.lang) + "</span></td><td>" + esc(r.vesyon||"—") + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    });
+    if (!d.total) body = '<div class="empty">No documents registered.</div>';
+    app.innerHTML = chrome('<h1 style="font-size:19px;margin:0 0 2px">Documents</h1>' +
+      '<p class="sub">Which version is current · ' + d.total + " document" + (d.total===1?"":"s") + "</p>" + body, true);
+    wire();
+  }
+
+  function viewTodo(d) {
+    app.innerHTML = chrome('<div class="empty">' + esc(d.mesaj||"Not built yet.") + "</div>", true);
+    wire();
+  }
+
+  // =================================================== routing
+  function loading() {
+    app.innerHTML = chrome('<div class="empty">Loading…</div>', true); wire();
+  }
+  function oops(e) {
+    app.innerHTML = chrome('<div id="note" hidden></div><div class="empty">' + esc(e.message) + "</div>", true);
+    wire();
+  }
+
+  // Back, Sign out, the browser's own back button: all of them are a hash
+  // change, and all of them used to drop a half-written lesson on the floor
+  // without a word. Ask once, here, where every one of them passes.
+  var LAST_HASH = "", BOUNCE = false;
+
+  function route() {
+    var h = location.hash.replace(/^#/,"");
+    if (BOUNCE) { BOUNCE = false; LAST_HASH = h; return; }
+    if (/^leson\//.test(LAST_HASH) && h !== LAST_HASH && lesonDirty()) {
+      if (!confirm("This lesson has changes you have not saved. Leave them behind?")) {
+        BOUNCE = true; location.hash = LAST_HASH; return;
+      }
+      LDRAFT = null;
+    }
+    LAST_HASH = h;
+    var parts = h.split("/");
+    var k = parts[0], arg = parts[1];
+    // "+ Add a language to this module" arrives as leson/new?send=3, so the
+    // new lesson opens already belonging to the module it was created from.
+    var qArg = null;
+    if (arg && arg.indexOf("?") >= 0) {
+      qArg = new URLSearchParams(arg.slice(arg.indexOf("?") + 1));
+      arg = arg.slice(0, arg.indexOf("?"));
+    }
+
+    if (!k) return viewHome();
+
+    if (k === "fom" && arg === "new") {
+      DRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"", eta:"bouyon",
+                schema:{ subtitle:"", submit_label:"Voye", sections:[blankSection()] } };
+      return viewBuilder();
+    }
+    if (k === "fom" && arg) {
+      loading();
+      return api("fom/" + encodeURIComponent(arg)).then(function (f) {
+        DRAFT = { isNew:false, slug:f.slug, originalSlug:f.slug, tit:f.tit,
+                  deskripsyon:f.deskripsyon||"", eta:f.eta, slugTouched:true,
+                  schema: Object.assign({ sections:[blankSection()] }, f.schema) };
+        DRAFT.schema.sections.forEach(function(s){ s.fields.forEach(function(x){ x.options = x.options||[]; }); });
+        viewBuilder();
+      }).catch(oops);
+    }
+    if (k === "fom") {
+      loading();
+      return api("fom").then(function (d) {
+        viewFomList(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "leson" && arg === "new") {
+      var pre = qArg && qArg.get("send");
+      LDRAFT = { isNew:true, slug:"", originalSlug:"", tit:"", deskripsyon:"",
+                 send: pre === null || pre === undefined || pre === "" ? null : Number(pre),
+                 gwoup: (qArg && qArg.get("gwoup")) || "",
+                 lang:"KR", eta:"bouyon", tab:"deck",
+                 deck:{ slides:[ blankSlide("tit"), blankSlide("fen") ] },
+                 liv:{ slides:[] } };
+      lesonMark();
+      return viewLesonEdit();
+    }
+    if (k === "leson" && arg) {
+      loading();
+      return Promise.all([
+        api("leson/" + encodeURIComponent(arg)),
+        LESONS ? Promise.resolve({ leson: LESONS }) : api("leson")
+      ]).then(function (r) {
+        var l = r[0];
+        LESONS = r[1].leson || [];
+        LDRAFT = { isNew:false, slug:l.slug, originalSlug:l.slug, tit:l.tit,
+                   deskripsyon:l.deskripsyon||"", send:l.send, gwoup:l.gwoup||"", lang:l.lang,
+                   eta:l.eta, slugTouched:true, tab:"deck",
+                   deck: (l.deck && l.deck.slides) ? l.deck : { slides:[blankSlide("tit")] },
+                   liv: (l.liv && l.liv.slides) ? l.liv : { slides:[] } };
+        lesonMark();
+        viewLesonEdit();
+      }).catch(oops);
+    }
+    if (k === "leson") {
+      loading();
+      return api("leson").then(function (d) {
+        viewLesonList(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "repons" && arg) {
+      loading();
+      return api("repons/" + encodeURIComponent(arg)).then(viewRepons).catch(oops);
+    }
+    if (k === "apwobasyon") {
+      loading();
+      return api("", { base: APW }).then(function (d) {
+        viewApw(d);
+        var m = sessionStorage.getItem("ekipmsg");
+        if (m) { sessionStorage.removeItem("ekipmsg"); note("ok", esc(m)); }
+      }).catch(oops);
+    }
+    if (k === "siyen" && arg) {
+      loading();
+      return api("", { base: APW }).then(function (d) {
+        APWDATA = d;
+        var all = d.tann.concat(d.fini);
+        var it = null;
+        for (var j = 0; j < all.length; j++) if (all[j].repons_id === arg) it = all[j];
+        if (!it) { location.hash = "apwobasyon"; return; }
+        if (!it.mwen_ka_siyen) {
+          note("err", it.poukisa_non || "You cannot sign this one.");
+          viewApw(d);
+          return;
+        }
+        viewSign(it);
+      }).catch(oops);
+    }
+
+    var V = { dok:viewDok, pewol:viewTodo };
+    if (!V[k]) { location.hash = ""; return; }
+    loading();
+    api(k).then(V[k]).catch(oops);
+  }
+
+  function start(token, me) {
+    TOKEN = token; ME = me;
+    login.hidden = true; app.hidden = false;
+    window.onhashchange = route;
+    route();
+  }
+
+  // The tab close and the reload do not go through route().
+  window.addEventListener("beforeunload", function (e) {
+    if (!lesonDirty()) return;
+    e.preventDefault();
+    e.returnValue = "";
+  });
+
+  login.addEventListener("submit", function (e) {
+    e.preventDefault();
+    lerr.hidden = true;
+    TOKEN = btoa(document.getElementById("u").value + ":" + document.getElementById("p").value);
+    api("").then(function (me) { sessionStorage.setItem("ekip", TOKEN); start(TOKEN, me); })
+      .catch(function (err) { TOKEN = null; lerr.textContent = err.message; lerr.hidden = false; });
+  });
+
+  var saved = sessionStorage.getItem("ekip");
+  if (saved) {
+    TOKEN = saved;
+    api("").then(function (me){ start(saved, me); })
+      .catch(function(){ TOKEN = null; sessionStorage.removeItem("ekip"); });
+  }
+})();
+</script>
+</body>
+</html>
