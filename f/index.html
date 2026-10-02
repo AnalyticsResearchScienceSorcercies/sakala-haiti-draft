@@ -86,6 +86,31 @@ canvas.sig{display:block;width:100%;height:150px;touch-action:none;cursor:crossh
  border-right:1px solid var(--line);font-weight:700;font-size:14px;color:var(--muted)}
 .cur input{border:0;border-radius:0}
 .cur input.kalkil{background:#F1EFE8;font-weight:700;color:#111}
+/* repeatable rows: a card per row. A six-column table on a 360px phone is a
+   form nobody finishes, so each row is its own card with its own number and
+   its own remove button, and the columns stack. */
+.grp{border:1px solid var(--line);border-radius:var(--r);background:var(--paper);
+ padding:10px 10px 4px;margin-top:2px}
+.grow{background:var(--card);border:1px solid var(--line);border-radius:6px;
+ padding:12px;margin-bottom:10px}
+.growhead{display:flex;align-items:center;gap:10px;margin:0 0 11px}
+.growhead .n{flex:1;font-weight:700;font-size:12px;letter-spacing:.05em;
+ text-transform:uppercase;color:var(--muted)}
+.growhead .amt{font-weight:700;font-size:14px;white-space:nowrap}
+.growhead button{background:0;border:1px solid var(--line);border-radius:5px;
+ padding:5px 11px;font:inherit;font-size:13px;font-weight:600;color:var(--accent);
+ cursor:pointer}
+.growhead button[disabled]{opacity:.4;cursor:not-allowed;color:var(--muted)}
+.grow .fldwrap{margin-bottom:10px}
+.grow .fldwrap:last-child{margin-bottom:0}
+.gradd{width:100%;padding:12px;margin-bottom:10px;background:var(--card);
+ border:1px dashed var(--line);border-radius:6px;font:inherit;font-size:15px;
+ font-weight:700;color:var(--ink);cursor:pointer}
+.gradd[disabled]{opacity:.5;cursor:not-allowed;font-weight:600;color:var(--muted)}
+
+/* a computed number is not a box you type in, and it should not look like one */
+input[readonly]{background:var(--paper);color:var(--muted);font-weight:700}
+.cur input[readonly]{background:var(--paper)}
 
 /* file: pick a photo or a PDF, upload it before the form is sent */
 .up{border:1px solid var(--line);border-radius:6px;background:var(--card);padding:10px}
@@ -251,7 +276,8 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
       }
       return wrapFld(f, '<div class="cur"><span class="unit">' + esc(f.currency || "HTG") + "</span>" +
         '<input type="number" name="'+esc(f.key)+'"'+(f.required?" required":"") +
-        ' inputmode="decimal" min="'+(f.min!=null?esc(f.min):"0")+'" step="'+esc(f.step||"0.01")+'"></div>'); },
+        ((f.readonly||f.sum_of)?" readonly":"") +
+        ' inputmode="decimal" min=""'+(f.min!=null?esc(f.min):"0")+'" step="'+esc(f.step||"0.01")+'"></div>'); },
     rating:   function(f){
       var lo = f.min == null ? 1 : +f.min, hi = f.max == null ? 5 : +f.max, b = "";
       for (var i = lo; i <= hi; i++) {
@@ -293,7 +319,19 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
         return '<option value="'+esc(x.v)+'">'+esc(x.t)+"</option>"; }).join("");
       return wrapFld(f, '<select name="'+esc(f.key)+'"'+(f.required?" required":"")+">"+o+"</select>"); },
     radio:    function(f){ return choice(f,"radio"); },
-    checkbox: function(f){ return choice(f,"checkbox"); }
+    checkbox: function(f){ return choice(f,"checkbox"); },
+    // A group draws its shell here and its rows in wireGroups(), because the
+    // rows are the part that changes after the page is built.
+    group:    function(f){
+      var need = (f.min == null ? 0 : +f.min) > 0;
+      return '<div class="fldwrap">' +
+        (f.label ? '<label class="fld">' + esc(f.label) +
+          (need ? ' <span class="req">*</span>' : "") + "</label>" : "") +
+        (f.hint ? '<p class="hint">' + esc(f.hint) + "</p>" : "") +
+        '<div class="grp" data-grp="' + esc(f.key) + '"><div class="grows"></div>' +
+        '<button type="button" class="gradd" data-gradd="1">+ ' +
+          esc(f.add_label || "Ajoute yon liy") + "</button></div></div>";
+    }
   };
 
   function wrapFld(f, control) {
@@ -303,7 +341,8 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
   }
   function input(f, type) {
     return wrapFld(f, '<input type="'+type+'" name="'+esc(f.key)+'"'+
-      (f.required?" required":"") + attr(f,"placeholder") + attr(f,"autocomplete") +
+      (f.required?" required":"") + ((f.readonly||f.sum_of)?" readonly":"") +
+      attr(f,"placeholder") + attr(f,"autocomplete") +
       (f.min!=null?' min="'+esc(f.min)+'"':"") + (f.max!=null?' max="'+esc(f.max)+'"':"") +
       (f.step!=null?' step="'+esc(f.step)+'"':"") +
       (type==="tel"?' inputmode="tel"':"") + ">");
@@ -583,6 +622,211 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     window.scrollTo(0, 0);
   }
 
+  // ---------------------- repeatable row groups ----------------------
+  // NAMING. Every input inside a row is called
+  //     "g." + groupKey + "." + rowUid + "." + columnKey
+  // Two properties carry weight. The dots make a row input's name impossible
+  // to confuse with a top-level field key, which must match
+  // ^[a-z][a-z0-9_]{0,40}$ and so can never contain one — which in turn means
+  // the stray row names sitting in FormData can never be picked up by
+  // collect(), and a row's radio buttons can never join the group next door.
+  // And the uid is a counter that is never reused, so deleting row 2 does not
+  // renumber rows 3 and 4 and nothing anywhere holds a stale index.
+
+  var GUID = 0;
+
+  function gname(gk, uid, ck) { return "g." + gk + "." + uid + "." + ck; }
+
+  function groupFields() {
+    var out = [];
+    ((DEF.schema || {}).sections || []).forEach(function (sec) {
+      (sec.fields || []).forEach(function (f) { if (f.type === "group") out.push(f); });
+    });
+    return out;
+  }
+
+  // Every declared total, resolved once: which field holds it, which group and
+  // column feed it.
+  function sumTargets() {
+    var out = [];
+    ((DEF.schema || {}).sections || []).forEach(function (sec) {
+      (sec.fields || []).forEach(function (f) {
+        if (typeof f.sum_of !== "string") return;
+        var i = f.sum_of.indexOf(".");
+        if (i <= 0 || i === f.sum_of.length - 1) return;
+        out.push({ key: f.key, gk: f.sum_of.slice(0, i), ck: f.sum_of.slice(i + 1) });
+      });
+    });
+    return out;
+  }
+
+  function round2(n) { return Math.round((n + Number.EPSILON) * 100) / 100; }
+  function money(n) {
+    return (Math.round(n * 100) / 100)
+      .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function addRow(f) {
+    var box = document.querySelector('[data-grp="' + f.key + '"] .grows');
+    if (!box) return false;
+    var max = f.max == null ? 20 : +f.max;
+    if (box.children.length >= max) return false;
+
+    var uid = ++GUID;
+    var cells = (f.fields || []).map(function (c) {
+      var d = {}, k;
+      for (k in c) if (Object.prototype.hasOwnProperty.call(c, k)) d[k] = c[k];
+      d.key = gname(f.key, uid, c.key);
+      // Requiredness inside a row is checked in missingRequired(), never by the
+      // browser. A row the person added and left alone is dropped on collect,
+      // so a native `required` on it would wedge the submit button against a
+      // row that is not going to be sent at all.
+      d.required = false;
+      if (c.product_of) d.readonly = true;
+      var r = FIELD[c.type];
+      return r ? r(d)
+        : '<div class="note err">Kalite kolòn «' + esc(c.type) + '» pa rekonèt.</div>';
+    }).join("");
+
+    var div = document.createElement("div");
+    div.className = "grow";
+    div.setAttribute("data-grow", uid);
+    div.innerHTML = '<div class="growhead"><span class="n"></span><span class="amt"></span>' +
+      '<button type="button" data-grdel="1">Retire</button></div>' + cells;
+    box.appendChild(div);
+    renumber(f);
+    recalc();
+    return true;
+  }
+
+  function renumber(f) {
+    var box = document.querySelector('[data-grp="' + f.key + '"]');
+    if (!box) return;
+    var rows = box.querySelectorAll("[data-grow]");
+    var word = f.row_label || "Liy";
+    var max = f.max == null ? 20 : +f.max;
+    Array.prototype.forEach.call(rows, function (row, i) {
+      row.querySelector(".growhead .n").textContent = word + " " + (i + 1);
+      row.querySelector("[data-grdel]").disabled = rows.length <= 1;
+    });
+    var add = box.querySelector("[data-gradd]");
+    add.disabled = rows.length >= max;
+    add.textContent = rows.length >= max
+      ? "Ou rive nan maksimòm " + max + " " + word.toLowerCase()
+      : "+ " + (f.add_label || "Ajoute yon liy");
+  }
+
+  // Reads one group out of the DOM in display order, flagging rows nobody has
+  // touched. The required check needs the number printed on the card, not the
+  // index in the array it is about to send.
+  function groupRows(f) {
+    var out = [];
+    var rows = document.querySelectorAll('[data-grp="' + f.key + '"] [data-grow]');
+    Array.prototype.forEach.call(rows, function (row, i) {
+      var uid = row.getAttribute("data-grow"), obj = {}, blank = true;
+      (f.fields || []).forEach(function (c) {
+        var n = gname(f.key, uid, c.key);
+        var el = c.type === "radio"
+          ? row.querySelector('[name="' + n + '"]:checked')
+          : row.querySelector('[name="' + n + '"]');
+        var v = el ? el.value : "";
+        obj[c.key] = v;
+        if (String(v).trim() !== "") blank = false;
+      });
+      out.push({ n: i + 1, v: obj, blank: blank });
+    });
+    return out;
+  }
+
+  function collectGroup(f) {
+    return groupRows(f)
+      .filter(function (r) { return !r.blank; })
+      .map(function (r) { return r.v; });
+  }
+
+  // Live arithmetic, and cosmetic on purpose. The `f` function recomputes every
+  // product and every total from the stored rows and overwrites whatever
+  // arrives. This exists so the person watches the number move while they type,
+  // which is the entire reason the total stops being a guess.
+  function recalc() {
+    var targets = sumTargets();
+
+    groupFields().forEach(function (f) {
+      var rows = document.querySelectorAll('[data-grp="' + f.key + '"] [data-grow]');
+      var chip = null, t;
+      for (t = 0; t < targets.length; t++) {
+        if (targets[t].gk === f.key) { chip = targets[t].ck; break; }
+      }
+      Array.prototype.forEach.call(rows, function (row) {
+        var uid = row.getAttribute("data-grow");
+        (f.fields || []).forEach(function (c) {
+          if (!c.product_of || c.product_of.length < 2) return;
+          var p = 1, ok = true, i, el, x;
+          for (i = 0; i < c.product_of.length; i++) {
+            el = row.querySelector('[name="' + gname(f.key, uid, c.product_of[i]) + '"]');
+            x = el && el.value !== "" ? Number(el.value) : NaN;
+            if (!isFinite(x)) { ok = false; break; }
+            p *= x;
+          }
+          var out = row.querySelector('[name="' + gname(f.key, uid, c.key) + '"]');
+          if (out) out.value = ok ? round2(p) : "";
+        });
+        var amt = row.querySelector(".growhead .amt");
+        if (amt) {
+          var cel = chip ? row.querySelector('[name="' + gname(f.key, uid, chip) + '"]') : null;
+          amt.textContent = cel && cel.value !== "" && isFinite(Number(cel.value))
+            ? money(Number(cel.value)) : "";
+        }
+      });
+    });
+
+    // Totals accumulate in centimes: 1200.10 + 1200.20 has to be 2400.30 and
+    // not 2400.2999999999997 on a money form.
+    targets.forEach(function (t) {
+      var cents = 0;
+      var rows = document.querySelectorAll('[data-grp="' + t.gk + '"] [data-grow]');
+      Array.prototype.forEach.call(rows, function (row) {
+        var el = row.querySelector(
+          '[name="' + gname(t.gk, row.getAttribute("data-grow"), t.ck) + '"]');
+        var x = el && el.value !== "" ? Number(el.value) : NaN;
+        if (isFinite(x)) cents += Math.round(x * 100);
+      });
+      var dst = document.querySelector('[name="' + t.key + '"]');
+      if (dst) dst.value = cents / 100;
+    });
+  }
+
+  function wireGroups() {
+    groupFields().forEach(function (f) {
+      var box = document.querySelector('[data-grp="' + f.key + '"]');
+      if (!box) return;
+
+      // Delegated on the container, so a row added in ten minutes needs no
+      // wiring of its own and nothing has to be rebound after a remove.
+      box.addEventListener("click", function (e) {
+        var t = e.target;
+        if (!t || !t.getAttribute) return;
+        if (t.getAttribute("data-gradd") !== null) { addRow(f); return; }
+        if (t.getAttribute("data-grdel") === null) return;
+        var row = t.parentNode && t.parentNode.parentNode;
+        if (row && row.getAttribute && row.getAttribute("data-grow") !== null) {
+          row.parentNode.removeChild(row);
+          renumber(f);
+          recalc();
+        }
+      });
+      box.addEventListener("input", recalc);
+      box.addEventListener("change", recalc);
+
+      // Always open with at least one row. An empty table reads as a broken
+      // page; a blank row reads as an invitation, and collect() drops it if
+      // nobody writes in it.
+      var start = Math.max(1, f.min == null ? 1 : +f.min);
+      for (var i = 0; i < start; i++) addRow(f);
+    });
+    recalc();
+  }
+
   // ---------------------- page renderers ----------------------
   function renderForm(d) {
     var s = d.schema || {};
@@ -607,6 +851,7 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     wireRatings();
     wireSignatures();
     wireFiles();
+    wireGroups();
     showQueue();
     wireAuto();
   }
@@ -961,6 +1206,7 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
       (sec.fields||[]).forEach(function (fl) {
         out[fl.key] = fl.type === "checkbox" ? fd.getAll(fl.key)
                     : fl.type === "file"     ? filePick(fd.get(fl.key))
+                    : fl.type === "group"    ? collectGroup(fl)
                     : (fd.get(fl.key) || "");
       });
     });
@@ -1007,10 +1253,31 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
   // Browsers skip constraint validation on hidden inputs, so a required
   // signature or rating never triggers the native "please fill this in".
   // Check them here or the person only finds out after a round trip.
+  // A group's inputs carry no native `required` (see addRow), so its rows are
+  // checked here too: the minimum row count, then one row's gaps at a time.
   function missingHidden() {
     var out = [];
     (DEF.schema.sections || []).forEach(function (sec) {
       (sec.fields || []).forEach(function (f) {
+        if (f.type === "group") {
+          var min = f.min == null ? 0 : +f.min;
+          var rows = groupRows(f);
+          var filled = rows.filter(function (r) { return !r.blank; });
+          if (filled.length < min) {
+            out.push((f.label || f.key) + " — ou bezwen omwen " + min + " " +
+              (f.row_label || "liy").toLowerCase());
+            return;
+          }
+          for (var i = 0; i < rows.length; i++) {
+            if (rows[i].blank) continue;
+            var bad = [];
+            (f.fields || []).forEach(function (c) {
+              if (c.required && String(rows[i].v[c.key] || "").trim() === "") bad.push(c.label || c.key);
+            });
+            if (bad.length) { out.push((f.row_label || "Liy") + " " + rows[i].n + ": " + bad.join(", ")); return; }
+          }
+          return;
+        }
         if (!f.required) return;
         if (f.type !== "signature" && f.type !== "rating" && f.type !== "file") return;
         var el = document.querySelector('input[name="' + f.key + '"]');
