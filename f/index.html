@@ -863,7 +863,8 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
   //   sonje: "group"            remembered on this phone, filled in next time
   //   semen: true               (with sonje) a week number that moves itself on:
   //                             the last one saved + the whole weeks since
-  //   jou: "lendi"|"vandredi"   a date that starts on this week's Monday/Friday
+  //   jou: "lendi"|"vandredi"|"jodi"  a date that starts on this week's
+  //                             Monday or Friday, or on today
   //   pa_semen: "key"           a select picked from a week number, using each
   //                             option's semen: [from, to]
   // Everything filled in stays editable. A guess the person can see and fix
@@ -893,8 +894,8 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     F.forEach(function (f) {
       var e = byName(f.key);
       if (!e || e.value) return;
-      if (f.jou === "lendi" || f.jou === "vandredi") {
-        var d = new Date(lendi);
+      if (f.jou === "lendi" || f.jou === "vandredi" || f.jou === "jodi") {
+        var d = f.jou === "jodi" ? new Date() : new Date(lendi);
         if (f.jou === "vandredi") d.setDate(d.getDate() + 4);
         e.value = isoDay(d);
       }
