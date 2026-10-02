@@ -85,12 +85,33 @@ function strip(schema: Record<string, unknown>) {
 
 // Deliberately flattens ONE level. A group must stay one field to the main
 // loop and to the scoring filter, so a child is never scored.
+//
+// A section's `si` (show only if) is copied onto each of its fields that has
+// none of its own, so the main loop needs to look in one place only.
 function fieldsOf(schema: Record<string, unknown>): Field[] {
   const out: Field[] = [];
   for (const sec of (schema.sections ?? []) as Record<string, unknown>[]) {
-    for (const f of (sec.fields ?? []) as Field[]) out.push(f);
+    for (const f of (sec.fields ?? []) as Field[]) {
+      out.push(sec.si && !f.si ? { ...f, si: sec.si } : f);
+    }
   }
   return out;
+}
+
+// SHOW ONLY IF, 2026-10-02. `si: {chan, vo}` holds when the answer to field
+// `chan` is one of `vo`. The renderer hides a question whose condition fails;
+// this is the same rule on the server, where it decides. A hidden question is
+// neither required nor kept: whatever arrives for it is blanked, so hours typed
+// for a youth who was then marked absent never reach the record.
+function siOk(c: unknown, body: Record<string, unknown>): boolean {
+  if (!c || typeof c !== "object") return true;
+  const cc = c as { chan?: unknown; vo?: unknown };
+  if (!cc.chan) return true;
+  const want = ([] as unknown[]).concat(cc.vo ?? []).map(String);
+  const raw = body[String(cc.chan)];
+  const got = Array.isArray(raw) ? raw.map(String)
+    : (raw == null || raw === "" ? [] : [String(raw)]);
+  return got.some((v) => want.includes(v));
 }
 
 // A question's label for feedback. Most forms label the field; the quiz forms
@@ -221,6 +242,12 @@ Deno.serve(async (req: Request) => {
 
   for (const f of fields) {
     let v = body[f.key];
+
+    if (!siOk(f.si, body)) {
+      repons[f.key] = (f.type === "checkbox" || f.type === "group") ? []
+        : (f.type === "number" || f.type === "currency" || f.type === "rating") ? null : "";
+      continue;
+    }
 
     if (f.type === "group") {
       const g = normGroup(f, body[f.key]);

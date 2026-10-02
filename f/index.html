@@ -830,12 +830,14 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
   // ---------------------- page renderers ----------------------
   function renderForm(d) {
     var s = d.schema || {};
-    var body = (s.sections||[]).map(function (sec) {
+    var body = (s.sections||[]).map(function (sec, si) {
       var inner = (sec.fields||[]).map(function (f) {
         var r = FIELD[f.type];
-        return r ? r(f) : '<div class="note err">Kalite chan «'+esc(f.type)+'» pa rekonèt.</div>';
+        var h = r ? r(f) : '<div class="note err">Kalite chan «'+esc(f.type)+'» pa rekonèt.</div>';
+        return f.si ? '<div data-si-f="' + esc(f.key) + '">' + h + "</div>" : h;
       }).join("");
-      return "<fieldset>" + (sec.legend?"<legend>"+esc(sec.legend)+"</legend>":"") +
+      return "<fieldset" + (sec.si ? ' data-si-s="' + si + '"' : "") + ">" +
+        (sec.legend?"<legend>"+esc(sec.legend)+"</legend>":"") +
         (sec.hint?'<p class="hint">'+esc(sec.hint)+"</p>":"") + inner + "</fieldset>";
     }).join("");
 
@@ -854,6 +856,54 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     wireGroups();
     showQueue();
     wireAuto();
+    wireSi();
+  }
+
+  // ---------------- show only if, 2026-10-02 ----------------
+  // si: {chan: "prezans", vo: ["prezan"]} on a field or a whole section. The
+  // question shows only while that answer is picked; hidden, it is neither
+  // required nor kept. The `f` function applies the same rule and blanks a
+  // hidden answer, so a value typed before the person changed their mind
+  // (hours on a youth then marked absent) never reaches the record.
+  function siVals(k) {
+    var els = document.querySelectorAll('#f [name="' + k + '"]'), out = [];
+    Array.prototype.forEach.call(els, function (e) {
+      if (e.type === "radio" || e.type === "checkbox") { if (e.checked) out.push(e.value); }
+      else if (e.value !== "") out.push(e.value);
+    });
+    return out;
+  }
+  function siOk(c) {
+    if (!c || !c.chan) return true;
+    var want = [].concat(c.vo == null ? [] : c.vo).map(String), got = siVals(c.chan);
+    return got.some(function (v) { return want.indexOf(v) >= 0; });
+  }
+  function siFor(f, sec) { return f.si || (sec && sec.si) || null; }
+  function siApply() {
+    (DEF.schema.sections || []).forEach(function (sec, i) {
+      var box = sec.si ? document.querySelector('[data-si-s="' + i + '"]') : null;
+      if (box) siShow(box, siOk(sec.si));
+      (sec.fields || []).forEach(function (f) {
+        var el = f.si ? document.querySelector('[data-si-f="' + f.key + '"]') : null;
+        if (el) siShow(el, siOk(f.si));
+      });
+    });
+  }
+  // Hidden inputs must also drop their native `required`, or the browser
+  // would refuse to submit over a question the person cannot see.
+  function siShow(el, on) {
+    el.hidden = !on;
+    Array.prototype.forEach.call(el.querySelectorAll("input,select,textarea"), function (x) {
+      if (!on && x.required) { x.setAttribute("data-si-req", "1"); x.required = false; }
+      if (on && x.getAttribute("data-si-req")) { x.required = true; x.removeAttribute("data-si-req"); }
+    });
+  }
+  function wireSi() {
+    var form = document.getElementById("f");
+    if (!form) return;
+    form.addEventListener("change", siApply);
+    form.addEventListener("input", siApply);
+    siApply();
   }
 
   // ------------------- auto numbers, 2026-10-02 -------------------
@@ -1310,6 +1360,7 @@ button.alt{width:100%;padding:13px;background:var(--card);color:var(--ink);
     var out = [];
     (DEF.schema.sections || []).forEach(function (sec) {
       (sec.fields || []).forEach(function (f) {
+        if (!siOk(siFor(f, sec))) return;   // hidden: not asked, not required
         if (f.type === "group") {
           var min = f.min == null ? 0 : +f.min;
           var rows = groupRows(f);
