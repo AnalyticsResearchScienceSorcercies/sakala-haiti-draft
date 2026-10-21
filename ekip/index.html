@@ -21,12 +21,14 @@ html,body{margin:0;background:var(--bg);color:var(--ink);
 a{color:inherit}
 .app{max-width:480px;margin:0 auto;min-height:100vh;padding:0 16px 40px}
 .mock{background:var(--soon-bg);color:var(--soon);font-size:12px;text-align:center;padding:6px 16px;margin:0 -16px}
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 10px}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 6px;min-height:64px}
 .brand{font-family:Anton,Impact,sans-serif;font-size:26px;letter-spacing:.5px;color:var(--prussian);text-decoration:none}
 .brand b{color:var(--red);font-weight:400}
 .who{display:flex;gap:8px;align-items:center;font-size:14px}
 .who .pill{background:var(--prussian);color:#fff;padding:4px 10px;border-radius:999px}
-.who button,.back{background:none;border:0;color:var(--prussian);text-decoration:underline;font:inherit;font-size:14px;cursor:pointer;padding:4px}
+.who button,.back{background:none;border:0;color:var(--prussian);text-decoration:underline;font:inherit;font-size:15px;cursor:pointer;padding:0 8px;min-height:44px;min-width:44px;display:inline-flex;align-items:center}
+.back:first-child{margin-left:-8px}
+.back.full{font-size:22px;text-decoration:none;justify-content:center}
 h1{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:30px;line-height:1.1;margin:18px 0 6px}
 .lead{color:var(--muted);margin:0 0 18px}
 .roles{display:grid;gap:12px}
@@ -43,19 +45,23 @@ h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
 .item .d{color:var(--muted);font-size:14px}
 .item .go{font-size:22px;color:var(--prussian)}
 .item.vini{border-style:dashed}
+.item.sm{min-height:52px;padding:12px 14px}
+.tst{margin-top:30px}
+.tst>summary{cursor:pointer;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:12px 0;min-height:44px}
 .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:2px}
 .tag.vini{background:var(--soon-bg);color:var(--soon)}
 .tag.bouyon{background:#E3ECEF;color:var(--prussian)}
 .note{background:var(--card);border-left:4px solid var(--green);border-radius:8px;padding:12px 14px;font-size:15px}
+.alert{margin-bottom:14px}
 .alert .item{border-color:var(--red)}
 .alert .item .go{color:var(--red)}
 .seek{margin-top:26px;border-top:1px solid var(--line);padding-top:6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;cursor:pointer;color:var(--prussian)}
 .chip:hover{border-color:var(--prussian)}
-.ibar{display:flex;align-items:center;gap:10px;padding:2px 0 8px;border-bottom:1px solid var(--line)}
+.ibar{display:flex;align-items:center;gap:6px;padding:0;border-bottom:1px solid var(--line)}
 .ibar .it{font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.frame{display:block;width:calc(100% + 32px);margin:0 -16px;border:0;height:calc(100vh - 110px);height:calc(100dvh - 110px);background:#fff}
+.frame{display:block;width:calc(100% + 32px);margin:0 -16px;border:0;height:calc(100vh - 112px);height:calc(100dvh - 112px);background:#fff}
 body.inline footer{display:none}
 body.inline .app{padding-bottom:0}
 footer i{font-style:italic;color:var(--soon)}
@@ -141,7 +147,7 @@ var LESON = [
   ['apranti-7-rechech','7 · Rechèch ak ankèt']
 ];
 LESON.forEach(function(l){
-  I.push({id:l[0], t:'Leson '+l[1], d:'Slayd pou seyans lan. Travay lakay la rakonte an pèsòn.', u:L+l[0], k:'aprann', wol:{apranti:'aprann'}, leson:1});
+  I.push({id:l[0], t:'Leson '+l[1], d:'', u:L+l[0], k:'aprann', wol:{apranti:'aprann'}, leson:1});
 });
 
 var SEK = {
@@ -160,11 +166,12 @@ function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&
 function item(x){
   var tag = x.eta === 'vini' ? '<span class="tag vini">ap vini</span>'
           : x.eta === 'bouyon' ? '<span class="tag bouyon">bouyon</span>' : '';
-  var inner = '<span class="tx"><span class="t">'+esc(x.t)+tag+'</span><br><span class="d">'+esc(x.d)+'</span></span>'
+  var inner = '<span class="tx"><span class="t">'+esc(x.t)+tag+'</span>'+(x.d ? '<br><span class="d">'+esc(x.d)+'</span>' : '')+'</span>'
             + '<span class="go" aria-hidden="true">'+(x.eta==='vini'?'…':'›')+'</span>';
-  if(x.go){ return '<a class="item" href="#'+x.go+'">'+inner+'</a>'; }
-  if(!x.u){ return '<div class="item vini">'+inner+'</div>'; }
-  return '<a class="item" href="#ouvri/'+x.id+'">'+inner+'</a>';
+  var c = 'item' + (x.d ? '' : ' sm');
+  if(x.go){ return '<a class="'+c+'" href="#'+x.go+'">'+inner+'</a>'; }
+  if(!x.u){ return '<div class="'+c+' vini">'+inner+'</div>'; }
+  return '<a class="'+c+'" href="#ouvri/'+x.id+'">'+inner+'</a>';
 }
 
 function chooser(){
@@ -193,6 +200,10 @@ function seek(){
 function home(w){
   bar(w);
   var h = '<h1>'+({manadje:'Sa pou fè', apranti:'Byenveni', kowo:'Sit yo ak lajan'})[w]+'</h1>';
+  // The emergency door goes first: on a phone the bottom of the list is three
+  // screens down, and nobody scrolls for it in a hurry.
+  var p = I.filter(function(x){ return x.wol[w] === 'pwoblem'; });
+  h += '<div class="list alert">'+p.map(item).join('')+'</div>';
   if(jesyonOk()){
     h += '<div class="list"><a class="item jes" href="#jesyon"><span class="tx"><span class="t">Jesyon</span><br>'
       + '<span class="d">Rezilta ak apwobasyon · '+esc(MWEN.non)+'</span></span><span class="go">›</span></a></div>';
@@ -204,18 +215,19 @@ function home(w){
     var xs = I.filter(function(x){ return x.wol[w] === s[0]; });
     if(xs.length){ h += '<h2>'+s[1]+'</h2><div class="list">'+xs.map(item).join('')+'</div>'; }
   });
-  var p = I.filter(function(x){ return x.wol[w] === 'pwoblem'; });
-  h += '<h2>Si gen yon pwoblèm</h2><div class="list alert">'+p.map(item).join('')+'</div>';
   // Coordinators can fill or read anything, so they can test every tool the
   // other two roles see. Whatever is not already above is listed by topic.
   if(w === 'kowo'){
     var shown = {}; I.forEach(function(x){ if(x.wol.kowo){ shown[x.id] = 1; } });
-    h += '<h2 style="margin-top:30px">Tout lòt zouti yo · pou teste</h2>';
+    // The seven lessons stay behind their one list link.
+    var rest = I.filter(function(x){ return !shown[x.id] && !x.leson; });
+    h += '<details class="tst"><summary>Tout lòt zouti yo · pou teste ('+rest.length+')</summary>';
     KAT.concat([['sit','Sit yo']]).forEach(function(k){
       if(k[0] === 'tout'){ return; }
-      var xs = I.filter(function(x){ return x.k === k[0] && !shown[x.id]; });
+      var xs = rest.filter(function(x){ return x.k === k[0]; });
       if(xs.length){ h += '<h2>'+k[1]+'</h2><div class="list">'+xs.map(item).join('')+'</div>'; }
     });
+    h += '</details>';
   }
   main.innerHTML = h + seek();
 }
@@ -247,7 +259,7 @@ function ouvri(id){
   document.body.classList.add('inline');
   main.innerHTML = '<div class="ibar"><a class="back" href="#'+PREV+'">‹ Retounen</a>'
     + '<span class="it">'+esc(x.t)+'</span>'
-    + '<a class="back" href="'+x.u+'" title="Louvri l nan tout ekran an (pou enprime)">↗</a></div>'
+    + '<a class="back full" href="'+x.u+'" title="Louvri l nan tout ekran an (pou enprime)" aria-label="Tout ekran">↗</a></div>'
     + '<iframe class="frame" src="'+x.u+'" title="'+esc(x.t)+'"></iframe>';
 }
 
