@@ -547,7 +547,7 @@ function flush(){
       if(x.ok && x.j && x.j.ok){
         qwrite(qread().filter(function(o){ return o.id !== item.id; }));
         var who = DB.moun[item.non];
-        if(who){ who.voye[item.n] = {ref: x.j.referans || "ok", dat: today()}; save(true); }
+        if(who){ who.voye[item.n] = {ref: x.j.referans || "ok", dat: today(), h: item.h || JSON.stringify(item.p)}; save(true); }
         render(); flush();
       } else if(x.s >= 400 && x.s < 500){
         // A refusal will not fix itself on retry. Drop it and say so.
@@ -564,8 +564,14 @@ function send(n){
   if(s.too_big){ alertBox(n, "Paj sa a twò gwo pou voye. Retire kèk liy vid epi eseye ankò."); return; }
   var payload = {non:m.non, tel:m.tel || "", devwa:n, paj:p.t, mwa:m.mwa, vesyon:VESYON, kle:m.kle};
   for(var k in s){ if(k !== "too_big"){ payload[k] = s[k]; } }
+  // DOUBLE TAP, 2026-10-21: the first real week stored every devwa twice. A
+  // tap while the first send was in flight replaced it in the queue under a new
+  // id, so both went. The same page, unchanged, is never queued again.
+  var h = JSON.stringify(payload), v = m.voye[n];
+  if(qread().some(function(o){ return o.non === m.non && o.n === n && JSON.stringify(o.p) === h; })){ return; }
+  if(v && v.ref && v.h === h){ alertBox(n, "Paj sa a deja rive (referans "+v.ref+"). Ou pa chanje anyen depi lè sa a."); return; }
   var a = qread().filter(function(o){ return !(o.non === m.non && o.n === n); });
-  a.push({id:uid(), non:m.non, n:n, p:payload}); qwrite(a);
+  a.push({id:uid(), non:m.non, n:n, p:payload, h:h}); qwrite(a);
   m.voye[n] = {pending:true}; save(true); render(); flush();
 }
 function alertBox(n, msg){ var el = document.getElementById("st"+n); if(el){ el.innerHTML = '<p style="color:var(--red)">'+esc(msg)+'</p>'; } }
