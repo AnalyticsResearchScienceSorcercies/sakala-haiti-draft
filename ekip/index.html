@@ -121,13 +121,14 @@ var I = [
   {id:'check', t:'Checklist manadjè', d:'Sa pou fè jodi a, nan Òganizatè a.', u:OG+'#3', k:'planifye', wol:{manadje:'jou'}},
   {id:'sek-lendi', t:'Sèk Lendi', d:'Ouvèti semèn nan. Voye l lendi menm.', u:F+'sek-lendi', k:'rapote', wol:{manadje:'semen', kowo:'semen'}},
   {id:'sek-vandredi', t:'Sèk Vandredi', d:'Fèmti semèn nan: rekap, lekti finansye, siyati.', u:F+'sek-vandredi', k:'rapote', wol:{manadje:'semen', kowo:'semen'}},
-  {id:'devwa', t:'Voye yon devwa', d:'Devwa Manyèl la: Modil 1, 2 oswa 4.', u:F+'devwa-modil', k:'rapote', wol:{manadje:'semen'}},
+  {id:'devwa', t:'Voye yon aktivite', d:'Kaye a: chwazi aktivite a, epi voye sa ou fè.', u:F+'kaye', k:'rapote', wol:{manadje:'semen'}},
   {id:'plan', t:'Plan travay mwa a', d:'Tach, responsab, bidje, jou yo. Nan Òganizatè a.', u:OG+'#1', k:'planifye', wol:{manadje:'mwa'}},
   {id:'rekiz', t:'Mande lajan pou achte', d:'Ranpli l AVAN ou achte anyen. Ou resevwa yon nimewo REK.', u:F+'rekizisyon-fem', k:'lajan', wol:{manadje:'mwa', kowo:'mwa'}},
   {id:'depans', t:'Rapò depans mwa a', d:'Chak demann REK fèmen ak yon rapò.', u:F+'rapo-depans-mwa', k:'lajan', wol:{manadje:'mwa', kowo:'mwa'}},
   {id:'pewol', t:'Mande lajan pewòl', d:'Èdtan pwodiksyon ekip la, 130 goud pa èdtan. Ou resevwa yon nimewo PEW.', u:F+'rekizisyon-pewol', k:'lajan', wol:{manadje:'mwa', kowo:'mwa', apranti:'lajan'}},
   {id:'ensidan', t:'Rapò ensidan', d:'Yon ensidan pa fòm. Nan 1 èdtan apre sa rive.', u:F+'rapo-ensidan', k:'pwoblem', wol:{manadje:'pwoblem', apranti:'pwoblem', kowo:'pwoblem'}},
   {id:'manyel', t:'Manyèl ak kiz', d:'Li manyèl la, epi reponn kiz la. Pèsonn pa echwe.', u:K+'/ekip/manyel/', k:'aprann', wol:{manadje:'aprann', kowo:'aprann'}},
+  {id:'kaye', t:'Kaye aktivite pratik', d:'Kenz aktivite, senk pòt. Chak youn gen bouton « Voye l ».', u:K+'/ekip/kaye/', k:'aprann', wol:{manadje:'aprann', kowo:'aprann'}},
   {id:'egzanp', t:'Egzanp Manyèl la', d:'Chak modil fèt yon fwa: non, chif ak fèy ki ranpli.', u:K+'/ekip/egzanp/', k:'aprann', wol:{manadje:'aprann', kowo:'aprann'}},
   {id:'kondisyon', t:'Kondisyon yo', d:'Sa pwogram nan mande, sa li bay. Premye seksyon Manyèl la.', u:K+'/ekip/manyel/#send-0-kondisyon-kr', k:'aprann', wol:{manadje:'aprann'}},
   {id:'fey', t:'Fèy travay ak kat referans', d:'Pou enprime: fèy, kat, egzanp pawòl.', u:FEY, k:'aprann', wol:{manadje:'aprann', kowo:'aprann'}},
@@ -300,7 +301,7 @@ function jbar(t){ var w = get(); if(w){ bar(w); } return '<a class="back" href="
 var JGWOUP = [
   ['Chak jou ak chak semèn', ['prezans-chak-jou','rapo-jou','sek-lendi','sek-vandredi','rapo-ensidan']],
   ['Lajan', ['rekizisyon-fem','rapo-depans-mwa','rekizisyon-pewol']],
-  ['Aprann ak devwa', ['manyel-kiz','devwa-modil','oganizate-devwa']],
+  ['Aprann ak devwa', ['manyel-kiz','kaye','oganizate-devwa']],
   ["Sit D'Osmond", ['dosmond-entevyou-manadje','dosmond-potre-apranti','dosmond-vot-apranti']],
   ['Pòt antre', ['jwenn-travay','patne-lokal']]
 ];
