@@ -10,6 +10,8 @@
 //   GET  /jesyon/apwobasyon        -> what waits on me, and what was decided
 //   POST /jesyon/apwobasyon/<id>   -> sign or refuse the current step
 //   POST /jesyon/pin  {pin, non}   -> NO key needed: a right PIN returns a new key
+//   GET  /jesyon/kaye              -> Kaye criteria, every trainee's work and verdicts
+//   POST /jesyon/kaye/evalye       -> one evaluator verdict (append-only)
 //
 // LANGUAGE: Kreyòl, like the hub.
 //
@@ -258,6 +260,101 @@ async function siyen(me: { id: string; moun: Moun }, target: string, body: Recor
   return data;
 }
 
+// ------------------------------------------------------------------ kaye
+// The evaluator's side of the Kaye Aktivite Pratik (2026-10-21). The criteria
+// live in the `kaye` form's schema (schema.evalye, written by the Kaye builder,
+// the same lists the paper prints). A trainee is the name typed on the forms,
+// folded to one key (no accents, no case, single spaces): there are no accounts.
+// Work arrives in `kaye` (by activity), 5.1 in rapo-jou flagged pratik=wi, 6.1
+// is done in front of the evaluator. Verdicts go to ekip_evalyasyon, which the
+// database keeps append-only; the newest verdict per trainee and activity counts.
+type Akt = { n: string; modil: number; non: string; pot: boolean; kote: string; kritè: string[]; pratik: boolean };
+
+function kleNon(s: string): string {
+  return s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+async function kayeSpec(db: ReturnType<typeof sb>): Promise<Akt[]> {
+  const { data, error } = await db.from("ekip_fom").select("schema").eq("slug", "kaye").maybeSingle();
+  if (error) throw new Fail(error.message, 500);
+  const akt = (data?.schema as { evalye?: { aktivite?: unknown } } | null)?.evalye?.aktivite;
+  if (!Array.isArray(akt) || !akt.length) throw new Fail("Kaye a pa gen kritè evalyasyon.", 500);
+  return akt as Akt[];
+}
+
+async function kaye() {
+  const db = sb();
+  const spec = await kayeSpec(db);
+  const [ks, rj, ev] = await Promise.all([
+    db.from("ekip_repons").select("id,referans,created_at,repons").eq("fom_slug", "kaye")
+      .order("created_at", { ascending: false }).limit(3000),
+    db.from("ekip_repons").select("id,referans,created_at,repons").eq("fom_slug", "rapo-jou")
+      .eq("repons->>pratik", "wi").order("created_at", { ascending: false }).limit(3000),
+    db.from("ekip_evalyasyon").select("id,manadje_kle,manadje_non,aktivite,repons_id,krite,pase,not_yo,evalyate_non,le")
+      .order("le", { ascending: false }).limit(5000),
+  ]);
+  for (const r of [ks, rj, ev]) if (r.error) throw new Fail(r.error.message, 500);
+  type M = { kle: string; non: string; sit: string; soumisyon: unknown[]; evalyasyon: unknown[] };
+  const moun = new Map<string, M>();
+  const jwenn = (non: string): M | null => {
+    const k = kleNon(non);
+    if (!k) return null;
+    if (!moun.has(k)) moun.set(k, { kle: k, non: non.trim(), sit: "", soumisyon: [], evalyasyon: [] });
+    return moun.get(k)!;
+  };
+  for (const r of ks.data ?? []) {
+    const rp = r.repons as Record<string, unknown>;
+    const m = jwenn(String(rp.non ?? ""));
+    if (!m) continue;
+    if (!m.sit && rp.sit) m.sit = String(rp.sit);
+    m.soumisyon.push({ id: r.id, fom: "kaye", aktivite: String(rp.aktivite ?? ""), referans: r.referans, le: r.created_at });
+  }
+  for (const r of rj.data ?? []) {
+    const rp = r.repons as Record<string, unknown>;
+    const m = jwenn(String(rp.moun_ki_rapote ?? ""));
+    if (!m) continue;
+    if (!m.sit && rp.sit) m.sit = String(rp.sit);
+    m.soumisyon.push({ id: r.id, fom: "rapo-jou", aktivite: "5.1", referans: r.referans, le: r.created_at });
+  }
+  for (const e of ev.data ?? []) {
+    const m = moun.get(e.manadje_kle) ?? jwenn(e.manadje_non);
+    if (m) m.evalyasyon.push(e);
+  }
+  return { aktivite: spec, moun: [...moun.values()].sort((a, b) => a.non.localeCompare(b.non, "fr")) };
+}
+
+async function evalye(me: { id: string; moun: Moun }, b: Record<string, unknown>) {
+  const db = sb();
+  const a = (await kayeSpec(db)).find((x) => x.n === String(b.aktivite ?? ""));
+  if (!a) throw new Fail("Aktivite sa a pa nan Kaye a.");
+  const manadje = String(b.manadje ?? "").trim().slice(0, 120);
+  const kle = kleNon(manadje);
+  if (!kle) throw new Fail("Non manadjè estajyè a obligatwa.");
+  const ok = Array.isArray(b.krite) ? (b.krite as unknown[]).map((x) => x === true) : [];
+  if (ok.length !== a.kritè.length) throw new Fail("Kritè yo pa koresponn ak Kaye a. Rechaje paj la.", 409);
+  const siyati = String(b.siyati ?? "");
+  if (!/^data:image\/(png|jpeg);base64,/.test(siyati)) throw new Fail("Siyati obligatwa.");
+  if (siyati.length > 400_000) throw new Fail("Siyati a twò gwo.");
+  const evalyate = String(b.non ?? "").trim().slice(0, 120) || me.moun.non;
+  let repons_id: string | null = null;
+  if (b.repons_id) {
+    const { data: r } = await db.from("ekip_repons").select("id,fom_slug").eq("id", String(b.repons_id)).maybeSingle();
+    if (!r || !["kaye", "rapo-jou"].includes(r.fom_slug)) throw new Fail("Repons sa a pa yon travay Kaye.");
+    repons_id = r.id;
+  }
+  // The verdict is the criteria, never a button: every box ticked, or it does not pass.
+  const pase = ok.every(Boolean);
+  const { data, error } = await db.from("ekip_evalyasyon").insert({
+    manadje_kle: kle, manadje_non: manadje, aktivite: a.n, repons_id,
+    krite: a.kritè.map((t, i) => ({ t, ok: ok[i] })), pase,
+    not_yo: b.not_yo ? String(b.not_yo).slice(0, 2000) : null,
+    evalyate_non: evalyate, pa_ki_moun: me.id, siyati,
+  }).select("id,pase,le").single();
+  if (error) { console.error("evalye", error); throw new Fail(error.message, 500); }
+  return data;
+}
+
 // ------------------------------------------------------------------ serve
 function segments(url: string): string[] {
   const parts = new URL(url).pathname.split("/").filter(Boolean);
@@ -312,6 +409,12 @@ Deno.serve(async (req: Request) => {
       out = await fichye(String(b.path ?? ""), me.id, req.headers.get("user-agent") ?? "");
     } else if (head === "akse" && m === "GET") out = await akse();
     else if (head === "apwobasyon" && !rest && m === "GET") out = await apwobasyonList(me);
+    else if (head === "kaye" && !rest && m === "GET") out = await kaye();
+    else if (head === "kaye" && rest === "evalye" && m === "POST") {
+      const b = await req.json().catch(() => null);
+      if (!b || typeof b !== "object") throw new Fail("bad json");
+      out = await evalye(me, b as Record<string, unknown>);
+    }
     else if (head === "apwobasyon" && rest && m === "POST") {
       const b = await req.json().catch(() => null);
       if (!b || typeof b !== "object") throw new Fail("bad json");

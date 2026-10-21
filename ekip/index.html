@@ -86,6 +86,13 @@ ol.chenn li.refize{color:var(--red)}
 canvas.pad{width:100%;height:150px;background:#fff;border:1px solid var(--line);border-radius:10px;touch-action:none}
 .go2{background:var(--prussian);color:#fff}
 .item.jes{border-color:var(--prussian);border-width:2px}
+.st{font-size:13px;font-weight:700;white-space:nowrap}
+.st.ok{color:var(--green)} .st.no{color:var(--red)} .st.tann{color:var(--soon)}
+.kr{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kr input{width:22px;height:22px;flex:none;margin-top:1px}
+.verdik{font-weight:700;padding:10px 12px;border-radius:10px;text-align:center}
+.verdik.ok{background:#E2F2EC;color:var(--green)} .verdik.no{background:#FBE4E8;color:var(--red)}
+.ban{background:var(--green);color:#fff;border-radius:12px;padding:12px 14px;font-weight:700;margin:6px 0 10px}
 footer{margin-top:36px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
 footer a{color:var(--muted)}
 </style>
@@ -339,6 +346,7 @@ function jesyonHome(){
     + '<div class="list">'
     + '<a class="item" href="#jesyon/rezilta"><span class="tx"><span class="t">Rezilta</span><br><span class="d">Tout sa ki voye nan chak fòm, ak foto yo.</span></span><span class="go">›</span></a>'
     + '<a class="item" href="#jesyon/apwobasyon"><span class="tx"><span class="t">Apwobasyon</span><br><span class="d">Demann lajan ki ap tann de siyati.</span></span><span class="go">›</span></a>'
+    + '<a class="item" href="#jesyon/kaye"><span class="tx"><span class="t">Kaye · evalyasyon</span><br><span class="d">Sa manadjè estajyè yo voye, epi Kat Pwogrè chak moun.</span></span><span class="go">›</span></a>'
     + '</div><p class="lead" style="margin-top:24px;font-size:13px"><a href="#" id="kle-off">Soti nan Jesyon sou telefòn sa a</a></p>';
   main.innerHTML = h;
   document.getElementById('kle-off').onclick = function(e){ e.preventDefault(); kleSet(null); KLE = null; MWEN = null; location.hash = ''; render(); };
@@ -447,13 +455,17 @@ function jesyonRepons(slug, id){
   var w = get(); if(w){ bar(w); }
   var h = '<a class="back" href="#jesyon/fom/'+slug+'">‹ '+esc(d.tit)+'</a><h1>'+esc(r.referans || 'Repons')+'</h1>'
     + '<p class="lead">'+dt(r.created_at)+(r.esko != null ? ' · nòt '+r.esko+'%' : '')+(r.eta_apwobasyon ? ' · '+esc(r.eta_apwobasyon) : '')+'</p>';
-  var sek = null, chunks = '';
+  // Sections are drawn only when something in them was answered: the Kaye form
+  // has thirteen activity sections and a response fills one.
+  var chunks = '', secs = [], cur = null;
   d.fields.forEach(function(f){
     var v = r.repons[f.key];
     if(/^done_\d$/.test(f.key)){ chunks += (v || ''); return; }
-    if(f.seksyon !== sek){ sek = f.seksyon; if(sek){ h += '<h2>'+esc(sek)+'</h2>'; } }
-    h += '<div class="kv"><div class="k">'+esc(f.label === f.seksyon ? '' : f.label)+'</div><div class="v">'+show(f, v, slug, f.key)+'</div></div>';
+    if(!cur || cur.t !== f.seksyon){ cur = {t: f.seksyon, h: '', any: false}; secs.push(cur); }
+    if(!(v == null || v === '' || (Array.isArray(v) && !v.length))){ cur.any = true; }
+    cur.h += '<div class="kv"><div class="k">'+esc(f.label === f.seksyon ? '' : f.label)+'</div><div class="v">'+show(f, v, slug, f.key)+'</div></div>';
   });
+  secs.forEach(function(x){ if(x.any){ h += (x.t ? '<h2>'+esc(x.t)+'</h2>' : '') + x.h; } });
   if(chunks){
     var pretty = chunks; try{ pretty = JSON.stringify(JSON.parse(chunks), null, 2); }catch(e){}
     h += '<h2>Done konplè paj la</h2><details><summary>Louvri</summary><pre class="pre">'+esc(pretty)+'</pre></details>';
@@ -554,6 +566,162 @@ function signPanel(id){
   };
 }
 
+// --- Kaye: the evaluator's side (2026-10-21)
+// The server sends the fifteen activities with their criteria (the same lists
+// the paper Kaye prints), every trainee's work, and every verdict. A trainee is
+// the name typed on the forms, folded to one key; in the hash it travels as a
+// short hash of that key, never the name.
+var KAYE = null, KAYE_NOUVO = {};
+function kleNon(s){ return String(s).normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+function hk(s){ var h = 5381; for(var i = 0; i < s.length; i++){ h = ((h << 5) + h + s.charCodeAt(i)) | 0; } return (h >>> 0).toString(36); }
+function kayeChaje(then){
+  if(KAYE){ return then(); }
+  wait();
+  api('/kaye').then(function(d){
+    KAYE = d;
+    Object.keys(KAYE_NOUVO).forEach(function(k){
+      if(!d.moun.some(function(m){ return m.kle === k; })){ d.moun.push(KAYE_NOUVO[k]); }
+    });
+    then();
+  }).catch(oops);
+}
+function kMoun(h){ return (KAYE.moun || []).filter(function(m){ return hk(m.kle) === h; })[0]; }
+function kStati(m, a){
+  var evs = m.evalyasyon.filter(function(e){ return e.aktivite === a.n; });
+  var subs = m.soumisyon.filter(function(x){ return x.aktivite === a.n; });
+  var last = evs[0] || null;
+  return {last: last, evs: evs, subs: subs,
+          tann: subs.filter(function(x){ return !last || x.le > last.le; })};
+}
+function kKonte(m){
+  var pase = 0, pot = 0;
+  KAYE.aktivite.forEach(function(a){ var s = kStati(m, a); if(s.last && s.last.pase){ pase++; if(a.pot){ pot++; } } });
+  return {pase: pase, pot: pot, tout: KAYE.aktivite.length, toutPot: KAYE.aktivite.filter(function(a){ return a.pot; }).length};
+}
+function kayeLis(){
+  kayeChaje(function(){
+    var h = jbar('Kaye · evalyasyon'), tann = [];
+    KAYE.moun.forEach(function(m){
+      KAYE.aktivite.forEach(function(a){
+        var s = kStati(m, a);
+        if(s.tann.length){ tann.push({m: m, a: a, s: s}); }
+      });
+    });
+    // Oldest waiting first: whoever has waited longest gets read first.
+    tann.sort(function(x, y){ return x.s.tann[x.s.tann.length-1].le < y.s.tann[y.s.tann.length-1].le ? -1 : 1; });
+    h += '<h2>K ap tann evalyasyon ('+tann.length+')</h2>';
+    h += tann.length ? '<div class="list">'+tann.map(function(t){
+      var n = t.s.tann.length, ref = t.s.tann[0].referans || '';
+      return '<a class="item" href="#jesyon/kaye/e/'+hk(t.m.kle)+'/'+t.a.n+'"><span class="tx"><span class="t">'+esc(t.m.non)+' · '+t.a.n+'</span>'
+        + (t.a.pot ? '<span class="tag bouyon">pòt</span>' : '')
+        + '<br><span class="d">'+esc(t.a.non)+' · '+(t.a.n === '5.1' ? n+' rapò pratik' : esc(ref))+' · '+dt(t.s.tann[0].le)+'</span></span><span class="go">›</span></a>';
+    }).join('')+'</div>' : '<p class="lead">Anyen p ap tann.</p>';
+    h += '<h2>Manadjè estajyè yo</h2>';
+    h += KAYE.moun.length ? '<div class="list">'+KAYE.moun.map(function(m){
+      var k = kKonte(m);
+      return '<a class="item" href="#jesyon/kaye/m/'+hk(m.kle)+'"><span class="tx"><span class="t">'+esc(m.non)+'</span><br><span class="d">'
+        + (m.sit ? esc(m.sit)+' · ' : '')+k.pase+'/'+k.tout+' aktivite · pòt '+k.pot+'/'+k.toutPot+'</span></span>'
+        + (k.pase === k.tout ? '<span class="st ok">Nivo 1 ✓</span>' : '<span class="go">›</span>')+'</a>';
+    }).join('')+'</div>' : '<p class="lead">Pèsonn poko voye anyen.</p>';
+    h += '<h2>Yon moun ki poko voye anyen</h2><p class="mut">Pou 6.1 (devan ou), oswa pou louvri Kat Pwogrè yon moun.</p>'
+      + '<div class="filt"><input id="kn" placeholder="Non manadjè estajyè a"><button class="chip" id="kgo">Louvri kat li</button></div>';
+    main.innerHTML = h;
+    document.getElementById('kgo').onclick = function(){
+      var non = document.getElementById('kn').value.trim(), k = kleNon(non);
+      if(!k){ return; }
+      var m = KAYE.moun.filter(function(x){ return x.kle === k; })[0];
+      if(!m){ m = {kle: k, non: non, sit: '', soumisyon: [], evalyasyon: []}; KAYE_NOUVO[k] = m; KAYE.moun.push(m); }
+      location.hash = '#jesyon/kaye/m/'+hk(k);
+    };
+  });
+}
+function kayeKat(h){
+  kayeChaje(function(){
+    var m = kMoun(h);
+    if(!m){ return oops('Moun sa a pa la ankò. Retounen nan lis la.'); }
+    var k = kKonte(m), x = '<a class="back" href="#jesyon/kaye">‹ Kaye</a><h1>'+esc(m.non)+'</h1>'
+      + '<p class="lead">Kat Pwogrè · Nivo 1 · Estajyè'+(m.sit ? ' · '+esc(m.sit) : '')+'<br>'+k.pase+'/'+k.tout+' aktivite pase · pòt '+k.pot+'/'+k.toutPot+'</p>';
+    if(k.pase === k.tout){ x += '<div class="ban">Tout kenz aktivite yo pase. Nivo 1 fini. Apre sa: egzamen an ak yon evalyatè.</div>'; }
+    var mod = 0;
+    KAYE.aktivite.forEach(function(a){
+      if(a.modil !== mod){ mod = a.modil; x += '<h2>Modil '+mod+'</h2>'; }
+      var s = kStati(m, a), st;
+      if(s.tann.length){ st = '<span class="st tann">'+(a.n === '5.1' ? s.tann.length+' rapò · ' : '')+'ap tann</span>'; }
+      else if(s.last){ st = s.last.pase ? '<span class="st ok">✓ '+new Date(s.last.le).toLocaleDateString('fr-FR')+'</span>' : '<span class="st no">✗ pa pase</span>'; }
+      else { st = '<span class="st">'+(a.kote === 'an-pèsòn' ? 'devan ou' : '—')+'</span>'; }
+      x += '<a class="item sm" href="#jesyon/kaye/e/'+h+'/'+a.n+'"><span class="tx"><span class="t">'+a.n+' · '+esc(a.non)+'</span>'
+        + (a.pot ? '<span class="tag bouyon">pòt</span>' : '')
+        + (s.last ? '<br><span class="d">'+esc(s.last.evalyate_non)+'</span>' : '')+'</span>'+st+'</a>';
+    });
+    var w = get(); if(w){ bar(w); }
+    main.innerHTML = x;
+  });
+}
+function pad(cv){
+  var cx = cv.getContext('2d'), drew = false, down = false;
+  var r0 = cv.getBoundingClientRect(); cv.width = r0.width * 2; cv.height = r0.height * 2;
+  cx.scale(2, 2); cx.lineWidth = 2.2; cx.lineCap = 'round'; cx.strokeStyle = '#0a0a0a';
+  function pt(e){ var r = cv.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
+  cv.addEventListener('pointerdown', function(e){ down = true; var p = pt(e); cx.beginPath(); cx.moveTo(p.x, p.y); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', function(e){ if(!down){ return; } var p = pt(e); cx.lineTo(p.x, p.y); cx.stroke(); drew = true; });
+  cv.addEventListener('pointerup', function(){ down = false; });
+  return {drew: function(){ return drew; }, clear: function(){ cx.clearRect(0, 0, cv.width, cv.height); drew = false; },
+          data: function(){ return cv.toDataURL('image/png'); }};
+}
+function kayeEval(h, n){
+  kayeChaje(function(){
+    var m = kMoun(h), a = KAYE.aktivite.filter(function(x){ return x.n === n; })[0];
+    if(!m || !a){ return oops('Aktivite oswa moun sa a pa la.'); }
+    var s = kStati(m, a);
+    var x = '<a class="back" href="#jesyon/kaye/m/'+h+'">‹ Kat '+esc(m.non)+'</a><h1>'+a.n+' · '+esc(a.non)+'</h1>'
+      + '<p class="lead">'+esc(m.non)+' · Modil '+a.modil+(a.pot ? ' · <b>PÒT</b>' : ' · pratik')+'</p>';
+    x += '<h2>Sa li voye</h2>';
+    if(a.kote === 'an-pèsòn'){ x += '<p class="mut">Aktivite sa a fèt devan ou. Pa gen anyen pou li voye.</p>'; }
+    else if(!s.subs.length){ x += '<p class="mut">Li poko voye anyen pou aktivite sa a'+(a.n === '5.1' ? ' (Rapò jodi a, make « pratik »)' : '')+'.</p>'; }
+    else { x += '<div class="list">'+s.subs.map(function(v){
+      var nouvo = s.tann.indexOf(v) >= 0;
+      return '<a class="item sm" href="#jesyon/r/'+v.fom+'/'+v.id+'"><span class="tx"><span class="t">'+esc(v.referans || 'Repons')+'</span>'
+        + (nouvo ? '<span class="tag vini">nouvo</span>' : '')+'<br><span class="d">'+dt(v.le)+'</span></span><span class="go">›</span></a>';
+    }).join('')+'</div>'; }
+    if(s.evs.length){
+      x += '<h2>Evalyasyon ki deja fèt</h2><div class="list">'+s.evs.map(function(e){
+        return '<div class="card"><b class="st '+(e.pase ? 'ok' : 'no')+'">'+(e.pase ? '✓ Pase' : '✗ Pa pase')+'</b> · '+dt(e.le)+' · '+esc(e.evalyate_non)
+          + '<ol class="chenn">'+(e.krite || []).map(function(k){ return '<li class="'+(k.ok ? 'apwouve' : 'refize')+'">'+(k.ok ? '✓ ' : '✗ ')+esc(k.t)+'</li>'; }).join('')+'</ol>'
+          + (e.not_yo ? '<i>'+esc(e.not_yo)+'</i>' : '')+'</div>';
+      }).join('')+'</div>';
+    }
+    x += '<h2>'+(s.evs.length ? 'Yon nouvo evalyasyon' : 'Evalyasyon')+'</h2>'
+      + '<p class="mut">'+(a.pratik ? 'Se manadjè a ki tcheke tèt li sou sa yo; ou konfime yo.' : 'Make sa ki vre. Pou l pase, fòk tout bwat yo make.')+'</p>'
+      + a.kritè.map(function(k, i){ return '<label class="kr"><input type="checkbox" data-k="'+i+'"><span>'+esc(k)+'</span></label>'; }).join('')
+      + '<div class="sign"><div class="verdik no" id="kv">Pa pase</div>'
+      + '<textarea class="in" id="knot" rows="2" placeholder="Nòt (sa ki manke, sa pou l refè)"></textarea>'
+      + '<input class="in" id="kev" value="'+esc(MWEN.non)+'" placeholder="Non evalyatè a">'
+      + '<canvas class="pad" id="kpad"></canvas><div class="mut">Siyen ak dwèt ou nan bwat la · <a href="#" id="kcl">efase</a></div>'
+      + '<button class="chip go2" id="kok">Siyen evalyasyon an</button><p id="ker" class="mut"></p></div>';
+    var w = get(); if(w){ bar(w); }
+    main.innerHTML = x;
+    var bx = main.querySelectorAll('[data-k]'), kv = document.getElementById('kv');
+    function verdik(){
+      var all = Array.prototype.every.call(bx, function(b){ return b.checked; });
+      kv.className = 'verdik ' + (all ? 'ok' : 'no'); kv.textContent = all ? 'Pase' : 'Pa pase';
+    }
+    Array.prototype.forEach.call(bx, function(b){ b.onchange = verdik; });
+    var pd = pad(document.getElementById('kpad'));
+    document.getElementById('kcl').onclick = function(e){ e.preventDefault(); pd.clear(); };
+    document.getElementById('kok').onclick = function(){
+      var er = document.getElementById('ker'), self = this;
+      if(!pd.drew()){ er.textContent = 'Siyen anvan ou voye.'; return; }
+      self.disabled = true; er.textContent = 'Ap voye…';
+      api('/kaye/evalye', {method: 'POST', body: {
+        manadje: m.non, aktivite: a.n, repons_id: s.subs[0] ? s.subs[0].id : null,
+        krite: Array.prototype.map.call(bx, function(b){ return b.checked; }),
+        not_yo: document.getElementById('knot').value, non: document.getElementById('kev').value, siyati: pd.data()}})
+        .then(function(){ KAYE = null; delete KAYE_NOUVO[m.kle]; location.hash = '#jesyon/kaye/m/'+h; })
+        .catch(function(e){ er.textContent = e.message; self.disabled = false; });
+    };
+  });
+}
+
 function jesyonRoute(h){
   if(!jesyonOk()){ location.hash = ''; return false; }
   var p = h.split('/');
@@ -562,6 +730,9 @@ function jesyonRoute(h){
   else if(p[1] === 'fom' && p[2]){ jesyonFom(p[2]); }
   else if(p[1] === 'r' && p[2] && p[3]){ jesyonRepons(p[2], p[3]); }
   else if(p[1] === 'apwobasyon'){ jesyonApw(); }
+  else if(p[1] === 'kaye' && p[2] === 'm' && p[3]){ kayeKat(p[3]); }
+  else if(p[1] === 'kaye' && p[2] === 'e' && p[3] && p[4]){ kayeEval(p[3], p[4]); }
+  else if(p[1] === 'kaye'){ kayeLis(); }
   else { jesyonHome(); }
   return true;
 }
