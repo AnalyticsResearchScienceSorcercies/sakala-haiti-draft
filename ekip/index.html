@@ -205,9 +205,11 @@ function home(w){
   // screens down, and nobody scrolls for it in a hurry.
   var p = I.filter(function(x){ return x.wol[w] === 'pwoblem'; });
   h += '<div class="list alert">'+p.map(item).join('')+'</div>';
-  if(jesyonOk()){
-    h += '<div class="list"><a class="item jes" href="#jesyon"><span class="tx"><span class="t">Jesyon</span><br>'
-      + '<span class="d">Rezilta ak apwobasyon · '+esc(MWEN.non)+'</span></span><span class="go">›</span></a></div>';
+  // Jesyon (results + approvals) lives on the coordinator home. With a key it
+  // opens; without one it asks for the shared PIN once, then the phone keeps it.
+  if(w === 'kowo'){
+    h += '<div class="list" style="margin-bottom:14px"><a class="item jes" href="#'+(jesyonOk() ? 'jesyon' : 'pin')+'"><span class="tx"><span class="t">Jesyon</span><br>'
+      + '<span class="d">Rezilta ak apwobasyon · '+(jesyonOk() ? esc(MWEN.non) : 'mande PIN nan')+'</span></span><span class="go">›</span></a></div>';
   }
   if(w === 'apranti'){
     h += '<div class="note">Devwa lakay ou: rakonte manadjè w li an pèsòn nan pwochen seyans lan. Pa gen fòm pou sa.</div>';
@@ -265,10 +267,10 @@ function ouvri(id){
 }
 
 // =================================================================== JESYON
-// The back office, as a section of the hub (2026-10-02). It shows only on a
-// phone that carries a personal build key (opened once from a #k=… link) until
-// Wesley's login replaces the key. Without a key nothing here is drawn and the
-// server answers nothing.
+// The back office, as a section of the hub (2026-10-02). It needs a key on
+// the phone: since 2026-10-21 from the shared PIN (#pin, on the coordinator
+// home), or a hand-made build key opened once from a #k=… link. Without a key
+// the server answers nothing.
 var API = 'https://itnmcxemdpauemsnesln.supabase.co/functions/v1/jesyon';
 var KLE = null, MWEN = null, FOMS = null, REZ = {}, APW = null;
 function kleGet(){ try{ return localStorage.getItem('ekip.kle'); }catch(e){ return null; } }
@@ -286,6 +288,31 @@ function api(path, opt){
     .then(function(r){ return r.json().then(function(j){ if(!r.ok){ throw new Error(j.error || ('Erè ' + r.status)); } return j; }); });
 }
 function jesyonOk(){ return !!(KLE && MWEN); }
+
+// The PIN door. One PIN for Wesley and Dan (2026-10-21). A right PIN gets this
+// phone its own key from the server, kept in localStorage like a #k= key.
+function pinPaj(){
+  var w = get(); if(w){ bar(w); }
+  var non = ''; try{ non = localStorage.getItem('ekip.non') || ''; }catch(e){}
+  main.innerHTML = '<a class="back" href="#">‹ Retounen</a><h1>Jesyon</h1>'
+    + '<p class="lead">Mete PIN nan yon fwa. Telefòn sa a ap sonje l.</p>'
+    + '<form id="pf" class="sign" autocomplete="off">'
+    + '<label class="mut" for="pn">Non w</label><input class="in" id="pn" value="'+esc(non)+'" autocomplete="name" required>'
+    + '<label class="mut" for="pp">PIN</label><input class="in" id="pp" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off" required>'
+    + '<button class="chip go2" type="submit">Antre</button><p id="pe" class="mut"></p></form>';
+  document.getElementById('pf').onsubmit = function(e){
+    e.preventDefault();
+    var pe = document.getElementById('pe'), b = this.querySelector('button');
+    var n = document.getElementById('pn').value.trim(), pin = document.getElementById('pp').value.trim();
+    try{ localStorage.setItem('ekip.non', n); }catch(e2){}
+    b.disabled = true; pe.textContent = 'Ap verifye…';
+    fetch(API + '/pin', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({pin: pin, non: n})})
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j.kle){ throw new Error(j.error || ('Erè ' + r.status)); } return j; }); })
+      .then(function(j){ kleSet(j.kle); KLE = j.kle; MWEN = null; return jesyonBoot(); })
+      .then(function(){ location.hash = jesyonOk() ? '#jesyon' : ''; render(); })
+      .catch(function(err){ pe.textContent = err.message; b.disabled = false; document.getElementById('pp').value = ''; });
+  };
+}
 function jesyonBoot(){
   if(!KLE){ return Promise.resolve(); }
   return api('').then(function(me){ MWEN = me; }).catch(function(e){
@@ -312,7 +339,7 @@ function jesyonHome(){
     + '<div class="list">'
     + '<a class="item" href="#jesyon/rezilta"><span class="tx"><span class="t">Rezilta</span><br><span class="d">Tout sa ki voye nan chak fòm, ak foto yo.</span></span><span class="go">›</span></a>'
     + '<a class="item" href="#jesyon/apwobasyon"><span class="tx"><span class="t">Apwobasyon</span><br><span class="d">Demann lajan ki ap tann de siyati.</span></span><span class="go">›</span></a>'
-    + '</div><p class="lead" style="margin-top:24px;font-size:13px">Kle bati tanporè. <a href="#" id="kle-off">Retire kle a sou telefòn sa a</a></p>';
+    + '</div><p class="lead" style="margin-top:24px;font-size:13px"><a href="#" id="kle-off">Soti nan Jesyon sou telefòn sa a</a></p>';
   main.innerHTML = h;
   document.getElementById('kle-off').onclick = function(e){ e.preventDefault(); kleSet(null); KLE = null; MWEN = null; location.hash = ''; render(); };
 }
@@ -552,6 +579,7 @@ function render(){
     jesyonBoot().then(render);
     return;
   }
+  if(h === 'pin'){ return jesyonOk() ? (location.hash = '#jesyon') : pinPaj(); }
   if(h.indexOf('jesyon') === 0 && jesyonRoute(h)){ return; }
   if(h.indexOf('ouvri/') === 0){ return ouvri(h.slice(6)); }
   PREV = h;

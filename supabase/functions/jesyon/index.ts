@@ -9,14 +9,18 @@
 //   GET  /jesyon/akse              -> who opened which file, newest first
 //   GET  /jesyon/apwobasyon        -> what waits on me, and what was decided
 //   POST /jesyon/apwobasyon/<id>   -> sign or refuse the current step
+//   POST /jesyon/pin  {pin, non}   -> NO key needed: a right PIN returns a new key
 //
 // LANGUAGE: Kreyòl, like the hub.
 //
-// WHO YOU ARE, until a real login exists (Wesley is building it): a personal
-// build key in the `x-ekip-kle` header, matched against public.jesyon_kle
-// (service role only). One key per person, so approvals still know who signs.
-// No key, no data: the hub shows the Jesyon section only on a phone that
-// carries one. HTTP Basic against EKIP_USERS still works alongside.
+// WHO YOU ARE: a key in the `x-ekip-kle` header, matched against
+// public.jesyon_kle (service role only). Since 2026-10-21 a phone gets its key
+// by typing the ONE shared PIN (Wesley's call: no login; only he and Dan hold
+// it). The database function jesyon_pin_antre checks the bcrypt hash, rate
+// limits (5 misses per IP per 15 min, 40 misses overall per hour) and mints a
+// key per phone (sous='pin'), so approvals still sign per phone. Changing the
+// PIN means switching every sous='pin' key off. The older hand-made build keys
+// (sous='bati') and HTTP Basic against EKIP_USERS still work alongside.
 //
 // WHAT WAS CARRIED OVER ON PURPOSE, because each line of it was learned:
 // - Logins come only from the EKIP_USERS secret and FAIL CLOSED: no secret or a
@@ -31,7 +35,7 @@
 //   another user with nothing logged.
 // - Every response is no-store. Everything here is per-person.
 //
-// verify_jwt is off because this does its own auth (HTTP Basic).
+// verify_jwt is off because this does its own auth (PIN keys, build keys, HTTP Basic).
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -273,6 +277,25 @@ Deno.serve(async (req: Request) => {
   if (origin && ALLOWED.has(origin)) h["Access-Control-Allow-Origin"] = origin;
   const json = { ...h, "Content-Type": "application/json; charset=utf-8" };
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
+
+  // The PIN door is the one route that needs no key.
+  if (segments(req.url)[0] === "pin" && req.method === "POST") {
+    const b = await req.json().catch(() => ({})) as Record<string, unknown>;
+    const ip = req.headers.get("cf-connecting-ip")
+      ?? (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim();
+    const { data, error } = await sb().rpc("jesyon_pin_antre", {
+      p_pin: String(b.pin ?? "").slice(0, 20), p_ip: ip, p_non: String(b.non ?? "").slice(0, 60),
+    });
+    if (error) {
+      console.error("pin", error);
+      return new Response(JSON.stringify({ error: "Erè sèvè a. Eseye ankò." }), { status: 500, headers: json });
+    }
+    const r = data as { ok: boolean; kle?: string; bloke?: string; rete?: number };
+    if (r.ok) return new Response(JSON.stringify({ kle: r.kle }), { headers: json });
+    const msg = r.bloke ? "Twòp move PIN. Tann 15 minit epi eseye ankò."
+      : `PIN an pa bon.${r.rete != null ? ` Ou gen ${r.rete} eseye ki rete.` : ""}`;
+    return new Response(JSON.stringify({ error: msg }), { status: r.bloke ? 429 : 401, headers: json });
+  }
 
   const me = await who(req);
   if (!me) return new Response(JSON.stringify({ error: "Ou dwe konekte." }), { status: 401, headers: json });
