@@ -279,7 +279,7 @@ function ouvri(id){
 // home), or a hand-made build key opened once from a #k=… link. Without a key
 // the server answers nothing.
 var API = 'https://itnmcxemdpauemsnesln.supabase.co/functions/v1/jesyon';
-var KLE = null, MWEN = null, FOMS = null, REZ = {}, APW = null;
+var KLE = null, MWEN = null, FOMS = null, REZ = {}, APW = null, BOOTED = false;
 function kleGet(){ try{ return localStorage.getItem('ekip.kle'); }catch(e){ return null; } }
 function kleSet(v){ try{ v ? localStorage.setItem('ekip.kle', v) : localStorage.removeItem('ekip.kle'); }catch(e){} }
 (function(){
@@ -321,10 +321,10 @@ function pinPaj(){
   };
 }
 function jesyonBoot(){
-  if(!KLE){ return Promise.resolve(); }
+  if(!KLE){ BOOTED = true; return Promise.resolve(); }
   return api('').then(function(me){ MWEN = me; }).catch(function(e){
     if(/konekte/.test(e.message)){ kleSet(null); KLE = null; }
-  });
+  }).then(function(){ BOOTED = true; });
 }
 function wait(){ main.innerHTML = '<a class="back" href="#">‹ Retounen</a><p class="lead" style="margin-top:20px">Ap chaje…</p>'; }
 function oops(e){ main.innerHTML = '<a class="back" href="#">‹ Retounen</a><div class="note" style="border-color:var(--red);margin-top:16px">'+esc(e.message || e)+'</div>'; }
@@ -723,6 +723,9 @@ function kayeEval(h, n){
 }
 
 function jesyonRoute(h){
+  // A Jesyon link opened cold (or a reload) arrives before the key is checked:
+  // wait for that check instead of bouncing home. render() runs again after it.
+  if(!jesyonOk() && KLE && !BOOTED){ wait(); return true; }
   if(!jesyonOk()){ location.hash = ''; return false; }
   var p = h.split('/');
   if(h === 'jesyon'){ jesyonHome(); }
@@ -762,7 +765,7 @@ function render(){
 document.getElementById('home').onclick = function(e){ e.preventDefault(); location.hash=''; render(); };
 window.addEventListener('hashchange', render);
 render();
-jesyonBoot().then(function(){ if(KLE){ render(); } });
+jesyonBoot().then(function(){ if(KLE || /^#jesyon/.test(location.hash)){ render(); } });
 })();
 </script>
 </body>
